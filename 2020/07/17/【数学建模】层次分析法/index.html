@@ -22,30 +22,36 @@
     var CONFIG = {"hostname":"yoursite.com","root":"/","scheme":"Gemini","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
   </script>
 
-  <meta name="description" content="没有回音是人生的常态">
-<meta property="og:type" content="website">
-<meta property="og:title" content="呆毛的博客">
-<meta property="og:url" content="http://yoursite.com/index.html">
+  <meta name="description" content="层次分析法简介​        层次分析法（AHP）主要是通过建立梯阶层次结构，将复杂的问题分解成主要的目标(O)、方案§、准则©三个结构层，并通过对准则和方案的两两比较，确定各准则、方案间的权重。 层次分析法的基本步骤​        (i) 分析问题中各因素间的关系，建立递阶层次结构模型。 ​        (ii) 构造出各层次的所有判断矩阵 ​        (iii) 根据判断矩阵计算被">
+<meta property="og:type" content="article">
+<meta property="og:title" content="【数学建模】层次分析法">
+<meta property="og:url" content="http://yoursite.com/2020/07/17/%E3%80%90%E6%95%B0%E5%AD%A6%E5%BB%BA%E6%A8%A1%E3%80%91%E5%B1%82%E6%AC%A1%E5%88%86%E6%9E%90%E6%B3%95/index.html">
 <meta property="og:site_name" content="呆毛的博客">
-<meta property="og:description" content="没有回音是人生的常态">
+<meta property="og:description" content="层次分析法简介​        层次分析法（AHP）主要是通过建立梯阶层次结构，将复杂的问题分解成主要的目标(O)、方案§、准则©三个结构层，并通过对准则和方案的两两比较，确定各准则、方案间的权重。 层次分析法的基本步骤​        (i) 分析问题中各因素间的关系，建立递阶层次结构模型。 ​        (ii) 构造出各层次的所有判断矩阵 ​        (iii) 根据判断矩阵计算被">
 <meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="http://yoursite.com/2020/07/17/%E3%80%90%E6%95%B0%E5%AD%A6%E5%BB%BA%E6%A8%A1%E3%80%91%E5%B1%82%E6%AC%A1%E5%88%86%E6%9E%90%E6%B3%95/D:%5CBlog%5Csource_posts%5C%E3%80%90%E6%95%B0%E5%AD%A6%E5%BB%BA%E6%A8%A1%E3%80%91%E5%B1%82%E6%AC%A1%E5%88%86%E6%9E%90%E6%B3%95%5C%E4%BE%8B%E5%AD%901.png">
+<meta property="og:image" content="http://yoursite.com/2020/07/17/%E3%80%90%E6%95%B0%E5%AD%A6%E5%BB%BA%E6%A8%A1%E3%80%91%E5%B1%82%E6%AC%A1%E5%88%86%E6%9E%90%E6%B3%95/D:%5CBlog%5Csource_posts%5C%E3%80%90%E6%95%B0%E5%AD%A6%E5%BB%BA%E6%A8%A1%E3%80%91%E5%B1%82%E6%AC%A1%E5%88%86%E6%9E%90%E6%B3%95%5C%E4%BE%8B%E5%AD%902.png">
+<meta property="article:published_time" content="2020-07-17T09:17:27.338Z">
+<meta property="article:modified_time" content="2020-07-17T10:26:22.670Z">
 <meta property="article:author" content="Daimao">
+<meta property="article:tag" content="数学建模">
 <meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://yoursite.com/2020/07/17/%E3%80%90%E6%95%B0%E5%AD%A6%E5%BB%BA%E6%A8%A1%E3%80%91%E5%B1%82%E6%AC%A1%E5%88%86%E6%9E%90%E6%B3%95/D:%5CBlog%5Csource_posts%5C%E3%80%90%E6%95%B0%E5%AD%A6%E5%BB%BA%E6%A8%A1%E3%80%91%E5%B1%82%E6%AC%A1%E5%88%86%E6%9E%90%E6%B3%95%5C%E4%BE%8B%E5%AD%901.png">
 
-<link rel="canonical" href="http://yoursite.com/">
+<link rel="canonical" href="http://yoursite.com/2020/07/17/%E3%80%90%E6%95%B0%E5%AD%A6%E5%BB%BA%E6%A8%A1%E3%80%91%E5%B1%82%E6%AC%A1%E5%88%86%E6%9E%90%E6%B3%95/">
 
 
 <script id="page-configurations">
   // https://hexo.io/docs/variables.html
   CONFIG.page = {
     sidebar: "",
-    isHome : true,
-    isPost : false,
+    isHome : false,
+    isPost : true,
     lang   : 'zh-CN'
   };
 </script>
 
-  <title>呆毛的博客</title>
+  <title>【数学建模】层次分析法 | 呆毛的博客</title>
   
 
 
@@ -164,9 +170,10 @@
         <div class="content-wrap">
           
 
-          <div class="content index posts-expand">
+          <div class="content post posts-expand">
             
-      
+
+    
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
@@ -182,10 +189,9 @@
       <meta itemprop="name" content="呆毛的博客">
     </span>
       <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          
-            <a href="/2020/07/17/%E3%80%90%E6%95%B0%E5%AD%A6%E5%BB%BA%E6%A8%A1%E3%80%91%E5%B1%82%E6%AC%A1%E5%88%86%E6%9E%90%E6%B3%95/" class="post-title-link" itemprop="url">【数学建模】层次分析法</a>
-        </h2>
+        <h1 class="post-title" itemprop="name headline">
+          【数学建模】层次分析法
+        </h1>
 
         <div class="post-meta">
             <span class="post-meta-item">
@@ -199,6 +205,13 @@
             </span>
 
           
+            <span class="post-meta-item" title="阅读次数" id="busuanzi_container_page_pv" style="display: none;">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
+              </span>
+              <span class="post-meta-item-text">阅读次数：</span>
+              <span id="busuanzi_value_page_pv"></span>
+            </span>
 
         </div>
       </header>
@@ -209,7 +222,7 @@
     <div class="post-body" itemprop="articleBody">
 
       
-          <h4 id="层次分析法简介"><a href="#层次分析法简介" class="headerlink" title="层次分析法简介"></a>层次分析法简介</h4><p>​        层次分析法（AHP）主要是通过建立梯阶层次结构，将复杂的问题分解成主要的目标(O)、方案§、准则©三个结构层，并通过对准则和方案的两两比较，确定各准则、方案间的权重。</p>
+        <h4 id="层次分析法简介"><a href="#层次分析法简介" class="headerlink" title="层次分析法简介"></a>层次分析法简介</h4><p>​        层次分析法（AHP）主要是通过建立梯阶层次结构，将复杂的问题分解成主要的目标(O)、方案§、准则©三个结构层，并通过对准则和方案的两两比较，确定各准则、方案间的权重。</p>
 <h4 id="层次分析法的基本步骤"><a href="#层次分析法的基本步骤" class="headerlink" title="层次分析法的基本步骤"></a>层次分析法的基本步骤</h4><p>​        (i) 分析问题中各因素间的关系，建立递阶层次结构模型。</p>
 <p>​        (ii) 构造出各层次的所有判断矩阵</p>
 <p>​        (iii) 根据判断矩阵计算被比较元素对于该准则的相对权重，进行<strong>一致性检验</strong></p>
@@ -286,80 +299,50 @@
 <p>[3]黄san岁.数学建模-层次分析[EB/OL].<a href="https://blog.csdn.net/hyd_hss/article/details/106745446?ops_request_misc=%7B%22request%5Fid%22%3A%22159496639319725250150451%22%2C%22scm%22%3A%2220140713.130102334..%22%7D&request_id=159496639319725250150451&biz_id=0&utm_medium=distribute.pc_search_result.none-task-blog-2~all~top_click~default-2-106745446.first_rank_ecpm_v3_pc_rank_v2&utm_term=层次分析法" target="_blank" rel="noopener">https://blog.csdn.net/hyd_hss/article/details/106745446?ops_request_misc=%257B%2522request%255Fid%2522%253A%2522159496639319725250150451%2522%252C%2522scm%2522%253A%252220140713.130102334..%2522%257D&amp;request_id=159496639319725250150451&amp;biz_id=0&amp;utm_medium=distribute.pc_search_result.none-task-blog-2<del>all</del>top_click~default-2-106745446.first_rank_ecpm_v3_pc_rank_v2&amp;utm_term=%E5%B1%82%E6%AC%A1%E5%88%86%E6%9E%90%E6%B3%95</a>,2020-06-14</p>
 </blockquote>
 
-      
     </div>
 
     
     
     
+        
+
+<div>
+<ul class="post-copyright">
+  <li class="post-copyright-author">
+    <strong>本文作者： </strong>Daimao
+  </li>
+  <li class="post-copyright-link">
+    <strong>本文链接：</strong>
+    <a href="http://yoursite.com/2020/07/17/%E3%80%90%E6%95%B0%E5%AD%A6%E5%BB%BA%E6%A8%A1%E3%80%91%E5%B1%82%E6%AC%A1%E5%88%86%E6%9E%90%E6%B3%95/" title="【数学建模】层次分析法">http://yoursite.com/2020/07/17/【数学建模】层次分析法/</a>
+  </li>
+  <li class="post-copyright-license">
+    <strong>版权声明： </strong>本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" rel="noopener" target="_blank"><i class="fab fa-fw fa-creative-commons"></i>BY-NC-SA</a> 许可协议。转载请注明出处！
+  </li>
+</ul>
+</div>
+
+
       <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
+          <div class="post-tags">
+              <a href="/tags/%E6%95%B0%E5%AD%A6%E5%BB%BA%E6%A8%A1/" rel="tag"># 数学建模</a>
+          </div>
 
-      
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2020/07/12/%E4%B8%BA%E4%BB%80%E4%B9%88%E6%98%AF%E5%AE%83/">
+        
 
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="https://i.loli.net/2020/07/12/D6CZiKA4O2jmwus.jpg">
-      <meta itemprop="name" content="Daimao">
-      <meta itemprop="description" content="没有回音是人生的常态">
-    </span>
 
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="呆毛的博客">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          
-            <a href="/2020/07/12/%E4%B8%BA%E4%BB%80%E4%B9%88%E6%98%AF%E5%AE%83/" class="post-title-link" itemprop="url">为什么是它</a>
-        </h2>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-calendar"></i>
-              </span>
-              <span class="post-meta-item-text">发表于</span>
-              
-
-              <time title="创建时间：2020-07-12 11:31:06 / 修改时间：14:42:59" itemprop="dateCreated datePublished" datetime="2020-07-12T11:31:06+08:00">2020-07-12</time>
-            </span>
-
-          
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <p>  写博客这个念头存在在我脑海里已经很久很久了。<br>  时代的发展让我们拥有了更快捷的信息转递方式，更丰富的信息表达途径，随之而来的，是衍生出的一连串的社交帐号，社交平台。<br>  早上在空间里吐槽一下，下午在朋友圈转转文章，晚上知乎里和杠精对对线。<br>  正如唱戏的舞台多了，观众自然也会蛮蛮分散，观点的表达也被吞噬地七零八碎。<br>  相对于表达自己的观点，我更喜欢倾听，倾听他人的观点。<br>  可问题是，当他人给予的观点增多，冗杂的信息会让我无处消化，我需要这么一个平台。<br>  它只是静静的躺在那里，既不崭露锋芒，也不沉默不语。<br>  这就是我搭建这个博客的原因。<br>  当然了，更多的，我想在这个博客中分享我大学的学习生活，学习历程。<br>  它可以是树洞，是我的自留地，也可以是小伙伴们认识我这个俗人的途径(笑<br>  总之，祝你今天愉快！</p>
-
-      
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2020/07/12/%E4%B8%BA%E4%BB%80%E4%B9%88%E6%98%AF%E5%AE%83/" rel="prev" title="为什么是它">
+      <i class="fa fa-chevron-left"></i> 为什么是它
+    </a></div>
+      <div class="post-nav-item"></div>
     </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
       </footer>
+    
   </article>
   
   
-  
-
-
   
 
 
@@ -412,6 +395,7 @@
 
       <!--noindex-->
       <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-4"><a class="nav-link" href="#层次分析法简介"><span class="nav-number">1.</span> <span class="nav-text">层次分析法简介</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#层次分析法的基本步骤"><span class="nav-number">2.</span> <span class="nav-text">层次分析法的基本步骤</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#模型建立过程"><span class="nav-number">3.</span> <span class="nav-text">模型建立过程</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#建立递阶层次结构模型"><span class="nav-number">3.1.</span> <span class="nav-text">建立递阶层次结构模型</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#构造出各层次的所有判断矩阵"><span class="nav-number">3.2.</span> <span class="nav-text">构造出各层次的所有判断矩阵</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#计算权重，进行一致性检验"><span class="nav-number">3.3.</span> <span class="nav-text">计算权重，进行一致性检验</span></a><ol class="nav-child"><li class="nav-item nav-level-6"><a class="nav-link" href="#一致性检验的步骤"><span class="nav-number">3.3.1.</span> <span class="nav-text">一致性检验的步骤</span></a></li></ol></li><li class="nav-item nav-level-5"><a class="nav-link" href="#计算总得分，进行排序"><span class="nav-number">3.4.</span> <span class="nav-text">计算总得分，进行排序</span></a></li></ol></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Matlab实现"><span class="nav-number">4.</span> <span class="nav-text">Matlab实现</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#参考"><span class="nav-number">5.</span> <span class="nav-text">参考</span></a></li></ol></div>
       </div>
       <!--/noindex-->
 
