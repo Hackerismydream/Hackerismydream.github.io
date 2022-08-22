@@ -19,7 +19,7 @@
 
 <script id="hexo-configurations">
     var NexT = window.NexT || {};
-    var CONFIG = {"hostname":"example.com","root":"/","scheme":"Gemini","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+    var CONFIG = {"hostname":"example.com","root":"/","scheme":"Mist","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
   </script>
 
   <meta name="description" content="MapReduce​	基于《MapReduce: Simplified Data Processing on Large Clusters》和Mit 6.824课程，以go语言实现了 单机多进程 的 MapReduce 框架。通过设计实现Master主节点、Worker工作节点以及两者之间的RPC通信，模拟了分布式环境下的调度执行程序，错误恢复，以及管理所需的机器间通信。并通过该框架统计一个很大的">
@@ -32,7 +32,7 @@
 <meta property="og:image" content="https://cdn.nlark.com/yuque/0/2022/png/26559442/1658796537515-4f587a73-8dd1-4426-a92d-29501f6992bc.png">
 <meta property="og:image" content="https://cdn.nlark.com/yuque/0/2022/png/26559442/1658298006252-83561f8d-f96e-459c-8266-48cc70e0d4e8.png?x-oss-process=image%2Fresize%2Cw_918%2Climit_0%2Fresize%2Cw_918%2Climit_0">
 <meta property="article:published_time" content="2022-08-22T07:25:50.000Z">
-<meta property="article:modified_time" content="2022-08-22T07:26:33.872Z">
+<meta property="article:modified_time" content="2022-08-22T10:52:51.404Z">
 <meta property="article:author" content="Wanjia Huang">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:image" content="https://cdn.nlark.com/yuque/0/2022/png/26559442/1658796537515-4f587a73-8dd1-4426-a92d-29501f6992bc.png">
@@ -197,10 +197,11 @@
               <span class="post-meta-item-icon">
                 <i class="far fa-calendar"></i>
               </span>
+
               <span class="post-meta-item-text">发表于</span>
               
 
-              <time title="创建时间：2022-08-22 15:25:50 / 修改时间：15:26:33" itemprop="dateCreated datePublished" datetime="2022-08-22T15:25:50+08:00">2022-08-22</time>
+              <time title="创建时间：2022-08-22 15:25:50 / 修改时间：18:52:51" itemprop="dateCreated datePublished" datetime="2022-08-22T15:25:50+08:00">2022-08-22</time>
             </span>
 
           
@@ -227,6 +228,8 @@
 <li>设计实现了MapReduce论文中的Worker工作节点，Worker节点可以在空闲时请求任务池里的任务，对相应的Map任务和Reduce任务进行解析并计算。对于Map任务读取对应的输入区块内容，计算解析出key&#x2F;value对并缓存在本机；对于Reduce任务使用RPC调用得到Map工作节点的本地磁盘中的缓存数据，遍历并通过<strong>shuffle方法</strong>排序好所有的缓存数据，之后根据重排序好key&#x2F;value数组重定向输出文件。</li>
 <li>设计实现了错误恢复机制，通过中间文件存储和在Master开启一个协程追踪任务进行时间戳的方式，保证当Worker正在执行任务时突然宕机和卡死等情况下被执行的任务能够重新恢复并调度给其他空闲的工作节点。</li>
 </ul>
+<span id="more"></span>
+
 <h2 id="详细设计过程"><a href="#详细设计过程" class="headerlink" title="详细设计过程"></a>详细设计过程</h2><h3 id="项目框架"><a href="#项目框架" class="headerlink" title="项目框架"></a>项目框架</h3><ul>
 <li>src&#x2F;mrapps下是各种使用框架的用户编写好的map和reduce函数，比如wc.go是针对统计文件中各单词出现次数问题的map和reduce函数。</li>
 <li>src&#x2F;mr下是我们要编写的master.go、rpc.go、worker.go代码，也就是简易版的mapreduce框架的代码，src&#x2F;mr就是该简易框架的包；之后要运行的主程序会调用这个mr包的代码。</li>
@@ -548,7 +551,7 @@
   </span>
   <span class="author" itemprop="copyrightHolder">Wanjia Huang</span>
 </div>
-  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a> 强力驱动
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://mist.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Mist</a> 强力驱动
   </div>
 
 
@@ -624,7 +627,7 @@ $(document).ready(function() {
 <script src="/js/motion.js"></script>
 
 
-<script src="/js/schemes/pisces.js"></script>
+<script src="/js/schemes/muse.js"></script>
 
 
 <script src="/js/next-boot.js"></script>

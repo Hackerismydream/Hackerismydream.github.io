@@ -19,7 +19,7 @@
 
 <script id="hexo-configurations">
     var NexT = window.NexT || {};
-    var CONFIG = {"hostname":"example.com","root":"/","scheme":"Gemini","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+    var CONFIG = {"hostname":"example.com","root":"/","scheme":"Mist","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
   </script>
 
   <meta name="description" content="层次分析法简介​		层次分析法（AHP）主要是通过建立梯阶层次结构，将复杂的问题分解成主要的目标(O)、方案§、准则©三个结构层，并通过对准则和方案的两两比较，确定各准则、方案间的权重。 层次分析法的基本步骤​		(i) 分析问题中各因素间的关系，建立递阶层次结构模型。 ​		(ii) 构造出各层次的所有判断矩阵 ​		(iii) 根据判断矩阵计算被比较元素对于该准则的相对权重，进行一致性检验 ​">
@@ -30,9 +30,8 @@
 <meta property="og:description" content="层次分析法简介​		层次分析法（AHP）主要是通过建立梯阶层次结构，将复杂的问题分解成主要的目标(O)、方案§、准则©三个结构层，并通过对准则和方案的两两比较，确定各准则、方案间的权重。 层次分析法的基本步骤​		(i) 分析问题中各因素间的关系，建立递阶层次结构模型。 ​		(ii) 构造出各层次的所有判断矩阵 ​		(iii) 根据判断矩阵计算被比较元素对于该准则的相对权重，进行一致性检验 ​">
 <meta property="og:locale" content="zh_CN">
 <meta property="og:image" content="http://example.com/%E3%80%90%E6%95%B0%E5%AD%A6%E5%BB%BA%E6%A8%A1%E3%80%91%E5%B1%82%E6%AC%A1%E5%88%86%E6%9E%90%E6%B3%95/%E4%BE%8B%E5%AD%901.png">
-<meta property="og:image" content="http://example.com/%E3%80%90%E6%95%B0%E5%AD%A6%E5%BB%BA%E6%A8%A1%E3%80%91%E5%B1%82%E6%AC%A1%E5%88%86%E6%9E%90%E6%B3%95/%E4%BE%8B%E5%AD%902.png">
 <meta property="article:published_time" content="2020-07-17T10:35:55.000Z">
-<meta property="article:modified_time" content="2020-07-27T14:52:07.768Z">
+<meta property="article:modified_time" content="2022-08-22T11:12:39.819Z">
 <meta property="article:author" content="Wanjia Huang">
 <meta property="article:tag" content="数学建模">
 <meta name="twitter:card" content="summary">
@@ -198,6 +197,7 @@
               <span class="post-meta-item-icon">
                 <i class="far fa-calendar"></i>
               </span>
+
               <span class="post-meta-item-text">发表于</span>
 
               <time title="创建时间：2020-07-17 18:35:55" itemprop="dateCreated datePublished" datetime="2020-07-17T18:35:55+08:00">2020-07-17</time>
@@ -207,7 +207,7 @@
                   <i class="far fa-calendar-check"></i>
                 </span>
                 <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2020-07-27 22:52:07" itemprop="dateModified" datetime="2020-07-27T22:52:07+08:00">2020-07-27</time>
+                <time title="修改时间：2022-08-22 19:12:39" itemprop="dateModified" datetime="2022-08-22T19:12:39+08:00">2022-08-22</time>
               </span>
 
           
@@ -233,6 +233,8 @@
 <p>​		(ii) 构造出各层次的所有判断矩阵</p>
 <p>​		(iii) 根据判断矩阵计算被比较元素对于该准则的相对权重，进行<strong>一致性检验</strong></p>
 <p>​		(iv) 层次总排序及一致性检验</p>
+<span id="more"></span>
+
 <h4 id="模型建立过程"><a href="#模型建立过程" class="headerlink" title="模型建立过程"></a>模型建立过程</h4><h5 id="建立递阶层次结构模型"><a href="#建立递阶层次结构模型" class="headerlink" title="建立递阶层次结构模型"></a>建立递阶层次结构模型</h5><p>​		在应用AHP模型时，我们需要对模型解决的问题进行层次化，构造出一个有层次地结构模型。该模型将复杂地问题分解为三个层次（目标层、准则层、措施层&#x2F;方案层），每个层次又包含着若干元素。上一层次的元素作为准则对下一层次有关元素起着支配作用。下面是各个层次的简介：</p>
 <p>​		(i) 目标层：分析问题的预定目标或者结果，该层次只有一个元素。</p>
 <p>​		(ii) 准则层：为了实现目标而涉及的中间环节，它可以由若干个层次。</p>
@@ -295,7 +297,6 @@
 <h4 id="Matlab实现"><a href="#Matlab实现" class="headerlink" title="Matlab实现"></a>Matlab实现</h4><figure class="highlight matlab"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br></pre></td><td class="code"><pre><span class="line">clc,clear</span><br><span class="line">fid=fopen(<span class="string">&#x27;txt3.txt&#x27;</span>,<span class="string">&#x27;r&#x27;</span>);</span><br><span class="line">n1=<span class="number">6</span>;n2=<span class="number">3</span>;<span class="comment">%n1为准则层元素个数，n2为方案层个数</span></span><br><span class="line">a=[];</span><br><span class="line"><span class="keyword">for</span> <span class="built_in">i</span>=<span class="number">1</span>:n1</span><br><span class="line">    tmp=str2num(fgetl(fid));</span><br><span class="line">    a=[a;tmp]; <span class="comment">%读准则层判断矩阵</span></span><br><span class="line"><span class="keyword">end</span></span><br><span class="line"><span class="keyword">for</span> <span class="built_in">i</span>=<span class="number">1</span>:n1</span><br><span class="line">    str1=char([<span class="string">&#x27;b&#x27;</span>,int2str(<span class="built_in">i</span>),<span class="string">&#x27;=[];&#x27;</span>]);</span><br><span class="line">    str2=char([<span class="string">&#x27;b&#x27;</span>,int2str(<span class="built_in">i</span>),<span class="string">&#x27;=[b&#x27;</span>,int2str(<span class="built_in">i</span>),<span class="string">&#x27;;tmp];&#x27;</span>]);</span><br><span class="line">    eval(str1);</span><br><span class="line">    <span class="keyword">for</span> <span class="built_in">j</span>=<span class="number">1</span>:n2</span><br><span class="line">        tmp=str2num(fgetl(fid));</span><br><span class="line">        eval(str2); <span class="comment">%读方案层的判断矩阵</span></span><br><span class="line">    <span class="keyword">end</span></span><br><span class="line"><span class="keyword">end</span></span><br><span class="line">ri=[<span class="number">0</span>,<span class="number">0</span>,<span class="number">0.58</span>,<span class="number">0.90</span>,<span class="number">1.12</span>,<span class="number">1.24</span>,<span class="number">1.32</span>,<span class="number">1.41</span>,<span class="number">1.45</span>]; <span class="comment">%一致性指标</span></span><br><span class="line">[x,y]=eig(a);  <span class="comment">% matlab eig(a) 返回矩阵的特征值和特征向量， 这里的 x 为矩阵 a 的 n 个特征向量， y 为矩阵 a 的 n 个特征值</span></span><br><span class="line">lamda=<span class="built_in">max</span>(<span class="built_in">diag</span>(y));  <span class="comment">%  eig 函数返回的 y 是矩阵形式保存的， dig(y) 提取对角线上的n 个特征值到一个数组中， 求出最大特征值 lamda</span></span><br><span class="line">num=<span class="built_in">find</span>(<span class="built_in">diag</span>(y)==lamda);  <span class="comment">% 返回最大特征的索引</span></span><br><span class="line">w0=x(:,num)/sum(x(:,num));  <span class="comment">% x( :num) 为最大特征值所对应的那一列特征向量。 w0 中准则层计算出的 包含归一化后的n 个权重值</span></span><br><span class="line">cr0=(lamda-n1)/(n1<span class="number">-1</span>)/ri(n1)</span><br><span class="line"></span><br><span class="line"><span class="keyword">for</span> <span class="built_in">i</span>=<span class="number">1</span>:n1 <span class="comment">% 循环 n 个维度， 针对每个维度， 都计算一次方案层的比较矩阵及其权重值</span></span><br><span class="line">    [x,y]=eig(eval(char([<span class="string">&#x27;b&#x27;</span>,int2str(<span class="built_in">i</span>)])));</span><br><span class="line">    lamda=<span class="built_in">max</span>(<span class="built_in">diag</span>(y));</span><br><span class="line">    num=<span class="built_in">find</span>(<span class="built_in">diag</span>(y)==lamda);</span><br><span class="line">    w1(:,<span class="built_in">i</span>)=x(:,num)/sum(x(:,num));</span><br><span class="line">    cr1(<span class="built_in">i</span>)=(lamda-n2)/(n2<span class="number">-1</span>)/ri(n2);</span><br><span class="line"><span class="keyword">end</span></span><br><span class="line">cr1, ts=w1*w0, cr=cr1*w0  <span class="comment">%ts 为得分</span></span><br></pre></td></tr></table></figure>
 
 <p>​		其中<code>fid=fopen(&#39;txt3.txt&#39;,&#39;r&#39;);</code>为打开txt3.txt文件，该文件为引例中的判断矩阵</p>
-<p><img src="/%E3%80%90%E6%95%B0%E5%AD%A6%E5%BB%BA%E6%A8%A1%E3%80%91%E5%B1%82%E6%AC%A1%E5%88%86%E6%9E%90%E6%B3%95/%E4%BE%8B%E5%AD%902.png"></p>
 <figure class="highlight matlab"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">	输出结果为：</span><br><span class="line">ts = </span><br><span class="line"><span class="number">0.3952</span></span><br><span class="line"><span class="number">0.2996</span></span><br><span class="line"><span class="number">0.3052</span></span><br><span class="line"></span><br><span class="line">cr =</span><br><span class="line"></span><br><span class="line">    <span class="number">0.0117</span> <span class="comment">%需要重改矩阵~但我懒</span></span><br></pre></td></tr></table></figure>
 
 <p>​		方案1得分最高为0.3952，说明选择方案1。</p>
@@ -469,7 +470,7 @@
   </span>
   <span class="author" itemprop="copyrightHolder">Wanjia Huang</span>
 </div>
-  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a> 强力驱动
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://mist.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Mist</a> 强力驱动
   </div>
 
 
@@ -545,7 +546,7 @@ $(document).ready(function() {
 <script src="/js/motion.js"></script>
 
 
-<script src="/js/schemes/pisces.js"></script>
+<script src="/js/schemes/muse.js"></script>
 
 
 <script src="/js/next-boot.js"></script>
