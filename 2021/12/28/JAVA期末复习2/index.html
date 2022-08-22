@@ -1,0 +1,766 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 6.2.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+  <link rel="stylesheet" href="/lib/pace/pace-theme-minimal.min.css">
+  <script src="/lib/pace/pace.min.js"></script>
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"example.com","root":"/","scheme":"Mist","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+  </script>
+
+  <meta name="description" content="​	2021年JAVA期末复习笔记 数据库编程 JDBC工作原理 JDBC API：由SUN公司提供，供程序员调用的接口 Connection接口：负责数据库连接Statement接口：负责数据库操作：增加、删除、修改、查询ResultSet接口： 负责数据库返回结果处理 Connection ：负责连接数据库并担任传送数据的任务Statement ：由 Connection 产生、负责执行SQL">
+<meta property="og:type" content="article">
+<meta property="og:title" content="【笔记】JAVA期末复习[下]">
+<meta property="og:url" content="http://example.com/2021/12/28/JAVA%E6%9C%9F%E6%9C%AB%E5%A4%8D%E4%B9%A02/index.html">
+<meta property="og:site_name" content="Wanjia Huang">
+<meta property="og:description" content="​	2021年JAVA期末复习笔记 数据库编程 JDBC工作原理 JDBC API：由SUN公司提供，供程序员调用的接口 Connection接口：负责数据库连接Statement接口：负责数据库操作：增加、删除、修改、查询ResultSet接口： 负责数据库返回结果处理 Connection ：负责连接数据库并担任传送数据的任务Statement ：由 Connection 产生、负责执行SQL">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="c:/Users/10147/AppData/Roaming/Typora/typora-user-images/image-20211223170521135.png">
+<meta property="og:image" content="c:/Users/10147/AppData/Roaming/Typora/typora-user-images/image-20211224160506043.png">
+<meta property="og:image" content="c:/Users/10147/AppData/Roaming/Typora/typora-user-images/image-20211224160807626.png">
+<meta property="og:image" content="c:/Users/10147/AppData/Roaming/Typora/typora-user-images/image-20211226103130499.png">
+<meta property="article:published_time" content="2021-12-28T09:15:44.000Z">
+<meta property="article:modified_time" content="2022-08-22T15:48:49.446Z">
+<meta property="article:author" content="Wanjia Huang">
+<meta property="article:tag" content="JAVA">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="c:/Users/10147/AppData/Roaming/Typora/typora-user-images/image-20211223170521135.png">
+
+<link rel="canonical" href="http://example.com/2021/12/28/JAVA%E6%9C%9F%E6%9C%AB%E5%A4%8D%E4%B9%A02/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>【笔记】JAVA期末复习[下] | Wanjia Huang</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">Wanjia Huang</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+      <p class="site-subtitle" itemprop="description">西南交通大学 软件工程</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2021/12/28/JAVA%E6%9C%9F%E6%9C%AB%E5%A4%8D%E4%B9%A02/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="https://i.loli.net/2020/07/12/D6CZiKA4O2jmwus.jpg">
+      <meta itemprop="name" content="Wanjia Huang">
+      <meta itemprop="description" content="向分布式存储探索">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Wanjia Huang">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          【笔记】JAVA期末复习[下]
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2021-12-28 17:15:44" itemprop="dateCreated datePublished" datetime="2021-12-28T17:15:44+08:00">2021-12-28</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2022-08-22 23:48:49" itemprop="dateModified" datetime="2022-08-22T23:48:49+08:00">2022-08-22</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E7%AC%94%E8%AE%B0/" itemprop="url" rel="index"><span itemprop="name">笔记</span></a>
+                </span>
+            </span>
+
+          
+            <span class="post-meta-item" title="阅读次数" id="busuanzi_container_page_pv" style="display: none;">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
+              </span>
+              <span class="post-meta-item-text">阅读次数：</span>
+              <span id="busuanzi_value_page_pv"></span>
+            </span>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <p>​	2021年JAVA期末复习笔记</p>
+<h2 id="数据库编程"><a href="#数据库编程" class="headerlink" title="数据库编程"></a>数据库编程</h2><ol>
+<li><p>JDBC工作原理</p>
+<p>JDBC API：由SUN公司提供，供程序员调用的接口</p>
+<p>Connection接口：负责数据库连接<br>Statement接口：负责数据库操作：增加、删除、修改、查询<br>ResultSet接口： 负责数据库返回结果处理</p>
+<p>Connection ：负责连接数据库并担任传送数据的任务<br>Statement ：由 Connection 产生、负责执行SQL语句<br>ResultSet：负责保存Statement执行后所产生的查询结果</p>
+<p><img src="C:\Users\10147\AppData\Roaming\Typora\typora-user-images\image-20211223170521135.png" alt="image-20211223170521135"></p>
+</li>
+<li><p>驱动管理</p>
+<p>DriverManager类：Sun公司提供</p>
+<p>JDBC驱动：数据库厂商提供</p>
+</li>
+<li><p>JDBC工作模板【查询】</p>
+</li>
+<li><pre><code class="java">import java.sql.*;
+
+public class Main&#123;
+    static final String JDBC_DRIVER=&quot;com.mysql.jdbc.Driver&quot;;
+    
+    public static void main(String[] agrs)&#123;
+        try &#123;
+            Class.forName(JDBC_DRIVER);
+        &#125; catch (ClassNotFoundException e) &#123;
+            //这里会发生类没有找到的异常！
+            e.printStackTrace();
+        &#125;
+        
+        try&#123;
+            Connection con = DriverManager.getConnection(&quot;url&quot;,&quot;zhanghu&quot;,&quot;mima&quot;);
+            Statement stmt = con.createStatement();
+            String sql = &quot;SELECT a, b, c FROM Table1&quot;;
+            ResultSe	t rs = stmt.executeQuery(sql);
+            
+            while(!rs.next())&#123;
+             int x = rs.getInt(&quot;a&quot;);
+             String s = rs.getString(&quot;b&quot;);
+             float f = rs.getFloat(&quot;c&quot;);
+            &#125;
+            
+            rs.close();
+            stmt.close();
+            con.close();
+            
+        &#125;catch (SQLException e)&#123;
+            e.printStackTrace();
+        &#125;
+    &#125; 
+&#125; 
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">   </span><br><span class="line">   </span><br><span class="line">   </span><br><span class="line">   </span><br><span class="line">5. JDBC工作模板【插入】</span><br><span class="line"></span><br><span class="line">   ```java</span><br><span class="line">   import java.sql.*;</span><br><span class="line">   </span><br><span class="line">   public class Main&#123;</span><br><span class="line">       static final String JDBC_DRIVER=&quot;com.mysql.jdbc.Driver&quot;;</span><br><span class="line">       </span><br><span class="line">       public static void main(String[] agrs)&#123;</span><br><span class="line">           try &#123;</span><br><span class="line">               Class.forName(JDBC_DRIVER);</span><br><span class="line">           &#125; catch (ClassNotFoundException e) &#123;</span><br><span class="line">               //这里会发生类没有找到的异常！</span><br><span class="line">               e.printStackTrace();</span><br><span class="line">           &#125;</span><br><span class="line">           </span><br><span class="line">           try&#123;</span><br><span class="line">               Connection con = DriverManger.getConnection(&quot;jdbc:mysql://localhost:3306/demo&quot;,&quot;root&quot;,&quot;123456&quot;);</span><br><span class="line">               String sql = &quot;Insert into 表名(列名,列名) values(?,?)&quot;;</span><br><span class="line">   			PreparedStatement pstm = con.prepareStatement(sql);</span><br><span class="line">               //从控制台得到参数</span><br><span class="line">               Scanner s = new Scanner(System.in);</span><br><span class="line">               System.out.println(&quot;请输入id：&quot;);</span><br><span class="line">               int id_get = s.nextInt();</span><br><span class="line">               System.out.println(&quot;请输入name：&quot;);</span><br><span class="line">               String name_get = s.nextLine();</span><br><span class="line">               //插入  （index,值）</span><br><span class="line">               pstm.setInt(1,id_get);</span><br><span class="line">               pstm.setString(2,name_get);</span><br><span class="line">               pstm.execute();</span><br><span class="line">               </span><br><span class="line">           &#125;</span><br><span class="line">       &#125; </span><br><span class="line">   &#125; </span><br></pre></td></tr></table></figure>
+
+
+
+</code></pre>
+</li>
+<li><p>JDBC工作模板【改】</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">update 表名称 set 列名称=新值 where 更新条件;</span><br></pre></td></tr></table></figure></li>
+</ol>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> java.sql.*;</span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">Main</span>&#123;</span><br><span class="line">       <span class="keyword">static</span> <span class="keyword">final</span> String JDBC_DRIVER=<span class="string">&quot;com.mysql.jdbc.Driver&quot;</span>;</span><br><span class="line">	<span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title function_">main</span><span class="params">(String[] agrs)</span>&#123;</span><br><span class="line">        <span class="keyword">try</span> &#123;</span><br><span class="line">               Class.forName(JDBC_DRIVER);</span><br><span class="line">        &#125; <span class="keyword">catch</span> (ClassNotFoundException e) &#123;</span><br><span class="line">               <span class="comment">//这里会发生类没有找到的异常！</span></span><br><span class="line">            e.printStackTrace();</span><br><span class="line">           &#125;</span><br><span class="line"></span><br><span class="line">           <span class="keyword">try</span>&#123;</span><br><span class="line">            <span class="type">Connection</span> <span class="variable">con</span> <span class="operator">=</span> DriverManger.getConnection(<span class="string">&quot;jdbc:mysql://localhost:3306/demo&quot;</span>,<span class="string">&quot;root&quot;</span>,<span class="string">&quot;123456&quot;</span>);</span><br><span class="line">               sql = <span class="string">&quot;update users set 参数1=?,参数2=? where 参数3=?&quot;</span><span class="string">&quot;</span></span><br><span class="line"><span class="string">            PreparedStatement pstmt = con.prepareStatement(sql);</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">               pstmt.setInt(1,要给参数1改的值);</span></span><br><span class="line"><span class="string">               pstmt.setString(2,要给参数2改的值);</span></span><br><span class="line"><span class="string">               pstmt.setString(3,目标值);</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">            //执行sql语句，返回影响行数</span></span><br><span class="line"><span class="string">               int res=pstmt.executeUpdate();</span></span><br><span class="line"><span class="string">                if(res&gt;0)&#123;</span></span><br><span class="line"><span class="string">                    System.out.println(&quot;</span>更新数据成功<span class="string">&quot;);</span></span><br><span class="line"><span class="string">                &#125;</span></span><br><span class="line"><span class="string">                pstmt.close();</span></span><br><span class="line"><span class="string">                conn.close();</span></span><br><span class="line"><span class="string">               &#125;</span></span><br><span class="line"><span class="string">           &#125; </span></span><br><span class="line"><span class="string">   &#125; </span></span><br></pre></td></tr></table></figure>
+
+
+
+
+
+
+
+<p>   1.数据库驱动：Driver</p>
+<p>   加载mysql驱动：Class.forName(“com.mysql.jdbc.Driver”);</p>
+<p>   加载oracle驱动：Class.forName(“oracle.jdbc.driver.OracleDriver”);</p>
+<p>   加载相应的驱动需要导入相应的包，如MySQL则需要导入：mysql-connector-java-5.1.13-bin.jar</p>
+<p>   否则无法正常执行。</p>
+<p>   2.获取数据库链接：Connection</p>
+<p>   Connetion类主要用来链接数据库，常通过DriverManager.getConnection()来获取一个连接对象。<br>   这里有3个参数，分别是url，user，passwrod。对应的是要链接的数据库，用户名，密码等。如：<br>   url&#x3D;jdbc:mysql:&#x2F;&#x2F;localhost:3306&#x2F;jdbc?useUnicode&#x3D;true&amp;characterEncoding&#x3D;utf-8<br>   user&#x3D;root<br>   password&#x3D;root</p>
+<p>   3.执行sql语句：Statement</p>
+<p>   Statement对象用于执行sql语句，有以下3种：</p>
+<p>   （1）Statement对象用于执行不带参数的简单的SQL语句；</p>
+<p>   （2）PerparedStatement对象用于执行带或不带参数的预编译SQL语句；</p>
+<p>   （3）CallableStatement对象用于执行对数据库已存储过程的调用；</p>
+<p>​      Statement的常用方法：</p>
+<p>   （1）executeQuery()方法：运行查询语句，返回ReaultSet对象。</p>
+<p>   （2）executeUpdata()方法：运行增，删，改操作，返回更新的行数。</p>
+<p>   （3）addBatch(String sql) ：把多条sql语句放到一个批处理中。</p>
+<p>   （4）executeBatch()：向数据库发送一批sql语句执行。</p>
+<p>   4.结果集：ResultSet</p>
+<p>   执行executeQuery()方法后返回的结果集</p>
+<p>​     常用方法：<br>   （1）getString(String columnName)：获得当前行的某一string类型的字段<br>   （2）getFloat(String columnName)：获得当前行的某一string类型的字段<br>   （3）getDate(String columnName)：获得当前行的某一date类型的字段<br>   （4）getBoolean(String columnName)：获得在当前行的某一Boolean类型的字段<br>   （5）getObject(String columnName)：获取当前行的某一任意类型的字段<br>   （6）next()：移动到下一行</p>
+<h2 id="文件操作"><a href="#文件操作" class="headerlink" title="文件操作"></a>文件操作</h2><ol>
+<li><p>比较文件是否相同</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">try</span>&#123;</span><br><span class="line">	<span class="type">File</span> <span class="variable">f1</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">File</span>(<span class="string">&quot;test&quot;</span>);</span><br><span class="line">    <span class="type">File</span> <span class="variable">f2</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">File</span>(<span class="string">&quot;test2&quot;</span>);</span><br><span class="line">    <span class="type">FileInputStream</span> <span class="variable">file1</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">FileInputStream</span>(f1);</span><br><span class="line">    <span class="type">FileInputStream</span> <span class="variable">file2</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">FileInputStream</span>(f2);</span><br><span class="line">    <span class="keyword">if</span>(file1.available() == file2.available())&#123;</span><br><span class="line">        whie(file1.read() != -<span class="number">1</span> &amp;&amp; file2.read() != -<span class="number">1</span> )&#123;</span><br><span class="line">            <span class="keyword">if</span>(file1.read() != file2.read())&#123;</span><br><span class="line">                System.out.printlf(<span class="string">&quot;NO&quot;</span>);</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        System.out.println(<span class="string">&quot;Yes&quot;</span>);</span><br><span class="line">    &#125;<span class="keyword">else</span>&#123;</span><br><span class="line">        System.out.println(<span class="string">&quot;NO&quot;</span>);</span><br><span class="line">    &#125; <span class="keyword">catch</span> (Exception e) &#123;</span><br><span class="line">        System.out.println(<span class="string">&quot;打开失败&quot;</span>);</span><br><span class="line">        e.printStackTrace();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+</li>
+<li><p><strong>输入文件操作必须用try…catch结构执行</strong><br>文件无数据可读read函数返回-1<br>如果数组b为null, 抛出NullPointerException;<br>  如果off+len&gt;总长度, 执出IndexOutBoundException;<br>  如果文件不存在，抛出FileNoutFoundException;<br>  磁盘故障等抛出IOException.</p>
+</li>
+</ol>
+<h4 id="文件夹创建"><a href="#文件夹创建" class="headerlink" title="文件夹创建"></a>文件夹创建</h4><p>我们可以使用File类的createNewFile()方法创建一个新文件：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">File</span> <span class="variable">dummyFile</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">File</span>(<span class="string">&quot;test.txt&quot;</span>);</span><br><span class="line"><span class="type">boolean</span> <span class="variable">fileCreated</span>  <span class="operator">=</span> dummyFile.createNewFile();</span><br></pre></td></tr></table></figure>
+
+<p>该createNewFile()方法创建一个新的空文件，如果有指定名称的文件不存在。</p>
+<p>如果文件已成功创建，则返回true;否则，返回false。如果发生I&#x2F;O错误，该方法将抛出IOException。</p>
+<p>我们还可以在默认的临时文件目录或目录中创建一个临时文件。要在默认临时目录中创建临时文件，请使用File类的createTempFile()静态方法，该方法接受前缀和后缀以生成临时文件名。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">File</span>  <span class="variable">tempFile</span> <span class="operator">=</span> File.createTempFile(<span class="string">&quot;abc&quot;</span>, <span class="string">&quot;.txt&quot;</span>);</span><br></pre></td></tr></table></figure>
+
+<h4 id="文件夹创建-1"><a href="#文件夹创建-1" class="headerlink" title="文件夹创建"></a>文件夹创建</h4><p>我们可以使用mkdir()或mkdirs()方法创建一个新目录。</p>
+<p>仅当路径名中指定的父目录已存在时，mkdir()方法才创建目录。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">File</span> <span class="variable">newDir</span>  <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">File</span>(<span class="string">&quot;C:\\users\\home&quot;</span>);</span><br></pre></td></tr></table></figure>
+
+<p>只有当C:\users目录已经存在时，newDir.mkdir()方法才会创建主目录。</p>
+<p>newDir.mkdirs()方法将创建users目录（如果它不存在于C：驱动器中），它将在C:\users目录下创建主目录。</p>
+<h4 id="文件删除"><a href="#文件删除" class="headerlink" title="文件删除"></a>文件删除</h4><p>我们需要使用File类的delete()方法来删除文件&#x2F;目录。</p>
+<p>目录必须为空，我们才能删除它。</p>
+<p>如果文件&#x2F;目录被删除，该方法返回true; 否则，返回false。</p>
+<p>我们还可以延迟删除文件，直到JVM通过使用deleteOnExit()方法终止。</p>
+<p>如果我们在程序中创建临时文件，当程序退出时要删除，这将非常有用。</p>
+<p>立即删除dummy.txt文件</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">File</span> <span class="variable">dummyFile</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">File</span>(<span class="string">&quot;dummy.txt&quot;</span>); </span><br><span class="line">dummyFile.delete();</span><br></pre></td></tr></table></figure>
+
+<p>在JVM终止时删除dummy.txt文件</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">File</span> <span class="variable">dummyFile</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">File</span>(<span class="string">&quot;dummy.txt&quot;</span>); </span><br><span class="line">dummyFile.deleteOnExit();</span><br></pre></td></tr></table></figure>
+
+<h4 id="文件重命名"><a href="#文件重命名" class="headerlink" title="文件重命名"></a>文件重命名</h4><p>要重命名文件，我们可以使用renameTo()方法，它使用一个File对象来表示新文件:</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">boolean fileRenamed = oldFile.renameTo(newFile);</span><br></pre></td></tr></table></figure>
+
+<h4 id="列出文件和目录"><a href="#列出文件和目录" class="headerlink" title="列出文件和目录"></a>列出文件和目录</h4><p>我们可以使用File类的listRoots()静态方法获取文件系统中可用根目录的列表。 它返回一个File对象数组。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">File[] roots = File.listRoots();</span><br></pre></td></tr></table></figure>
+
+<p>以下代码显示如何列出所有可用的根目录。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> java.io.File;</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">Main</span> &#123;</span><br><span class="line">  <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title function_">main</span><span class="params">(String[] args)</span> &#123;</span><br><span class="line">    File[] roots = File.listRoots();</span><br><span class="line">    System.out.println(<span class="string">&quot;List  of  root directories:&quot;</span>);</span><br><span class="line">    <span class="keyword">for</span> (File f : roots) &#123;</span><br><span class="line">      System.out.println(f.getPath());</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>我们可以使用File类的list()或listFiles()方法列出目录中的所有文件和目录。</p>
+<p>list()方法返回一个String数组，而listFiles()方法返回一个File数组。</p>
+<p>我们还可以使用这些方法的文件过滤器从返回的结果中排除一些文件和目录。</p>
+<p>以下代码显示如何列出目录中的所有文件和目录。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> java.io.File;</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">Main</span> &#123;</span><br><span class="line">  <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title function_">main</span><span class="params">(String[] args)</span> &#123;</span><br><span class="line">    <span class="comment">// Change the dirPath value to list files from your directory</span></span><br><span class="line">    <span class="type">String</span> <span class="variable">dirPath</span> <span class="operator">=</span> <span class="string">&quot;C:\\&quot;</span>;</span><br><span class="line"></span><br><span class="line">    <span class="type">File</span> <span class="variable">dir</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">File</span>(dirPath);</span><br><span class="line">    File[] list = dir.listFiles();</span><br><span class="line"></span><br><span class="line">    <span class="keyword">for</span> (File f : list) &#123;</span><br><span class="line">      <span class="keyword">if</span> (f.isFile()) &#123;</span><br><span class="line">        System.out.println(f.getPath() + <span class="string">&quot;  (File)&quot;</span>);</span><br><span class="line">      &#125; <span class="keyword">else</span> <span class="keyword">if</span> (f.isDirectory()) &#123;</span><br><span class="line">        System.out.println(f.getPath() + <span class="string">&quot;  (Directory)&quot;</span>);</span><br><span class="line">      &#125;</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="读操作（Read）"><a href="#读操作（Read）" class="headerlink" title="读操作（Read）"></a>读操作（Read）</h3><p>将文件中的数据读入程序，是将程序外部的数据传入程序中，应该使用输入流——InputStream或Reader。而由于读取的是特定的数据源——文件，则可以使用输入对应的子类FileInputStream或FileReader实现。</p>
+<p>关于FileInputSream类：</p>
+<ul>
+<li>继承于InputStream类，这是一个文件输入流，进行文件读操作的最基本的类</li>
+<li>作用是将文件中的数据输入到内存中，我们可以用它来读文件操作</li>
+<li><strong>由于字节流的缘故，因此无法读取中文字符</strong></li>
+</ul>
+<p>在实际书写代码时，需要首先熟悉读取文件在程序中实现的过程。在Java语言的IO编程中，读取文件是分两个步骤：</p>
+<blockquote>
+<p>1、将文件中的数据转换为流（由系统完成，只需要创建对应的流对象即可）；<br>2、读取流内部的数据（第二个步骤使用输入流对象中的read方法即可实现）；</p>
+</blockquote>
+<p>使用输入流进行编程时，代码一般分为3个部分：</p>
+<blockquote>
+<p>1、创建流对象，</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">fis = <span class="keyword">new</span> <span class="title class_">FileInputStream</span>(<span class="string">&quot;e:\\a.txt&quot;</span>);</span><br></pre></td></tr></table></figure>
+
+<p>2、读取流对象内部的数据，</p>
+<p>​	读取流fis中的数据，需要使用read方法，该方法是从InputStream类中继承过来的方法，<strong>该方法的作用是每次读取流中的一个字节，如果需要读取流中的所有数据，需要使用循环读取</strong>，当到达流的末尾时，read方法的返回值是</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">int</span> <span class="variable">n</span> <span class="operator">=</span> fis.read();</span><br></pre></td></tr></table></figure>
+
+<p>将读取的值赋值给int值n，<strong>如果流fis为空，则n的值是-1，否则n中的最后一个字节包含的时流fis中的第一个字节，该字节被读取以后，将被从流fis中删除。环读取流中的其它数据，如果读取到的数据不是-1，则将已经读取到的数据n强制转换为byte，即取n中的有效数据——最后一个字节，并存储到数组data中，然后调用流对象fis中的read方法继续读取流中的下一个字节的数据。一直这样循环下去，直到读取到的数据是-1，也就是读取到流的末尾则循环结束。</strong></p>
+<p>3、关闭流对象。</p>
+</blockquote>
+<h3 id="字符流"><a href="#字符流" class="headerlink" title="字符流"></a>字符流</h3><p>格式化输入－使用java.util.Scanner类</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">看这个就行：</span><br><span class="line"><span class="number">1.</span>读操作</span><br><span class="line">Scanner in=<span class="keyword">new</span> <span class="title class_">Scanner</span>(<span class="keyword">new</span> <span class="title class_">BufferedInputStream</span>(<span class="keyword">new</span> <span class="title class_">FileInputStream</span>(<span class="string">&quot;input.txt&quot;</span>)),<span class="string">&quot;UNICODE&quot;</span>);</span><br><span class="line">in.next();</span><br><span class="line"><span class="number">2.</span>写操作：</span><br><span class="line">PrintWriter pw=<span class="keyword">new</span> <span class="title class_">PrintWriter</span>(<span class="keyword">new</span> <span class="title class_">BufferedOutputStream</span>(<span class="keyword">new</span> <span class="title class_">FileOutputStream</span>(<span class="string">&quot;a1.txt&quot;</span>)));</span><br><span class="line">pw.printf(<span class="string">&quot;%4d&quot;</span>,c);</span><br><span class="line"><span class="number">3.</span>可读可写操作：</span><br><span class="line">File f=<span class="keyword">new</span> <span class="title class_">File</span>(filename);</span><br><span class="line"> <span class="keyword">try</span>&#123; RandomAccessFile raf=</span><br><span class="line">            <span class="keyword">new</span> <span class="title class_">RandomAccessFile</span>(f,<span class="string">&quot;rw&quot;</span>);</span><br><span class="line">    &#125;</span><br><span class="line">raf.read();</span><br><span class="line">raf.write(x);</span><br><span class="line">raf.seek(w)</span><br></pre></td></tr></table></figure>
+
+<p>example1：读操作</p>
+<img src="C:\Users\10147\AppData\Roaming\Typora\typora-user-images\image-20211224160506043.png" alt="image-20211224160506043" style="zoom:50%;" />
+
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">&#123; </span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title function_">main</span><span class="params">(String args[])</span> </span><br><span class="line">  &#123; <span class="keyword">try</span>  &#123; Scanner in=<span class="keyword">new</span> <span class="title class_">Scanner</span>(<span class="keyword">new</span> </span><br><span class="line">              <span class="title class_">BufferedInputStream</span>(<span class="keyword">new</span> <span class="title class_">FileInputStream</span></span><br><span class="line">              (<span class="string">&quot;input.txt&quot;</span>)),<span class="string">&quot;UNICODE&quot;</span>);		<span class="comment">//看这个就行。BufferedInputStream(new FileInputStream(&quot;xx.txt&quot;),&quot;UNICODE&quot;)</span></span><br><span class="line">              String []s=<span class="keyword">new</span> <span class="title class_">String</span>[<span class="number">4</span>];</span><br><span class="line">              <span class="keyword">for</span>(<span class="type">int</span> i=<span class="number">0</span>;i&lt;<span class="number">4</span>;i++) s[i]=in.next();</span><br><span class="line">              in.close();</span><br><span class="line">              <span class="keyword">for</span>(<span class="type">int</span> i=<span class="number">0</span>;i&lt;<span class="number">4</span>;i++) System.out.println(s[i]);</span><br><span class="line">           &#125;</span><br><span class="line">    <span class="keyword">catch</span>(Exception e)&#123;&#125;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>example2：写操作</p>
+<img src="C:\Users\10147\AppData\Roaming\Typora\typora-user-images\image-20211224160807626.png" alt="image-20211224160807626" style="zoom:50%;" />
+
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> java.io.*;</span><br><span class="line"><span class="keyword">import</span> java.util.Scanner;</span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">C6_11</span></span><br><span class="line">&#123; <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title function_">main</span><span class="params">(String args[])</span></span><br><span class="line">  &#123; <span class="keyword">try</span>&#123; PrintWriter pw=<span class="keyword">new</span> <span class="title class_">PrintWriter</span></span><br><span class="line">            (<span class="keyword">new</span> <span class="title class_">BufferedOutputStream</span></span><br><span class="line">            (<span class="keyword">new</span> <span class="title class_">FileOutputStream</span>(<span class="string">&quot;a1.txt&quot;</span>)));</span><br><span class="line">            Scanner in=<span class="keyword">new</span> <span class="title class_">Scanner</span>(System.in);</span><br><span class="line">            <span class="type">int</span> c,i,j,n;</span><br><span class="line">            System.out.print(<span class="string">&quot;Input n=&quot;</span>);</span><br><span class="line">            n=in.nextInt();</span><br><span class="line">      <span class="keyword">for</span>(i=<span class="number">1</span>;i&lt;=n;i++)</span><br><span class="line">      &#123; <span class="keyword">for</span>(j=<span class="number">1</span>;j&lt;=n-i;j++)</span><br><span class="line">           &#123; System.out.printf(<span class="string">&quot;%4s&quot;</span>,<span class="string">&quot;&quot;</span>); pw.printf(<span class="string">&quot;%4s&quot;</span>,<span class="string">&quot;&quot;</span>);&#125;</span><br><span class="line">         c=<span class="number">1</span>;System.out.printf(<span class="string">&quot;%4d&quot;</span>,c);pw.printf(<span class="string">&quot;%4d&quot;</span>,c);</span><br><span class="line">         <span class="keyword">for</span>(j=<span class="number">1</span>;j&lt;i;j++) </span><br><span class="line">           &#123; c=c*(i-j)/j;</span><br><span class="line">              System.out.printf(<span class="string">&quot;%8d&quot;</span>,c);pw.printf(<span class="string">&quot;%8d&quot;</span>,c);</span><br><span class="line">           &#125;</span><br><span class="line">        System.out.println();pw.println();</span><br><span class="line">      &#125;</span><br><span class="line">      pw.close();</span><br><span class="line">    &#125; <span class="keyword">catch</span>(Exception e) &#123;&#125;   &#125; &#125;</span><br></pre></td></tr></table></figure>
+
+
+
+<h2 id="Servlet"><a href="#Servlet" class="headerlink" title="Servlet"></a>Servlet</h2><p>Servlet的作用是响应客户端请求，做出处理，使得客户端与服务器端有交互</p>
+<p>Servlet  API： Servlet规范定义了一套专门用于开发Servlet程序的Java类和接口，这些类和接口提供 Servlet程序开发所涉及的各种功能，它们统称为Servlet API.</p>
+<h4 id="HttpServlet"><a href="#HttpServlet" class="headerlink" title="HttpServlet"></a>HttpServlet</h4><ol>
+<li>Servlet API中提供了专用于HTTP协议的Servlet类——javax.servlet.http.HttpServlet<br>HttpServlet实现了Servlet接口<br>HttpServlet重写了Servlet接口定义的service方法，为应对浏览器的HTTP请求提供了基础结构</li>
+<li>开发中我们编写一个JAVA类使其成为Servlet的实际做法：<br>编写一个JAVA类，继承javax.servlet.http.HttpServlet<br>覆写HttpServlet类的doGet()或doPost()方法<br>Servlet不需要main方法，客户端GET请求到来时，服务器自动调用Servelt的doGet方法，POST请求，自动调用doPost方法</li>
+</ol>
+<h4 id="HttpServletRequest"><a href="#HttpServletRequest" class="headerlink" title="HttpServletRequest"></a>HttpServletRequest</h4><ol>
+<li><p>读取请求参数方法</p>
+<ul>
+<li><p>getParameter</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">参数名区分大小写</span><br><span class="line">指定名称参数存在但没有设置值，返回空串</span><br><span class="line">getParameter方法通常用于获取在HTTP请求消息中仅出现一次的参数，即单个值的读取</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>getParameterValues</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">返回某个指定名称的所有参数的值</span><br></pre></td></tr></table></figure></li>
+</ul>
+</li>
+<li><p>正确提交至Servlet的写法</p>
+<p>页面中写法：WEB.XML配置文件中的Servlet访问路径前 + “ &#x2F;当前应用 ”</p>
+</li>
+</ol>
+<h4 id="HttpServletResponse"><a href="#HttpServletResponse" class="headerlink" title="HttpServletResponse"></a>HttpServletResponse</h4><ol>
+<li><p>客户端对于Servlet的每次访问请求，Servlet容器都会创建一个用于封装HTTP请求的对象和一个代表HTTP响应消息的对象，当调用Servlet的doGet或doPost方法时，这两个对象会作为参数被传递进去【因此你要重写doGet方法或者doPost方法】</p>
+</li>
+<li><p>输出响应内容</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">getWriter</span><br><span class="line">返回一个（文本）字符输出流对象</span><br><span class="line">专用于输出内容为文本字符的网页文档</span><br><span class="line">getOutPutStream</span><br><span class="line">返回一个字节输出流对象</span><br><span class="line">如果要输出二进制格式的响应正文，应该使用该方法</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">PrintWriter out = response.getWriter();</span><br><span class="line">以下方法都可以创建输出</span><br><span class="line">out.print();</span><br><span class="line">out.println();</span><br><span class="line">out.write();</span><br><span class="line">out.writeln();</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>设置响应消息头</p>
+<p>HttpServletResponse的setContentType方法设置响应消息头“Content-Type”<br>设置Servlet输出内容的MIME类型，网页文档的类型通常为“text&#x2F;html”<br>在类型后面还可以指定响应内容的字符集编码类型，如果不指定，采用默认ISO8859-1字符集编码</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">response.setContentType(“text/html;charset=utf-8&quot;);</span><br></pre></td></tr></table></figure></li>
+</ol>
+<h4 id="重定向"><a href="#重定向" class="headerlink" title="重定向"></a>重定向</h4><p>​	HttpServletResponse的sendRedirect方法实现请求重定向<br>​	location参数指定了重定向的URL，可以采用相对或绝对路径<br>​	浏览器地址栏发生变化，显示为location所指向的URL</p>
+<img src="C:\Users\10147\AppData\Roaming\Typora\typora-user-images\image-20211226103130499.png" alt="image-20211226103130499" style="zoom:67%;" />
+
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">String</span> <span class="variable">username</span> <span class="operator">=</span> request.getParameter(<span class="string">&quot;userName&quot;</span>);</span><br><span class="line"><span class="type">String</span> <span class="variable">pwd</span> <span class="operator">=</span> request.getParameter(<span class="string">&quot;pwd&quot;</span>);</span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span>(username.equals(<span class="string">&quot;tom&quot;</span>)&amp;&amp;pwd.equals(<span class="string">&quot;123&quot;</span>))&#123;</span><br><span class="line">  response.sendRedirect(<span class="string">&quot;/ResponseDemo/index.html&quot;</span>);</span><br><span class="line">&#125;<span class="keyword">else</span>&#123;</span><br><span class="line">  response.sendRedirect(<span class="string">&quot;/ResponseDemo/error.html&quot;</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h4 id="常用方法"><a href="#常用方法" class="headerlink" title="常用方法"></a>常用方法</h4><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> javax.servlet.*;</span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">formservlet</span> <span class="keyword">extends</span> <span class="title class_">HttpServlet</span>&#123;</span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">doGet</span><span class="params">(HttpServletRequest request,HttpServletResponse response)</span> <span class="keyword">throws</span> IOException,ServletException&#123;</span><br><span class="line">	response.setContentType();</span><br><span class="line">    <span class="type">PrinterWriter</span> <span class="variable">pw</span> <span class="operator">=</span> response.getWriter();</span><br><span class="line">    pw.println(<span class="string">&quot;&quot;</span>)		<span class="comment">//写东西</span></span><br><span class="line">   	request.getParameter(<span class="string">&quot;id&quot;</span>);	<span class="comment">//取参</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+
+
+<h2 id="Web"><a href="#Web" class="headerlink" title="Web"></a>Web</h2><p>数据库与web综合。</p>
+<p>index.jsp</p>
+<figure class="highlight jsp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">&lt;%@ page contentType=<span class="string">&quot;text/html;charset=UTF-8&quot;</span> language=<span class="string">&quot;java&quot;</span> %&gt;</span><br><span class="line">&lt;html&gt;</span><br><span class="line">  &lt;head&gt;</span><br><span class="line">    &lt;title&gt;jsptest&lt;/title&gt;</span><br><span class="line">  &lt;/head&gt;</span><br><span class="line">  &lt;body&gt;</span><br><span class="line">    &lt;form name=<span class="string">&quot;form1&quot;</span> method=<span class="string">&quot;post&quot;</span> action=<span class="string">&quot;2.jsp&quot;</span>&gt;</span><br><span class="line">     id: &lt;input name=<span class="string">&quot;id&quot;</span> type=<span class="string">&quot;text&quot;</span>&gt;</span><br><span class="line">      name:&lt;input name=<span class="string">&quot;name&quot;</span> type=<span class="string">&quot;text&quot;</span>&gt;</span><br><span class="line">        &lt;input type=<span class="string">&quot;submit&quot;</span> 提交&gt;</span><br><span class="line">    &lt;/form&gt;</span><br><span class="line">  &lt;/body&gt;</span><br><span class="line">&lt;/html&gt;</span><br></pre></td></tr></table></figure>
+
+<p>2.jsp</p>
+<figure class="highlight jsp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br></pre></td><td class="code"><pre><span class="line">&lt;%--</span><br><span class="line">  Created by IntelliJ IDEA.</span><br><span class="line">  User: <span class="number">10147</span></span><br><span class="line">  Date: <span class="number">2021</span>/<span class="number">12</span>/<span class="number">24</span></span><br><span class="line">  Time: <span class="number">22</span>:<span class="number">37</span></span><br><span class="line">  To change <span class="built_in">this</span> template use File | Settings | File Templates.</span><br><span class="line">--%&gt;</span><br><span class="line">&lt;%@ page contentType=<span class="string">&quot;text/html;charset=UTF-8&quot;</span> language=<span class="string">&quot;java&quot;</span> %&gt;</span><br><span class="line">&lt;%@ page <span class="keyword">import</span>=<span class="string">&quot;java.util.*&quot;</span> %&gt;</span><br><span class="line">&lt;%@ page <span class="keyword">import</span>=<span class="string">&quot;java.sql.*&quot;</span> %&gt;</span><br><span class="line"></span><br><span class="line">&lt;html&gt;</span><br><span class="line">&lt;head&gt;</span><br><span class="line">    &lt;title&gt;Title&lt;/title&gt;</span><br><span class="line">    &lt;meta name=<span class="string">&quot;website&quot;</span> content=<span class="string">&quot;http://www.crazyit.org&quot;</span> /&gt;</span><br><span class="line">&lt;/head&gt;</span><br><span class="line">&lt;body&gt;</span><br><span class="line">&lt;h2&gt;get information&lt;/h2&gt;</span><br><span class="line">&lt;%</span><br><span class="line">    request.setCharacterEncoding(<span class="string">&quot;utf-8&quot;</span>);</span><br><span class="line">    String name=request.getParameter(<span class="string">&quot;name&quot;</span>);</span><br><span class="line">    <span class="type">String</span> <span class="variable">id</span> <span class="operator">=</span> request.getParameter(<span class="string">&quot;id&quot;</span>);</span><br><span class="line">    out.print(<span class="string">&quot;id为：&quot;</span>+id+<span class="string">&quot;&lt;br&gt;&quot;</span>);</span><br><span class="line">    out.print(<span class="string">&quot;name为：&quot;</span>+name+<span class="string">&quot;&lt;br&gt;&quot;</span>);</span><br><span class="line"></span><br><span class="line">    Class.forName(<span class="string">&quot;com.mysql.cj.jdbc.Driver&quot;</span>);<span class="comment">//记载数据库驱动，注册到驱动管理器</span></span><br><span class="line">    String url=<span class="string">&quot;jdbc:mysql://localhost:3306/demo&quot;</span>;</span><br><span class="line">    String username=<span class="string">&quot;root&quot;</span>;</span><br><span class="line">    String password=<span class="string">&quot;123456&quot;</span>;</span><br><span class="line">    Connection con=DriverManager.getConnection(url,username,password);</span><br><span class="line">    <span class="type">String</span> <span class="variable">sql</span> <span class="operator">=</span> <span class="string">&quot;insert into customer(id,name) values(?,?)&quot;</span>;</span><br><span class="line">    <span class="type">PreparedStatement</span> <span class="variable">pstm</span> <span class="operator">=</span> con.prepareStatement(sql);</span><br><span class="line"></span><br><span class="line">    <span class="keyword">try</span>&#123;</span><br><span class="line">        pstm.setString(<span class="number">1</span>,id);</span><br><span class="line">        pstm.setString(<span class="number">2</span>,name);</span><br><span class="line">        out.print(<span class="string">&quot;插入成功！&quot;</span>);</span><br><span class="line">    &#125; <span class="keyword">catch</span> (SQLException e)&#123;</span><br><span class="line">        e.printStackTrace();</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    out.print(<span class="string">&quot;test&quot;</span>);</span><br><span class="line">%&gt;</span><br><span class="line">&lt;/body&gt;</span><br><span class="line">&lt;/html&gt;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">html部分</span><br><span class="line"><span class="tag">&lt;<span class="name">html</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">head</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">h1</span>&gt;</span></span><br><span class="line">           test </span><br><span class="line">        <span class="tag">&lt;/<span class="name">h1</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">head</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">body</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">form</span> <span class="attr">action</span>=<span class="string">&quot;2.jsp&quot;</span> <span class="attr">method</span>=<span class="string">&quot;post&quot;</span>&gt;</span></span><br><span class="line">            姓名：<span class="tag">&lt;<span class="name">input</span> <span class="attr">name</span>=<span class="string">&quot;usr_name&quot;</span> <span class="attr">type</span>=<span class="string">&quot;text&quot;</span>&gt;</span></span><br><span class="line">        	学号：<span class="tag">&lt;<span class="name">input</span> <span class="attr">name</span>=<span class="string">&quot;usr_id&quot;</span> <span class="attr">type</span>=<span class="string">&quot;text&quot;</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">input</span> <span class="attr">type</span>=<span class="string">&quot;submit&quot;</span> <span class="attr">提交</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;/<span class="name">form</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">body</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">html</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+<figure class="highlight jsp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line"><span class="number">2.</span>jsp:</span><br><span class="line">&lt;%@ page <span class="keyword">import</span>=<span class="string">&quot;java.sql.*;&quot;</span> %&gt;</span><br><span class="line">&lt;%@ page <span class="keyword">import</span>=<span class="string">&quot;java.util.*;&quot;</span> %&gt;</span><br><span class="line"></span><br><span class="line">&lt;html&gt;</span><br><span class="line">    &lt;title&gt;nothing&lt;/title&gt;</span><br><span class="line">    &lt;body&gt;</span><br><span class="line">        &lt;%</span><br><span class="line">        	<span class="keyword">private</span> <span class="keyword">static</span> <span class="type">String</span> <span class="variable">JDBC_DRIVER</span> <span class="operator">=</span> <span class="string">&quot;com.mysql.jdbc.Driver&quot;</span>;</span><br><span class="line">        	request.setContentType(<span class="string">&quot;utf-8&quot;</span>);</span><br><span class="line">        	Class.forName(JDBC_DRIVER);</span><br><span class="line">        	</span><br><span class="line">        	<span class="type">String</span> <span class="variable">usr_name_get</span> <span class="operator">=</span> request.getParameter(<span class="string">&quot;usr_name&quot;</span>);</span><br><span class="line">        	<span class="type">String</span> <span class="variable">usr_id_get</span> <span class="operator">=</span> request.getParameter(<span class="string">&quot;usr_id&quot;</span>);</span><br><span class="line">            Connection con=DriverManager.getConnection(url,username,password);</span><br><span class="line">            <span class="type">String</span> <span class="variable">sql</span> <span class="operator">=</span> <span class="string">&quot;select name,id from students where id=? and name?&quot;</span></span><br><span class="line">			<span class="type">PreparedStatement</span> <span class="variable">stmt</span> <span class="operator">=</span> con.prepareStatement(sql);</span><br><span class="line">        	stmt.setString(<span class="number">1</span>,usr_name_get);</span><br><span class="line">        	stmt.setString(<span class="number">2</span>,usr_id_get);</span><br><span class="line">        	stmt.execute();</span><br><span class="line">        %&gt;</span><br><span class="line">    &lt;/body&gt;</span><br><span class="line">&lt;/html&gt;</span><br></pre></td></tr></table></figure>
+
+
+
+<h2 id="试题"><a href="#试题" class="headerlink" title="试题"></a>试题</h2><ul>
+<li><p>Java程序只有两类：Application和Applet</p>
+</li>
+<li><p>Java属于（ A ）型语言。<br>A.解释 B.编译 C.多线程性 D.安全性</p>
+</li>
+<li><p>简述Java中异常处理的机制？</p>
+</li>
+</ul>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">答：首先Java的异常是面向对象的。一个Java的Exception是一个描述异常情况的对象.当出现异常情况时，一个Exception对象就产生了,并放到异常的成员函数里。</span><br><span class="line">Java的异常处理是通过5个关键词来实现的：try,catch,throw,throws和finally。</span><br><span class="line">1.异常处理：在Java语言的错误处理结构由try，catch，finally三个块组成。其中try块存放将可能发生异常的Java语言，并管理相关的异常指针；catch块紧跟在try块后面，用来激发被捕获的异常；finally块包含清除程序没有释放的资源，句柄等。不管try块中的代码如何退出，都将执行 finally块。</span><br><span class="line">2.抛出异常：Java语言可以不在方法中直接捕获，而用throw语句将异常抛给上层的调用者。Throw语句就是来明确地抛出一个异常；首先你必需得到一个Throwable的实例句柄，通过参数传到catch中，或者采用new操作符来创建一个。</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>什么是继承？</li>
+</ul>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">答：通过必要的说明能够实现某个类无需重新定义就拥有另一个类的某些属性和方法，并把这种关系称为继承，先定义的类称为父类，后定义的类称为子类，并且允许多层的继承关系。</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>请简述重载和重写的区别？</li>
+</ul>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">答：方法的重写Overriding和重载Overloading是Java多态性的不同表现。</span><br><span class="line">重写Overriding是父类与子类之间多态性的一种表现，重载Overloading是一个类中多态性的一种表现。</span><br><span class="line">如果在子类中定义某方法与其父类有相同的名称和参数，我们说该方法被重写 (Overriding)。子类的对象使用这个方法时，将调用子类中的定义，对它而言，父类中的定义如同被“屏蔽”了。</span><br><span class="line">如果在一个类中定义了多个同名的方法，它们或有不同的参数个数或有不同的参数类型，则称为方法的重载(Overloading)。Overloaded的方法是可以改变返回值的类型</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li><p><strong>public int indexOf(int ch, int fromIndex):</strong> 返回从 fromIndex 位置开始查找指定字符在字符串中第一次出现处的索引，如果此字符串中没有这样的字符，则返回 -1。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br></pre></td><td class="code"><pre><span class="line">应用程序的main方法中有以下语句，则输出的结果是 B( )。</span><br><span class="line"></span><br><span class="line">String   s=<span class="string">&quot;12345#aaa#bbb#67890&quot;</span>;</span><br><span class="line">	<span class="type">int</span>     n=s.indexOf(<span class="string">&quot;#&quot;</span>);</span><br><span class="line">	<span class="type">int</span>     k=s.indexOf(<span class="string">&quot;#&quot;</span>,n+<span class="number">1</span>);</span><br><span class="line">	<span class="type">int</span>     m=s.indexOf(<span class="string">&quot;#&quot;</span>,k+<span class="number">1</span>);</span><br><span class="line">	String  s2=s.substring(m+<span class="number">1</span>);</span><br><span class="line">	System.out.println(s2);	</span><br><span class="line">A) <span class="number">123456</span> B) <span class="number">67890</span> C) aaa D) bbb</span><br><span class="line"></span><br><span class="line">ps：</span><br><span class="line"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title function_">main</span><span class="params">(String[] args)</span>&#123;</span><br><span class="line">        String s=<span class="string">&quot;12345#aaa#bbb#67890&quot;</span>;</span><br><span class="line">        <span class="type">int</span> n=s.indexOf(<span class="string">&quot;#&quot;</span>);</span><br><span class="line">        <span class="comment">// public  int indexOf(int ch) </span></span><br><span class="line">        <span class="comment">//返回指定字符在此字符串中第一次出现处的索引。所以 n 的值为5;</span></span><br><span class="line">        <span class="type">int</span> k=s.indexOf(<span class="string">&quot;#&quot;</span>,n+<span class="number">1</span>); <span class="comment">//9</span></span><br><span class="line">        <span class="type">int</span> m=s.indexOf(<span class="string">&quot;#&quot;</span>,k+<span class="number">1</span>); <span class="comment">//13</span></span><br><span class="line">        <span class="comment">/* public int indexOf(int ch,  int fromIndex)</span></span><br><span class="line"><span class="comment">         * 返回在此字符串中第一次出现指定字符处的索引，</span></span><br><span class="line"><span class="comment">         * 从指定的索引开始搜索。 所以k为9, m为13</span></span><br><span class="line"><span class="comment">         */</span></span><br><span class="line">        String s2=s.substring(m+<span class="number">1</span>);</span><br><span class="line">        <span class="comment">/*</span></span><br><span class="line"><span class="comment">         * 返回一个新的字符串，它是此字符串的一个子字符串。</span></span><br><span class="line"><span class="comment">         * 该子字符串从指定索引处的字符开始，直到此字符串末尾。</span></span><br><span class="line"><span class="comment">         * 所以从第十四位到最后一位字符串是67890</span></span><br><span class="line"><span class="comment">         */</span></span><br><span class="line">        System.out.println(s2);</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure></li>
+</ul>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> ListSixNine;</span><br><span class="line"></span><br><span class="line"> </span><br><span class="line"></span><br><span class="line"><span class="keyword">interface</span> <span class="title class_">ClassName</span> &#123;</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> String <span class="title function_">getClassName</span><span class="params">()</span>;</span><br><span class="line"></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"> </span><br><span class="line"></span><br><span class="line"><span class="keyword">package</span> ListSixNine;</span><br><span class="line"></span><br><span class="line"> </span><br><span class="line"></span><br><span class="line"><span class="keyword">class</span> <span class="title class_">Company</span> <span class="keyword">implements</span> <span class="title class_">ClassName</span> &#123;</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> String <span class="title function_">getClassName</span><span class="params">()</span>&#123;</span><br><span class="line"></span><br><span class="line"><span class="keyword">return</span> <span class="string">&quot;Company&quot;</span>;</span><br><span class="line"></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"> </span><br><span class="line"></span><br><span class="line"><span class="keyword">package</span> ListSixNine;</span><br><span class="line"></span><br><span class="line"> </span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">TestDemo07</span> &#123;</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title function_">main</span><span class="params">(String []args)</span>&#123;</span><br><span class="line"></span><br><span class="line">ClassName name=<span class="keyword">new</span> <span class="title class_">Company</span>();</span><br><span class="line"></span><br><span class="line">System.out.println(name.getClassName());</span><br><span class="line"></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"> </span><br><span class="line"></span><br><span class="line">结果：</span><br><span class="line"></span><br><span class="line">Company</span><br></pre></td></tr></table></figure>
+
+
+    </div>
+
+    
+    
+    
+        
+
+<div>
+<ul class="post-copyright">
+  <li class="post-copyright-author">
+    <strong>本文作者： </strong>Wanjia Huang
+  </li>
+  <li class="post-copyright-link">
+    <strong>本文链接：</strong>
+    <a href="http://example.com/2021/12/28/JAVA%E6%9C%9F%E6%9C%AB%E5%A4%8D%E4%B9%A02/" title="【笔记】JAVA期末复习[下]">http://example.com/2021/12/28/JAVA期末复习2/</a>
+  </li>
+  <li class="post-copyright-license">
+    <strong>版权声明： </strong>本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" rel="noopener" target="_blank"><i class="fab fa-fw fa-creative-commons"></i>BY-NC-SA</a> 许可协议。转载请注明出处！
+  </li>
+</ul>
+</div>
+
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/JAVA/" rel="tag"># JAVA</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2021/12/28/JAVA%E6%9C%9F%E6%9C%AB%E8%80%83%E8%AF%95/" rel="prev" title="【笔记】JAVA期末复习[上]">
+      <i class="fa fa-chevron-left"></i> 【笔记】JAVA期末复习[上]
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2022/07/28/CMU15445-01-Introduction/" rel="next" title="CMU15445-01-Introduction">
+      CMU15445-01-Introduction <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%95%B0%E6%8D%AE%E5%BA%93%E7%BC%96%E7%A8%8B"><span class="nav-number">1.</span> <span class="nav-text">数据库编程</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%96%87%E4%BB%B6%E6%93%8D%E4%BD%9C"><span class="nav-number">2.</span> <span class="nav-text">文件操作</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%96%87%E4%BB%B6%E5%A4%B9%E5%88%9B%E5%BB%BA"><span class="nav-number">2.0.1.</span> <span class="nav-text">文件夹创建</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%96%87%E4%BB%B6%E5%A4%B9%E5%88%9B%E5%BB%BA-1"><span class="nav-number">2.0.2.</span> <span class="nav-text">文件夹创建</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%96%87%E4%BB%B6%E5%88%A0%E9%99%A4"><span class="nav-number">2.0.3.</span> <span class="nav-text">文件删除</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%96%87%E4%BB%B6%E9%87%8D%E5%91%BD%E5%90%8D"><span class="nav-number">2.0.4.</span> <span class="nav-text">文件重命名</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%88%97%E5%87%BA%E6%96%87%E4%BB%B6%E5%92%8C%E7%9B%AE%E5%BD%95"><span class="nav-number">2.0.5.</span> <span class="nav-text">列出文件和目录</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%AF%BB%E6%93%8D%E4%BD%9C%EF%BC%88Read%EF%BC%89"><span class="nav-number">2.1.</span> <span class="nav-text">读操作（Read）</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%AD%97%E7%AC%A6%E6%B5%81"><span class="nav-number">2.2.</span> <span class="nav-text">字符流</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Servlet"><span class="nav-number">3.</span> <span class="nav-text">Servlet</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#HttpServlet"><span class="nav-number">3.0.1.</span> <span class="nav-text">HttpServlet</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#HttpServletRequest"><span class="nav-number">3.0.2.</span> <span class="nav-text">HttpServletRequest</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#HttpServletResponse"><span class="nav-number">3.0.3.</span> <span class="nav-text">HttpServletResponse</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E9%87%8D%E5%AE%9A%E5%90%91"><span class="nav-number">3.0.4.</span> <span class="nav-text">重定向</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%B8%B8%E7%94%A8%E6%96%B9%E6%B3%95"><span class="nav-number">3.0.5.</span> <span class="nav-text">常用方法</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Web"><span class="nav-number">4.</span> <span class="nav-text">Web</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%AF%95%E9%A2%98"><span class="nav-number">5.</span> <span class="nav-text">试题</span></a></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="Wanjia Huang"
+      src="https://i.loli.net/2020/07/12/D6CZiKA4O2jmwus.jpg">
+  <p class="site-author-name" itemprop="name">Wanjia Huang</p>
+  <div class="site-description" itemprop="description">向分布式存储探索</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">25</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">6</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">11</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://https//github.com/Hackerismydream" title="GitHub → https:&#x2F;&#x2F;https:&#x2F;&#x2F;github.com&#x2F;Hackerismydream" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="/1014774261@qq.com" title="E-Mail → 1014774261@qq.com"><i class="fa fa-envelope fa-fw"></i>E-Mail</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://www.zhihu.com/people/huang-wan-jia-12" title="知乎 → https:&#x2F;&#x2F;www.zhihu.com&#x2F;people&#x2F;huang-wan-jia-12" rel="noopener" target="_blank"><i class="gratipay fa-fw"></i>知乎</a>
+      </span>
+  </div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2022</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Wanjia Huang</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://mist.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Mist</a> 强力驱动
+  </div>
+
+
+    <script async src="//dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+    <span id="busuanzi_container_site_pv">总访问量<span id="busuanzi_value_site_pv"></span>次</span>
+    <span class="post-meta-divider">|</span>
+    <span id="busuanzi_container_site_uv">总访客数<span id="busuanzi_value_site_uv"></span>人</span>
+    <span class="post-meta-divider">|</span>
+<!-- 不蒜子计数初始值纠正 -->
+<script>
+$(document).ready(function() {
+
+    var int = setInterval(fixCount, 50);  // 50ms周期检测函数
+    var countOffset = 20000;  // 初始化首次数据
+
+    function fixCount() {            
+       if (document.getElementById("busuanzi_container_site_pv").style.display != "none")
+        {
+            $("#busuanzi_value_site_pv").html(parseInt($("#busuanzi_value_site_pv").html()) + countOffset); 
+            clearInterval(int);
+        }                  
+        if ($("#busuanzi_container_site_pv").css("display") != "none")
+        {
+            $("#busuanzi_value_site_uv").html(parseInt($("#busuanzi_value_site_uv").html()) + countOffset); // 加上初始数据 
+            clearInterval(int); // 停止检测
+        }  
+    }
+       	
+});
+</script> 
+
+        
+<div class="busuanzi-count">
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+    <span class="post-meta-item" id="busuanzi_container_site_uv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-user"></i>
+      </span>
+      <span class="site-uv" title="总访客量">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item" id="busuanzi_container_site_pv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-eye"></i>
+      </span>
+      <span class="site-pv" title="总访问量">
+        <span id="busuanzi_value_site_pv"></span>
+      </span>
+    </span>
+</div>
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/muse.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+</body>
+</html>

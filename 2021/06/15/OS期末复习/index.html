@@ -1,0 +1,763 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 6.2.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+  <link rel="stylesheet" href="/lib/pace/pace-theme-minimal.min.css">
+  <script src="/lib/pace/pace.min.js"></script>
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"example.com","root":"/","scheme":"Mist","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+  </script>
+
+  <meta name="description" content="​	2021年OS期末复习笔记 CH3 进程描述和控制什么是进程 进程的定义： 一个正在执行的程序 一个正在计算机上执行的程序实例 能分配给处理器并由处理器执行的实体 由一组执行的指令，一个当前状态，和一组相关的系统资源表征的活动单元   进程控制块 进程控制块是存放进程表征元素的模块 它包括：标识符，状态，优先级，程序技术收起，内存指针，上下文，I&#x2F;0状态信息，记账信息">
+<meta property="og:type" content="article">
+<meta property="og:title" content="【笔记】OS期末复习">
+<meta property="og:url" content="http://example.com/2021/06/15/OS%E6%9C%9F%E6%9C%AB%E5%A4%8D%E4%B9%A0/index.html">
+<meta property="og:site_name" content="Wanjia Huang">
+<meta property="og:description" content="​	2021年OS期末复习笔记 CH3 进程描述和控制什么是进程 进程的定义： 一个正在执行的程序 一个正在计算机上执行的程序实例 能分配给处理器并由处理器执行的实体 由一组执行的指令，一个当前状态，和一组相关的系统资源表征的活动单元   进程控制块 进程控制块是存放进程表征元素的模块 它包括：标识符，状态，优先级，程序技术收起，内存指针，上下文，I&#x2F;0状态信息，记账信息">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://www.cnblogs.com/images/cnblogs_com/plf-Jack/1496408/o_%e8%bf%9b%e7%a8%8b%e8%a1%a8%e7%9a%84%e5%86%85%e5%ae%b9.png">
+<meta property="og:image" content="https://img2018.cnblogs.com/blog/1358881/201909/1358881-20190916204052236-777473199.png">
+<meta property="og:image" content="https://img2018.cnblogs.com/blog/1358881/201909/1358881-20190918084250171-1423113268.png">
+<meta property="og:image" content="c:/Users/10147/AppData/Roaming/Typora/typora-user-images/image-20210703092242763.png">
+<meta property="og:image" content="https://img-blog.csdnimg.cn/20200629120616713.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L2FvX21pa2U=,size_16,color_FFFFFF,t_70">
+<meta property="og:image" content="c:/Users/10147/AppData/Roaming/Typora/typora-user-images/image-20210703102530255.png">
+<meta property="article:published_time" content="2021-06-15T10:35:55.000Z">
+<meta property="article:modified_time" content="2022-08-22T15:34:51.328Z">
+<meta property="article:author" content="Wanjia Huang">
+<meta property="article:tag" content="OS">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://www.cnblogs.com/images/cnblogs_com/plf-Jack/1496408/o_%e8%bf%9b%e7%a8%8b%e8%a1%a8%e7%9a%84%e5%86%85%e5%ae%b9.png">
+
+<link rel="canonical" href="http://example.com/2021/06/15/OS%E6%9C%9F%E6%9C%AB%E5%A4%8D%E4%B9%A0/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>【笔记】OS期末复习 | Wanjia Huang</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">Wanjia Huang</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+      <p class="site-subtitle" itemprop="description">西南交通大学 软件工程</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2021/06/15/OS%E6%9C%9F%E6%9C%AB%E5%A4%8D%E4%B9%A0/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="https://i.loli.net/2020/07/12/D6CZiKA4O2jmwus.jpg">
+      <meta itemprop="name" content="Wanjia Huang">
+      <meta itemprop="description" content="向分布式存储探索">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Wanjia Huang">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          【笔记】OS期末复习
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2021-06-15 18:35:55" itemprop="dateCreated datePublished" datetime="2021-06-15T18:35:55+08:00">2021-06-15</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2022-08-22 23:34:51" itemprop="dateModified" datetime="2022-08-22T23:34:51+08:00">2022-08-22</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E7%AC%94%E8%AE%B0/" itemprop="url" rel="index"><span itemprop="name">笔记</span></a>
+                </span>
+            </span>
+
+          
+            <span class="post-meta-item" title="阅读次数" id="busuanzi_container_page_pv" style="display: none;">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
+              </span>
+              <span class="post-meta-item-text">阅读次数：</span>
+              <span id="busuanzi_value_page_pv"></span>
+            </span>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <p>​	2021年OS期末复习笔记</p>
+<h2 id="CH3-进程描述和控制"><a href="#CH3-进程描述和控制" class="headerlink" title="CH3 进程描述和控制"></a>CH3 进程描述和控制</h2><h3 id="什么是进程"><a href="#什么是进程" class="headerlink" title="什么是进程"></a>什么是进程</h3><ul>
+<li>进程的定义：<ul>
+<li>一个正在执行的程序</li>
+<li>一个正在计算机上执行的程序实例</li>
+<li>能分配给处理器并由处理器执行的实体</li>
+<li>由一组执行的指令，一个当前状态，和一组相关的系统资源表征的活动单元</li>
+</ul>
+</li>
+<li>进程控制块<ul>
+<li>进程控制块是存放进程表征元素的模块</li>
+<li>它包括：标识符，状态，优先级，程序技术收起，内存指针，上下文，I&#x2F;0状态信息，记账信息</li>
+</ul>
+</li>
+</ul>
+<span id="more"></span>
+
+<h3 id="进程状态"><a href="#进程状态" class="headerlink" title="进程状态"></a>进程状态</h3><ul>
+<li><p>操作系统创建一个新进程的步骤</p>
+<p>（1）<strong>为新进程分配一个唯一的进程标识符</strong>。 此时，主进程表中会添加一个新表项，每个进程一个表项。<br>（2）<strong>为进程分配空间。</strong> 【根据进程的类型分配空间值，在作业创建时也可以基于用户请求设置，如果一个进程由另一个进程生成，则父进程可以把所需要的值作为进程创建请求的一部分传递给操作系统，若任何已有的地址空间将被这个新进程共享，则需要建立正确的链接】这包括进程映像中的所有元素。因此，操作系统必须知道私有用户地址空间（程序和数据）和用户栈需要多少空间。默认情况下会根据进程的类型分配这些值，但也可在作业创建时基于用户请求设置这些值。若一个进程由另一个进程生成，则父进程可把所需的值作为进程创建请求的一部分传递给操作系统。若任何已有的地址空间将被这个新进程共享，则需要建立正确的链接。最后，必须为进程控制块分配空间。<br>（3）<strong>初始化进程控制块</strong>。 进程标识部分包括进程ID和其他相关的ID，如父进程的ID等；处理器状态信息部分的多数项目通常初始化为0，但程序计数器（置为程序入口点）和系统栈指针（定义进程栈边界）除外。进程控制信息部分根据标准的默认值和该进程请求的特性来初始化。例如，进程状态通常初始化为就绪或就绪&#x2F;挂起。优先级默认情况下可设置为最低，除非显式请求了更高的优先级；进程最初不拥有任何资源（I&#x2F;O设备、文件），除非显式地请求了这些资源，或继承了父进程的资源。<br>（4）<strong>设置正确的链接</strong>。 例如，若操作系统将每个调度队列都维护为一个链表，则新进程必须放在就绪或就绪&#x2F;挂起链表中。<br>（5）<strong>创建或扩充其他数据结构</strong>。 例如，操作系统可因编制账单和&#x2F;或评估性能，为每个进程维护一个记账文件。</p>
+</li>
+<li><p>两状态模型</p>
+<p>非运行态，运行态</p>
+</li>
+<li><p>五状态模型</p>
+<ul>
+<li>新建态，就绪态，运行态，阻塞态，退出态</li>
+<li>运行——阻塞的原因：是因为需要有一些I&#x2F;O请求，进程必须等待某些事件发生，因此进入阻塞态。</li>
+<li>运行——就绪的原因：1.达到时间限制     2.被抢占了      3.进程资源释放对于处理器的控制【例如一个周期性进行记账的进程】</li>
+</ul>
+</li>
+<li><p>七状态模型</p>
+<ul>
+<li>新建态，就绪态，就绪&#x2F;挂起态，运行态，阻塞态，阻塞&#x2F;挂起态，退出态</li>
+<li>就绪态和阻塞态都在内存中，而就绪&#x2F;挂起态和阻塞&#x2F;挂起态都在外存中。</li>
+<li>阻塞——阻塞挂起的原因：1.没有就绪进程，则至少换出一个阻塞进程   2.为了维护更多的性能所以释放空间，则会挂起一个阻塞的进程</li>
+<li>运行态——就绪态的原因：1.超时    2.被抢占</li>
+</ul>
+</li>
+</ul>
+<h3 id="进程描述"><a href="#进程描述" class="headerlink" title="进程描述"></a>进程描述</h3><ul>
+<li>操作系统的控制结构<ul>
+<li>为了管理进程和资源，操作系统构造和维护其管理的每个实体的信息表，包括<ul>
+<li>内存表</li>
+<li>I&#x2F;O表</li>
+<li>文件表</li>
+<li>进程表（进程控制表）</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>进程控制表<ul>
+<li>进程位置</li>
+<li>进程映象（process image）</li>
+<li>进程属性：进程控制属性、进程状态属性、进程标识属性</li>
+</ul>
+</li>
+</ul>
+<h3 id="进程控制"><a href="#进程控制" class="headerlink" title="进程控制"></a>进程控制</h3><ul>
+<li>执行模式<ul>
+<li>特权模式：系统模式，控制模式，内核模式</li>
+<li>非特权模式：用户模式</li>
+</ul>
+</li>
+<li>进程创建 <ul>
+<li>见前面</li>
+</ul>
+</li>
+<li>进程中断<ul>
+<li>时钟中断： 操作系统确定当前正运行进程的执行时间是否已超过最大允许时间段【时间片（time slice），即进程中断前可以执行的最大时间段】。若超过，进程就切换到就绪态，并调入另一个进程。<ul>
+<li>I&#x2F;O中断： 操作系统确定是否已发生I&#x2F;O活动。若I&#x2F;O活动是一个或多个进程正在等待的事件，则操作系统就把所有处于阻塞态的进程转换为就绪态（阻塞&#x2F;挂起态进程转换为就绪&#x2F;挂起态）。操作系统必须决定是继续执行当前处于运行态的进程，还是让具有高优先级的就绪态进程抢占这个进程。</li>
+</ul>
+</li>
+<li>内存失效： <strong>处理器遇到一个引用不在内存中的字的虚存地址时，操作系统就必须从外存中把包含这一引用的内存块（页或段）调入内存</strong>。发出调入内存块的I&#x2F;O请求后，内存失效进程将进入阻塞态；操作系统然后切换进程，恢复另一个进程的执行。期望的块调入内存后，该进程置为就绪态。</li>
+</ul>
+</li>
+</ul>
+<h3 id="操作系统的执行"><a href="#操作系统的执行" class="headerlink" title="操作系统的执行"></a>操作系统的执行</h3><ul>
+<li>无进程内核<ul>
+<li>在所有进程外部执行操作系统内核</li>
+</ul>
+</li>
+<li>在用户进程内执行</li>
+<li>基于进程的操作系统<ul>
+<li>主要的内核功能被组织为独立的进程</li>
+</ul>
+</li>
+</ul>
+<h3 id="进程挂起的特点"><a href="#进程挂起的特点" class="headerlink" title="进程挂起的特点"></a>进程挂起的特点</h3><p>（1）该进程不能立即执行。<br>（2）该进程可能在也可能不在等待一个事件。若在等待一个事件，那么阻塞条件不依赖于挂起条件，阻塞事件的发生不会使进程立即执行。<br>（3）为阻止该进程执行，可通过代理使其置于挂起态，代理可以是进程本身，也可以是父进程或操作系统。<br>（4）除非代理显式地命令系统进行状态转换，否则该进程无法从这一状态转移。</p>
+<h3 id="SVR4-进程管理"><a href="#SVR4-进程管理" class="headerlink" title="SVR4 进程管理"></a>SVR4 进程管理</h3><p>九进程模型</p>
+<h2 id="CH-4-线程"><a href="#CH-4-线程" class="headerlink" title="CH 4 线程"></a>CH 4 线程</h2><h3 id="进程和线程"><a href="#进程和线程" class="headerlink" title="进程和线程"></a>进程和线程</h3><ul>
+<li>请给出线程间的状态切换比进程间的状态切换开销更低的原因<ul>
+<li>在<strong>已有进程中创建</strong>一个新线程的时间，远少于创建一个全新进程的时间。【创建时间】</li>
+<li>终止线程要比终止进程所花的时间少。【终止时间】</li>
+<li>同一进程内线程间切换的时间，要少于进程间切换的时间。【切换时间】</li>
+<li>线程提高了不同程序间通信的效率。<strong>在多数操作系统中，独立进程间的通信需要内核介入</strong>，以提供保护和通信所需的机制。但是，<strong>由于同一进程中的多个线程共享内存和文件</strong>，因此它们<strong>无需调用内核就可互相通信</strong>。【通信效率】</li>
+</ul>
+</li>
+<li>线程分类<ul>
+<li>用户级线程（User-Level Thread,ULT）<ul>
+<li>所有的管理工作都由应用程序完成，内核意识不到线程的存在</li>
+<li>特点：默认情况下，应用程序从单个线程开始，并在该线程中开始运行。</li>
+</ul>
+</li>
+<li>内核级线程<ul>
+<li>所有管理工作均有内核完成【Windows】</li>
+<li>特点：内核可以同时把同一个进程中的多个线程调度到多个处理器。若进程中的一个线程被阻塞时，内核可以调度同一个进程中的另一个线程</li>
+</ul>
+</li>
+<li>UTL相较与KTL的优势<ul>
+<li>所有线程管理数据结构都在一个进程的用户地址空间中，<strong>线程切换不需要内核模式特权</strong>，因此进程不需要为了管理线程而切换到内核模式，进而<strong>节省了两次状态转换</strong>（从用户模式到内核模式，以及从内核模式返回用户模式）<strong>的开销</strong>。</li>
+<li><strong>调度因应用程序的不同而不同</strong>。一个应用程序可能更适合简单的轮转调度算法，而另一个应用程序可能更适合基于优先级的调度算法。为了不依赖底层的操作系统调度程序，<strong>可以做到为应用程序量身定做调度算法</strong>。</li>
+<li><strong>ULT可在任何操作系统中运行</strong>，<strong>不需要对底层内核进行修改以支持ULT</strong>。线程库是供所有应用程序共享的应用级函数。</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<h3 id="线程状态（生命期）"><a href="#线程状态（生命期）" class="headerlink" title="线程状态（生命期）"></a>线程状态（生命期）</h3><ul>
+<li><p>线程的状态与进程相似，主要状态都有：运行态、就绪态和阻塞态</p>
+<p>与进程状态改变相关的基本操作：</p>
+</li>
+</ul>
+<ol>
+<li>派生：在派生一个新进程时，同时也会为该进程派生一个线程，随后进程中的线程也可以在同一进程中派生另一线程。</li>
+<li>阻塞：线程需要等待一个事件时会被阻塞，处理器转而执行另一个就绪线程、</li>
+<li>解除阻塞：将该进程转移到就绪队列</li>
+<li>结束：一个线程完成后，会释放其寄存器上下文和栈</li>
+</ol>
+<ul>
+<li>线程同步<ul>
+<li>一个进程中的所有线程共享同一个地址空间和诸如打开的文件之类的其他资源，一个线程对资源的任何修改都会影响同一进程中其他线程的环境</li>
+<li>因此需要同步各线程之间的活动使其互不干扰且不破坏数据结构</li>
+</ul>
+</li>
+</ul>
+<h3 id="并发与并行-x2F-进程并发的实现（interleaving和overlapping）"><a href="#并发与并行-x2F-进程并发的实现（interleaving和overlapping）" class="headerlink" title="并发与并行&#x2F;进程并发的实现（interleaving和overlapping）"></a>并发与并行&#x2F;进程并发的实现（interleaving和overlapping）</h3><ul>
+<li><p>并发与并行：并发性是指两个或多个事件在同一时间间隔内发生，并行是指两个或多个事件在同一时刻发生。</p>
+</li>
+<li><p>进程并发的实现在于，硬件中断一个正在运行的进程，把此时进程运行的所有状态保存下来，为此，操作系统维护一张表格，即进程表（process table），每个进程占用一个进程表项（这些表项也称为进程控制块）。该表存放了进程状态的重要信息：程序计数器、堆栈指针、内存分配状况、所有打开文件的状态、帐号和调度信息，以及其他在进程由运行态转为就绪态或阻塞态时，必须保存的信息，从而保证该进程在再次启动时，就像从未被中断过一样。</p>
+</li>
+</ul>
+<p><img src="https://www.cnblogs.com/images/cnblogs_com/plf-Jack/1496408/o_%e8%bf%9b%e7%a8%8b%e8%a1%a8%e7%9a%84%e5%86%85%e5%ae%b9.png" alt="img"></p>
+<h2 id="CH-5-并发性：互斥和同步"><a href="#CH-5-并发性：互斥和同步" class="headerlink" title="CH 5 并发性：互斥和同步"></a>CH 5 并发性：互斥和同步</h2><h3 id="共享资源（Shared-Resource）"><a href="#共享资源（Shared-Resource）" class="headerlink" title="共享资源（Shared Resource）"></a>共享资源（Shared Resource）</h3><p>允许两个或多个进程访问内存某一特定区域的资源</p>
+<h3 id="竞争条件（race-condition）"><a href="#竞争条件（race-condition）" class="headerlink" title="竞争条件（race condition）"></a>竞争条件（race condition）</h3><p>多个线程或进程在读写一个共享数据时，结果依赖于它们执行的相对时间的情形</p>
+<h3 id="临界区（critical-section-x2F-region）"><a href="#临界区（critical-section-x2F-region）" class="headerlink" title="临界区（critical section&#x2F;region）"></a>临界区（critical section&#x2F;region）</h3><p>一段代码，在这段代码中进程将访问共享资源，当另外一个进程以在这段代码中运行时，这个进程就不能再这段代码中执行</p>
+<h3 id="硬件解决方案：关中断、TSL和Exchange指令"><a href="#硬件解决方案：关中断、TSL和Exchange指令" class="headerlink" title="硬件解决方案：关中断、TSL和Exchange指令"></a>硬件解决方案：关中断、TSL和Exchange指令</h3><ul>
+<li><p>关中断</p>
+<ul>
+<li><p>单处理器机器中，并发过程不能重叠，只能交替，因此为保证互斥，只需要保证一个进程不被中断即可</p>
+</li>
+<li><p>&#96;&#96;&#96;C<br>while (true)<br>{<br>    &#x2F;<em>禁用中断</em>&#x2F;;<br>    &#x2F;<em>临界区</em>&#x2F;;<br>    &#x2F;<em>启用中断</em>&#x2F;;<br>    &#x2F;<em>其余部分</em>&#x2F;;<br>}</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br><span class="line">118</span><br><span class="line">119</span><br><span class="line">120</span><br><span class="line">121</span><br><span class="line">122</span><br><span class="line">123</span><br><span class="line">124</span><br><span class="line">125</span><br><span class="line">126</span><br><span class="line">127</span><br><span class="line">128</span><br><span class="line">129</span><br><span class="line">130</span><br><span class="line">131</span><br><span class="line">132</span><br><span class="line">133</span><br><span class="line">134</span><br><span class="line">135</span><br><span class="line">136</span><br><span class="line">137</span><br><span class="line">138</span><br><span class="line">139</span><br><span class="line">140</span><br><span class="line">141</span><br><span class="line">142</span><br><span class="line">143</span><br><span class="line">144</span><br><span class="line">145</span><br><span class="line">146</span><br><span class="line">147</span><br><span class="line">148</span><br><span class="line">149</span><br><span class="line">150</span><br><span class="line">151</span><br><span class="line">152</span><br><span class="line">153</span><br><span class="line">154</span><br><span class="line">155</span><br><span class="line">156</span><br><span class="line">157</span><br><span class="line">158</span><br><span class="line">159</span><br><span class="line">160</span><br><span class="line">161</span><br><span class="line">162</span><br><span class="line">163</span><br><span class="line">164</span><br><span class="line">165</span><br><span class="line">166</span><br><span class="line">167</span><br><span class="line">168</span><br><span class="line">169</span><br><span class="line">170</span><br><span class="line">171</span><br><span class="line">172</span><br><span class="line">173</span><br><span class="line">174</span><br><span class="line">175</span><br><span class="line">176</span><br><span class="line">177</span><br><span class="line">178</span><br><span class="line">179</span><br><span class="line">180</span><br><span class="line">181</span><br><span class="line">182</span><br><span class="line">183</span><br><span class="line">184</span><br><span class="line">185</span><br><span class="line">186</span><br><span class="line">187</span><br><span class="line">188</span><br><span class="line">189</span><br><span class="line">190</span><br><span class="line">191</span><br><span class="line">192</span><br><span class="line">193</span><br><span class="line">194</span><br><span class="line">195</span><br><span class="line">196</span><br><span class="line">197</span><br><span class="line">198</span><br><span class="line">199</span><br><span class="line">200</span><br><span class="line">201</span><br><span class="line">202</span><br><span class="line">203</span><br><span class="line">204</span><br><span class="line">205</span><br><span class="line">206</span><br><span class="line">207</span><br><span class="line">208</span><br><span class="line">209</span><br><span class="line">210</span><br><span class="line">211</span><br><span class="line">212</span><br><span class="line">213</span><br><span class="line">214</span><br><span class="line">215</span><br><span class="line">216</span><br><span class="line">217</span><br><span class="line">218</span><br><span class="line">219</span><br><span class="line">220</span><br><span class="line">221</span><br><span class="line">222</span><br><span class="line">223</span><br><span class="line">224</span><br><span class="line">225</span><br><span class="line">226</span><br><span class="line">227</span><br><span class="line">228</span><br><span class="line">229</span><br><span class="line">230</span><br><span class="line">231</span><br><span class="line">232</span><br><span class="line">233</span><br><span class="line">234</span><br><span class="line">235</span><br><span class="line">236</span><br><span class="line">237</span><br><span class="line">238</span><br><span class="line">239</span><br><span class="line">240</span><br><span class="line">241</span><br><span class="line">242</span><br><span class="line">243</span><br><span class="line">244</span><br><span class="line">245</span><br><span class="line">246</span><br><span class="line">247</span><br><span class="line">248</span><br><span class="line">249</span><br><span class="line">250</span><br><span class="line">251</span><br><span class="line">252</span><br><span class="line">253</span><br><span class="line">254</span><br><span class="line">255</span><br><span class="line">256</span><br><span class="line">257</span><br><span class="line">258</span><br><span class="line">259</span><br><span class="line">260</span><br><span class="line">261</span><br><span class="line">262</span><br><span class="line">263</span><br><span class="line">264</span><br><span class="line">265</span><br><span class="line">266</span><br><span class="line">267</span><br><span class="line">268</span><br><span class="line">269</span><br><span class="line">270</span><br><span class="line">271</span><br><span class="line">272</span><br><span class="line">273</span><br><span class="line">274</span><br><span class="line">275</span><br><span class="line">276</span><br><span class="line">277</span><br><span class="line">278</span><br><span class="line">279</span><br><span class="line">280</span><br><span class="line">281</span><br><span class="line">282</span><br><span class="line">283</span><br><span class="line">284</span><br><span class="line">285</span><br><span class="line">286</span><br><span class="line">287</span><br><span class="line">288</span><br><span class="line">289</span><br><span class="line">290</span><br><span class="line">291</span><br><span class="line">292</span><br><span class="line">293</span><br><span class="line">294</span><br><span class="line">295</span><br><span class="line">296</span><br><span class="line">297</span><br><span class="line">298</span><br><span class="line">299</span><br><span class="line">300</span><br><span class="line">301</span><br><span class="line">302</span><br><span class="line">303</span><br><span class="line">304</span><br><span class="line">305</span><br><span class="line">306</span><br><span class="line">307</span><br><span class="line">308</span><br><span class="line">309</span><br><span class="line">310</span><br><span class="line">311</span><br><span class="line">312</span><br><span class="line">313</span><br><span class="line">314</span><br><span class="line">315</span><br><span class="line">316</span><br><span class="line">317</span><br><span class="line">318</span><br><span class="line">319</span><br><span class="line">320</span><br><span class="line">321</span><br><span class="line">322</span><br><span class="line">323</span><br><span class="line">324</span><br><span class="line">325</span><br><span class="line">326</span><br><span class="line">327</span><br><span class="line">328</span><br><span class="line">329</span><br><span class="line">330</span><br><span class="line">331</span><br><span class="line">332</span><br><span class="line">333</span><br><span class="line">334</span><br><span class="line">335</span><br><span class="line">336</span><br><span class="line">337</span><br><span class="line">338</span><br><span class="line">339</span><br><span class="line">340</span><br><span class="line">341</span><br><span class="line">342</span><br><span class="line">343</span><br><span class="line">344</span><br><span class="line">345</span><br><span class="line">346</span><br><span class="line">347</span><br><span class="line">348</span><br><span class="line">349</span><br><span class="line">350</span><br><span class="line">351</span><br><span class="line">352</span><br><span class="line">353</span><br><span class="line">354</span><br><span class="line">355</span><br><span class="line">356</span><br><span class="line">357</span><br><span class="line">358</span><br><span class="line">359</span><br><span class="line">360</span><br><span class="line">361</span><br><span class="line">362</span><br><span class="line">363</span><br><span class="line">364</span><br><span class="line">365</span><br><span class="line">366</span><br><span class="line">367</span><br><span class="line">368</span><br><span class="line">369</span><br><span class="line">370</span><br><span class="line">371</span><br><span class="line">372</span><br><span class="line">373</span><br><span class="line">374</span><br><span class="line">375</span><br><span class="line">376</span><br><span class="line">377</span><br><span class="line">378</span><br><span class="line">379</span><br><span class="line">380</span><br><span class="line">381</span><br><span class="line">382</span><br><span class="line">383</span><br><span class="line">384</span><br><span class="line">385</span><br><span class="line">386</span><br><span class="line">387</span><br><span class="line">388</span><br><span class="line">389</span><br><span class="line">390</span><br><span class="line">391</span><br><span class="line">392</span><br><span class="line">393</span><br><span class="line">394</span><br><span class="line">395</span><br><span class="line">396</span><br><span class="line">397</span><br><span class="line">398</span><br><span class="line">399</span><br><span class="line">400</span><br><span class="line">401</span><br><span class="line">402</span><br><span class="line">403</span><br><span class="line">404</span><br><span class="line">405</span><br><span class="line">406</span><br><span class="line">407</span><br><span class="line">408</span><br><span class="line">409</span><br><span class="line">410</span><br><span class="line">411</span><br><span class="line">412</span><br><span class="line">413</span><br><span class="line">414</span><br><span class="line">415</span><br><span class="line">416</span><br><span class="line">417</span><br><span class="line">418</span><br><span class="line">419</span><br><span class="line">420</span><br><span class="line">421</span><br><span class="line">422</span><br><span class="line">423</span><br><span class="line">424</span><br><span class="line">425</span><br><span class="line">426</span><br><span class="line">427</span><br><span class="line">428</span><br><span class="line">429</span><br><span class="line">430</span><br><span class="line">431</span><br><span class="line">432</span><br><span class="line">433</span><br><span class="line">434</span><br><span class="line">435</span><br><span class="line">436</span><br><span class="line">437</span><br><span class="line">438</span><br><span class="line">439</span><br><span class="line">440</span><br><span class="line">441</span><br><span class="line">442</span><br><span class="line">443</span><br><span class="line">444</span><br><span class="line">445</span><br><span class="line">446</span><br><span class="line">447</span><br><span class="line">448</span><br><span class="line">449</span><br><span class="line">450</span><br><span class="line">451</span><br><span class="line">452</span><br><span class="line">453</span><br><span class="line">454</span><br><span class="line">455</span><br><span class="line">456</span><br><span class="line">457</span><br><span class="line">458</span><br><span class="line">459</span><br><span class="line">460</span><br><span class="line">461</span><br><span class="line">462</span><br><span class="line">463</span><br><span class="line">464</span><br><span class="line">465</span><br><span class="line">466</span><br><span class="line">467</span><br><span class="line">468</span><br><span class="line">469</span><br><span class="line">470</span><br><span class="line">471</span><br><span class="line">472</span><br><span class="line">473</span><br><span class="line">474</span><br><span class="line">475</span><br><span class="line">476</span><br><span class="line">477</span><br><span class="line">478</span><br><span class="line">479</span><br><span class="line">480</span><br><span class="line">481</span><br><span class="line">482</span><br><span class="line">483</span><br><span class="line">484</span><br><span class="line">485</span><br><span class="line">486</span><br><span class="line">487</span><br><span class="line">488</span><br><span class="line">489</span><br><span class="line">490</span><br><span class="line">491</span><br><span class="line">492</span><br><span class="line">493</span><br><span class="line">494</span><br><span class="line">495</span><br><span class="line">496</span><br><span class="line">497</span><br><span class="line">498</span><br><span class="line">499</span><br><span class="line">500</span><br><span class="line">501</span><br><span class="line">502</span><br><span class="line">503</span><br><span class="line">504</span><br><span class="line">505</span><br><span class="line">506</span><br><span class="line">507</span><br><span class="line">508</span><br><span class="line">509</span><br><span class="line">510</span><br><span class="line">511</span><br><span class="line">512</span><br><span class="line">513</span><br><span class="line">514</span><br><span class="line">515</span><br><span class="line">516</span><br><span class="line">517</span><br><span class="line">518</span><br><span class="line">519</span><br><span class="line">520</span><br><span class="line">521</span><br><span class="line">522</span><br><span class="line">523</span><br><span class="line">524</span><br><span class="line">525</span><br><span class="line">526</span><br><span class="line">527</span><br><span class="line">528</span><br><span class="line">529</span><br><span class="line">530</span><br><span class="line">531</span><br><span class="line">532</span><br><span class="line">533</span><br><span class="line">534</span><br><span class="line">535</span><br><span class="line">536</span><br><span class="line">537</span><br><span class="line">538</span><br><span class="line">539</span><br><span class="line">540</span><br><span class="line">541</span><br><span class="line">542</span><br><span class="line">543</span><br><span class="line">544</span><br><span class="line">545</span><br><span class="line">546</span><br><span class="line">547</span><br><span class="line">548</span><br><span class="line">549</span><br><span class="line">550</span><br><span class="line">551</span><br><span class="line">552</span><br><span class="line">553</span><br><span class="line">554</span><br><span class="line">555</span><br><span class="line">556</span><br><span class="line">557</span><br><span class="line">558</span><br><span class="line">559</span><br><span class="line">560</span><br><span class="line">561</span><br><span class="line">562</span><br><span class="line">563</span><br><span class="line">564</span><br><span class="line">565</span><br><span class="line">566</span><br><span class="line">567</span><br><span class="line">568</span><br><span class="line">569</span><br><span class="line">570</span><br><span class="line">571</span><br><span class="line">572</span><br><span class="line">573</span><br><span class="line">574</span><br><span class="line">575</span><br><span class="line">576</span><br><span class="line">577</span><br><span class="line">578</span><br><span class="line">579</span><br><span class="line">580</span><br><span class="line">581</span><br><span class="line">582</span><br><span class="line">583</span><br><span class="line">584</span><br><span class="line">585</span><br><span class="line">586</span><br><span class="line">587</span><br><span class="line">588</span><br><span class="line">589</span><br><span class="line">590</span><br><span class="line">591</span><br><span class="line">592</span><br><span class="line">593</span><br><span class="line">594</span><br><span class="line">595</span><br><span class="line">596</span><br><span class="line">597</span><br><span class="line">598</span><br><span class="line">599</span><br><span class="line">600</span><br><span class="line">601</span><br><span class="line">602</span><br><span class="line">603</span><br><span class="line">604</span><br><span class="line">605</span><br><span class="line">606</span><br><span class="line">607</span><br><span class="line">608</span><br><span class="line">609</span><br><span class="line">610</span><br><span class="line">611</span><br><span class="line">612</span><br><span class="line">613</span><br><span class="line">614</span><br><span class="line">615</span><br><span class="line">616</span><br><span class="line">617</span><br><span class="line">618</span><br><span class="line">619</span><br><span class="line">620</span><br><span class="line">621</span><br><span class="line">622</span><br><span class="line">623</span><br><span class="line">624</span><br><span class="line">625</span><br><span class="line">626</span><br><span class="line">627</span><br><span class="line">628</span><br><span class="line">629</span><br><span class="line">630</span><br><span class="line">631</span><br><span class="line">632</span><br><span class="line">633</span><br><span class="line">634</span><br><span class="line">635</span><br><span class="line">636</span><br><span class="line">637</span><br><span class="line">638</span><br><span class="line">639</span><br><span class="line">640</span><br><span class="line">641</span><br><span class="line">642</span><br><span class="line">643</span><br><span class="line">644</span><br><span class="line">645</span><br><span class="line">646</span><br><span class="line">647</span><br><span class="line">648</span><br><span class="line">649</span><br><span class="line">650</span><br><span class="line">651</span><br><span class="line">652</span><br><span class="line">653</span><br><span class="line">654</span><br><span class="line">655</span><br><span class="line">656</span><br><span class="line">657</span><br><span class="line">658</span><br><span class="line">659</span><br><span class="line">660</span><br><span class="line">661</span><br><span class="line">662</span><br><span class="line">663</span><br><span class="line">664</span><br><span class="line">665</span><br><span class="line">666</span><br><span class="line">667</span><br><span class="line">668</span><br><span class="line">669</span><br><span class="line">670</span><br><span class="line">671</span><br><span class="line">672</span><br><span class="line">673</span><br><span class="line">674</span><br><span class="line">675</span><br><span class="line">676</span><br><span class="line">677</span><br><span class="line">678</span><br><span class="line">679</span><br><span class="line">680</span><br><span class="line">681</span><br><span class="line">682</span><br><span class="line">683</span><br><span class="line">684</span><br><span class="line">685</span><br><span class="line">686</span><br><span class="line">687</span><br><span class="line">688</span><br><span class="line">689</span><br><span class="line">690</span><br><span class="line">691</span><br><span class="line">692</span><br><span class="line">693</span><br><span class="line">694</span><br><span class="line">695</span><br><span class="line">696</span><br><span class="line">697</span><br><span class="line">698</span><br><span class="line">699</span><br><span class="line">700</span><br><span class="line">701</span><br><span class="line">702</span><br><span class="line">703</span><br><span class="line">704</span><br><span class="line">705</span><br><span class="line">706</span><br><span class="line">707</span><br><span class="line">708</span><br><span class="line">709</span><br><span class="line">710</span><br><span class="line">711</span><br><span class="line">712</span><br><span class="line">713</span><br><span class="line">714</span><br><span class="line">715</span><br><span class="line">716</span><br><span class="line">717</span><br><span class="line">718</span><br><span class="line">719</span><br><span class="line">720</span><br><span class="line">721</span><br><span class="line">722</span><br><span class="line">723</span><br><span class="line">724</span><br><span class="line">725</span><br><span class="line">726</span><br><span class="line">727</span><br><span class="line">728</span><br><span class="line">729</span><br><span class="line">730</span><br><span class="line">731</span><br><span class="line">732</span><br><span class="line">733</span><br><span class="line">734</span><br><span class="line">735</span><br><span class="line">736</span><br><span class="line">737</span><br><span class="line">738</span><br><span class="line">739</span><br><span class="line">740</span><br><span class="line">741</span><br><span class="line">742</span><br><span class="line">743</span><br><span class="line">744</span><br><span class="line">745</span><br><span class="line">746</span><br><span class="line">747</span><br><span class="line">748</span><br><span class="line">749</span><br><span class="line">750</span><br><span class="line">751</span><br><span class="line">752</span><br><span class="line">753</span><br><span class="line">754</span><br><span class="line">755</span><br><span class="line">756</span><br><span class="line">757</span><br><span class="line">758</span><br><span class="line">759</span><br><span class="line">760</span><br><span class="line">761</span><br><span class="line">762</span><br><span class="line">763</span><br><span class="line">764</span><br><span class="line">765</span><br><span class="line">766</span><br><span class="line">767</span><br><span class="line">768</span><br><span class="line">769</span><br><span class="line">770</span><br><span class="line">771</span><br><span class="line">772</span><br><span class="line">773</span><br><span class="line">774</span><br><span class="line">775</span><br><span class="line">776</span><br><span class="line">777</span><br><span class="line">778</span><br><span class="line">779</span><br><span class="line">780</span><br><span class="line">781</span><br><span class="line">782</span><br><span class="line">783</span><br><span class="line">784</span><br><span class="line">785</span><br><span class="line">786</span><br><span class="line">787</span><br><span class="line">788</span><br><span class="line">789</span><br><span class="line">790</span><br><span class="line">791</span><br><span class="line">792</span><br><span class="line">793</span><br><span class="line">794</span><br><span class="line">795</span><br><span class="line">796</span><br><span class="line">797</span><br><span class="line">798</span><br><span class="line">799</span><br><span class="line">800</span><br><span class="line">801</span><br><span class="line">802</span><br><span class="line">803</span><br><span class="line">804</span><br><span class="line">805</span><br><span class="line">806</span><br><span class="line">807</span><br><span class="line">808</span><br><span class="line">809</span><br><span class="line">810</span><br><span class="line">811</span><br><span class="line">812</span><br><span class="line">813</span><br><span class="line">814</span><br><span class="line">815</span><br><span class="line">816</span><br><span class="line">817</span><br><span class="line">818</span><br><span class="line">819</span><br><span class="line">820</span><br><span class="line">821</span><br><span class="line">822</span><br><span class="line">823</span><br><span class="line">824</span><br><span class="line">825</span><br><span class="line">826</span><br><span class="line">827</span><br><span class="line">828</span><br><span class="line">829</span><br><span class="line">830</span><br><span class="line">831</span><br><span class="line">832</span><br><span class="line">833</span><br><span class="line">834</span><br><span class="line">835</span><br><span class="line">836</span><br><span class="line">837</span><br><span class="line">838</span><br><span class="line">839</span><br><span class="line">840</span><br><span class="line">841</span><br><span class="line">842</span><br><span class="line">843</span><br><span class="line">844</span><br><span class="line">845</span><br><span class="line">846</span><br><span class="line">847</span><br><span class="line">848</span><br><span class="line">849</span><br><span class="line">850</span><br><span class="line">851</span><br><span class="line">852</span><br><span class="line">853</span><br><span class="line">854</span><br><span class="line">855</span><br><span class="line">856</span><br><span class="line">857</span><br><span class="line">858</span><br><span class="line">859</span><br><span class="line">860</span><br><span class="line">861</span><br><span class="line">862</span><br><span class="line">863</span><br><span class="line">864</span><br><span class="line">865</span><br><span class="line">866</span><br><span class="line">867</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">  - 缺点：代价昂贵，且不适用于多处理器</span><br><span class="line"></span><br><span class="line">- TSL指令</span><br><span class="line"></span><br><span class="line">  - ![img](https://img2018.cnblogs.com/blog/1358881/201909/1358881-20190914121205379-1596519614.png)</span><br><span class="line"></span><br><span class="line">- Exchage指令</span><br><span class="line"></span><br><span class="line">  - ![、](https://img2018.cnblogs.com/blog/1358881/201909/1358881-20190914122555609-1998726413.png)</span><br><span class="line"></span><br><span class="line">### 信号量（Semaphore，1965, Dijkstra ）</span><br><span class="line"></span><br><span class="line">- 信号量定义</span><br><span class="line">  - semWait：使得信号量-1，若值边为负数，则阻塞执行semWait的进程，否则进程就绪执行</span><br><span class="line">  - semSignal：使得信号量+1，若值小于等于0，则被semWait操作阻塞的进程解除阻塞。</span><br><span class="line">- 二元信号</span><br><span class="line">  - 二元信号量的值只能是0或1</span><br><span class="line">  - 非二元信号量也常称为**计数信号量**（counting semaphore）或**一般信号量**（general semaphore）</span><br><span class="line">  - 互斥锁（mutex）：是一个编程标志位，用来获取或释放一个对象，其值为0时表示锁定，用于阻塞其他程序使用数据，为1时解锁。【为互斥锁加锁和解锁的进程必须是同一个进程，但二元信号量可以不用】</span><br><span class="line"></span><br><span class="line">### 生产者-消费者问题（Producer-Consumer Problem）</span><br><span class="line"></span><br><span class="line">### 原语（Primitive）</span><br><span class="line"></span><br><span class="line">原语是一种特殊的程序段，其执行只能一气呵成，不可被中断。原语是由关中断/开中断指令实现的。</span><br><span class="line"></span><br><span class="line">### 生产者-消费者问题中信号量解决方案中信号量的用途（同步、互斥）</span><br><span class="line"></span><br><span class="line">### 管程（Monitor）</span><br><span class="line"></span><br><span class="line">- 管程的定义</span><br><span class="line">  - **管程是有一个或多个过程、一个初始化序列和局部数据组成的软件模块**</span><br><span class="line">  - 管程中的数据变量每次只能被一个进程访问，因此可以把一个共享数据结构放在管程中，从而对他进行保护</span><br><span class="line">  - 重点在于管程的过程，它可以操纵局部变量</span><br><span class="line"></span><br><span class="line">- 管程的特点</span><br><span class="line"></span><br><span class="line">（1）局部数据变量只能被管程的过程访问，任何外部过程都不能访问。</span><br><span class="line">（2）**一个进程通过调用管程的一个过程进入管程**。</span><br><span class="line">（3）**在任何时候，只能有一个进程在管程中执行**，调用管程的任何其他进程都被阻塞，以等待管程可用。</span><br><span class="line"></span><br><span class="line">- 管程通过使用条件变量来支持同步，有以下两个函数可以操作条件变量</span><br><span class="line">  - cwait(C)：调用进程的执行在条件c上阻塞，管程现在可以被另一个进程使用</span><br><span class="line">  - csignal(c)：恢复被阻塞的进程</span><br><span class="line"></span><br><span class="line">### 消息传递（Message Passing）</span><br><span class="line"></span><br><span class="line">- 同步</span><br><span class="line">  - send原语和recive原语</span><br><span class="line">  - 阻塞send，阻塞receive：**发送者和接收者都被阻塞，直到完成信息的投递**。这种情况有时也称为会和（rendezvous），它考虑到了进程间的紧密同步。</span><br><span class="line">  - 无阻塞send，阻塞receive：尽管发送者可以继续，但接收者会被阻塞直到请求的消息到达。这可能是最有用的一种组合，它允许一个进程给各个目标进程尽快地发送一条或多条消息。再继续工作前必须接收到消息的进程将被阻塞，知道该消息到达。例如，一个服务器进程给其他进程提供服务或资源。</span><br><span class="line">  - 无阻塞send，无阻塞receive：不要求任何一方等待。</span><br><span class="line">- 寻址</span><br><span class="line">  - 确定目标或源进程</span><br><span class="line">  - 分直接寻址(direct adressing)和简介寻址(indirect adressing)</span><br><span class="line">  - 消息的发送者和接收者之间存在多种关系，信箱(mailbox)【用于隔离交互，避免其他程序的错误干扰】——变成端口。</span><br><span class="line"></span><br><span class="line">### 读者-写者问题</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line">## Charpter 6 并发：死锁和饥饿</span><br><span class="line"></span><br><span class="line">###  6.1 死锁原理</span><br><span class="line"></span><br><span class="line">##### 联合进程图</span><br><span class="line"></span><br><span class="line">就是两个坐标，重叠区域角坐敏感区域（fatal region），创建了能够进入敏感区域的执行路径后，死锁必然发生</span><br><span class="line"></span><br><span class="line">##### 可重用资源</span><br><span class="line"></span><br><span class="line">一次仅供一个进程安全使用且不因为使用而耗尽的资源；对立的就是可消耗资源</span><br><span class="line"></span><br><span class="line">##### 资源分配图【重点】（Resource Allocation Diagram）</span><br><span class="line"></span><br><span class="line">画在本子上了</span><br><span class="line"></span><br><span class="line">导致死锁的情况：存在进程和资源的环</span><br><span class="line"></span><br><span class="line">##### 死锁的条件</span><br><span class="line"></span><br><span class="line">1. 死锁的必要条件</span><br><span class="line"></span><br><span class="line">   互斥、占有且等待、不可抢占</span><br><span class="line"></span><br><span class="line">2. 死锁的可能性</span><br><span class="line"></span><br><span class="line">   同必要条件</span><br><span class="line"></span><br><span class="line">3. 死锁的存在性</span><br><span class="line"></span><br><span class="line">   必要条件+循环等待</span><br><span class="line"></span><br><span class="line">### 6.2 死锁预防</span><br><span class="line"></span><br><span class="line">一种策略，试图设计一种系统来排除发生死锁的可能性。</span><br><span class="line"></span><br><span class="line">从死锁的存在性出发：1.互斥 2.占有且等待 3.不可抢占 4.循环等待，在这之中，互斥不可能预防，占有且等待也很难【为了效率】</span><br><span class="line"></span><br><span class="line">### 6.3 死锁避免</span><br><span class="line"></span><br><span class="line">死锁避免允许三个必要条件，但通过明智的选择，可以确保永远不会到达死锁点，因此死锁避免与死锁预防可以允许更多的并发。</span><br><span class="line"></span><br><span class="line">共有两种死锁避免的方法：</span><br><span class="line"></span><br><span class="line">1. 若一个进程的请求会导致死锁，则不启动该进程。【进程启动拒绝策略】</span><br><span class="line">2. 若一个进程增加的资源请求会导致死锁，则不允许这一资源分配。【资源分配拒绝策略】【银行家算法属于这种策略】</span><br><span class="line"></span><br><span class="line">### 银行家算法</span><br><span class="line"></span><br><span class="line">1. ##### 安全序列</span><br><span class="line"></span><br><span class="line">   如果系统按照这种序列分配资源，则每个进程都可以顺利完成。只要能找出一个安全序列，系统就是安全逐状态，安全系列可能有多个。</span><br><span class="line"></span><br><span class="line">   **如果系统处于安全状态，就一定不会发生死锁，如果系统进入不安全状态，就可能发生思索死锁（处于不安全状态未必就是发生了死锁，但发生死锁时一定是在不安全状态）**</span><br><span class="line"></span><br><span class="line">2. 算法思路：可以在资源分配之前预先判断这次分配是否会导致系统进入不安全状态，以此决定是否答应资源分配请求。</span><br><span class="line"></span><br><span class="line">![image-20210620162226017](C:\Users\10147\AppData\Roaming\Typora\typora-user-images\image-20210620162226017.png)</span><br><span class="line"></span><br><span class="line">​	3.其他的写在纸上了</span><br><span class="line"></span><br><span class="line">### 复习题：</span><br><span class="line"></span><br><span class="line">#### 6.1 给出可重用资源和可消耗资源(consumable)的例子。</span><br><span class="line"></span><br><span class="line">答：可重用资源的例子包括处理器、I/O通道、内存和外存、设备，以及文件、数据库和信号量之类的数据结构；可消耗资源的例子有中断、信号、消息和I/O缓冲区中的信息。</span><br><span class="line"></span><br><span class="line">#### 6.2 产生死锁的三个必要条件是什么？</span><br><span class="line"></span><br><span class="line">答：</span><br><span class="line">（1）互斥。一次只有一个进程可以使用一个资源。其他进程不能访问已分配给其他进程的资源。</span><br><span class="line">（2）占有且等待。当一个进程等待其他进程时，继续占有已分配的资源。</span><br><span class="line">（3）不可抢占。不能强行抢占进程已占有的资源。</span><br><span class="line"></span><br><span class="line">#### 6.3 产生死锁的4个条件是什么？</span><br><span class="line"></span><br><span class="line">答：前三个条件都只是死锁的必要条件而非充分条件。要产生死锁，还需要第四个条件：</span><br><span class="line">（4）循环等待。存在一个闭合的进程链，每个进程至少占有此链中下一个进程所需的一个资源。</span><br><span class="line"></span><br><span class="line">#### 6.4 如何防止占有且等待条件？(How can the hold and wait condiion be prevented?)</span><br><span class="line"></span><br><span class="line">答：可以要求进程一次性地请求所有需要的资源，并阻塞这个进程直到所有请求都同时满足。</span><br><span class="line"></span><br><span class="line">#### 6.5 给出防止不可抢占条件的两种方法。(List two ways in which the no-preemption condition can be prevented?)</span><br><span class="line"></span><br><span class="line">答：首先，占有某些资源的一个进程进一步申请资源时若被拒绝，则该进程必须释放其最初占有的资源，必要时可再次申请这些资源和其他资源。其次，一个进程请求当前被另一个进程占有的一个资源时，操作系统可以抢占另一个进程，要求它释放资源。</span><br><span class="line"></span><br><span class="line">#### 6.6 如何防止循环等待条件？(How can the circular wait condition be prevented?)</span><br><span class="line"></span><br><span class="line">答：循环等待条件可通过定义资源类型的线性顺序来预防。</span><br><span class="line"></span><br><span class="line">#### 6.7 死锁避免、检测和预防之间的区别是什么？(What is the difference among deadlock avoidance,detection,and prevention?)</span><br><span class="line"></span><br><span class="line">答：死锁避免（预防）策略非常保守，它们通过限制访问资源和在进程上强加约束来解决死锁问题。死锁检测策略则相反，它不限制资源访问或约束进程行为。</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line">### 单词</span><br><span class="line"></span><br><span class="line">banker&#x27;s algorithm 	银行家算法</span><br><span class="line"></span><br><span class="line">deadlock prevention  死锁预防</span><br><span class="line"></span><br><span class="line">pipe 管道</span><br><span class="line"></span><br><span class="line">circular wait   循环等待</span><br><span class="line"></span><br><span class="line">hold and wait  占有且等待</span><br><span class="line"></span><br><span class="line">preemption  抢占</span><br><span class="line"></span><br><span class="line">consumable resource   可消耗资源</span><br><span class="line"></span><br><span class="line">joint progress diagram  联合进程图</span><br><span class="line"></span><br><span class="line">resource allocationgraph  资源分配图</span><br><span class="line"></span><br><span class="line">deadlock  死锁</span><br><span class="line"></span><br><span class="line">memory barrier   内存屏障</span><br><span class="line"></span><br><span class="line">reusable resource  可重用资源</span><br><span class="line"></span><br><span class="line">deadlock avoidance   死锁避免</span><br><span class="line"></span><br><span class="line">message   消息</span><br><span class="line"></span><br><span class="line">spinlock  自旋锁</span><br><span class="line"></span><br><span class="line">deadlock detection  死锁检测</span><br><span class="line"></span><br><span class="line">mutual exclusion  互斥</span><br><span class="line"></span><br><span class="line">starvation  饥饿</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line">## Charpter7 内存管理</span><br><span class="line"></span><br><span class="line">### 7.1 内存管理的需求</span><br><span class="line"></span><br><span class="line">重定位、保护、共享、逻辑组织、物理组织</span><br><span class="line"></span><br><span class="line">### 7.2 内存分区</span><br><span class="line"></span><br><span class="line">内存管理的主要操作就是处理器把程序装入内存中执行</span><br><span class="line"></span><br><span class="line">##### 7.2.1 固定分区</span><br><span class="line"></span><br><span class="line">最简单的方法，但有两个问题（考虑放多少跟怎么少）</span><br><span class="line"></span><br><span class="line">1. 程序可能因为太大了而放不下一个分区</span><br><span class="line">2. 内存的利用率非常低——》由于装入的数据块小于分区大小而导致分区内部存在空间浪费的现象称为**内部碎片【internal fragmentation】**</span><br><span class="line"></span><br><span class="line">放置算法</span><br><span class="line"></span><br><span class="line">1. 把每个进程分配到能够容纳它的最小分区中，在这种情况下，每个分区需要维护一个调度队列【从单个分区的角度看这种方法是最优的】</span><br><span class="line">2. 采用单个队列，可以优先选择换出被阻塞的进程而非就绪进程</span><br><span class="line">3. 可考虑的算法有三种：最佳适配，首次适配，下次适配</span><br><span class="line"></span><br><span class="line">##### 7.2.2 动态分区</span><br><span class="line"></span><br><span class="line">随着时间的推移，内存中形成越来越多的碎片，内存的利用率下降，这种现象称为**外部碎片【external fragmentation】**。</span><br><span class="line"></span><br><span class="line">外部碎片指的是**所有分区外的存储空间**【因为动态的话每一个进程就是一个分区】变成了越来越多的碎片，这与前面所讲的内部碎片正好对应。【这需要压缩，但压缩很费时间】</span><br><span class="line"></span><br><span class="line">放置算法</span><br><span class="line"></span><br><span class="line">下述三种算法都在内存中选择大于等于进程的空闲块，区别在于</span><br><span class="line"></span><br><span class="line">1. 最佳适配：选择与要求大小最接近的块</span><br><span class="line">2. 首次适配：从头开始扫描内存，选择大小足够的第一个可用快</span><br><span class="line">3. 下次适配：从上次放置的位置开始扫描内存，选择下一个大小足够的可用块。</span><br><span class="line"></span><br><span class="line">##### 7.2.3 伙伴系统</span><br><span class="line"></span><br><span class="line">其实就是个二叉树，二分整个区间，若存储空间在子区间内，则分配，不满足，则继续分裂</span><br><span class="line"></span><br><span class="line">##### 7.2.4 重定位</span><br><span class="line"></span><br><span class="line">逻辑地址、相对地址、物理地址</span><br><span class="line"></span><br><span class="line">### 7.3 分页</span><br><span class="line"></span><br><span class="line">将内存分为大小固定、相等的块，且块相对比较小，**每个进程也被分成同样大小的块**，那么进程中称为页的块(page)可以分配到内存中称为页框(frame)的可用页</span><br><span class="line"></span><br><span class="line">操作系统会为每个进程维护一个页表，页表给出了进程的每页对应页框的位置</span><br><span class="line"></span><br><span class="line">**分页的寻址**：</span><br><span class="line"></span><br><span class="line">考虑一个n+m位地址，最左边n位的是页号，最右边m位是偏移量</span><br><span class="line"></span><br><span class="line">### 7.4 分段</span><br><span class="line"></span><br><span class="line">把程序和与其相关的数据划分到几个段(segment)中</span><br><span class="line"></span><br><span class="line">同分页，但是有点动态分区的味道</span><br><span class="line"></span><br><span class="line">### 7.5 分段分页总结</span><br><span class="line"></span><br><span class="line">分页：系统会维护一个空闲的页表，以说明每页对应的页框</span><br><span class="line"></span><br><span class="line">分段：系统位每个进程维护一个段表，以说明每段中的加载地址和长度</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line">### 复习题</span><br><span class="line"></span><br><span class="line">#### 7.1 内存管理需要满足哪些需求？</span><br><span class="line"></span><br><span class="line">答：重定位、保护、共享、逻辑组织、物理组织。</span><br><span class="line"></span><br><span class="line">#### 7.2 为何需要重定位进程的能力？</span><br><span class="line"></span><br><span class="line">答：在多道程序设计系统中，可用的内存空间通常被多个进程共享。通常情况下，程序员事先并不知道在某个程序执行期间会有其他哪些程序驻留在内存中。此外，我们还希望提供一个巨大的就绪进程池，以便把活动进程换入或换出内存，进而使处理器的利用率最大化。程序换出到磁盘中后，下次换入时要放到与换出前相同的内存区域会很困难。相反，我们需要把进程重定位（relocate） 到内存的不同区域。</span><br><span class="line"></span><br><span class="line">#### 7.3 为何不可能在编译时实施内存保护？</span><br><span class="line"></span><br><span class="line">答：程序在内存中的位置不可预测。</span><br><span class="line"></span><br><span class="line">#### 7.4 允许两个或多个进程访问内存某一特定区域的原因是什么？</span><br><span class="line"></span><br><span class="line">答：合作完成同一个任务的进程可能需要共享访问相同的数据结构。</span><br><span class="line"></span><br><span class="line">#### 7.5 在固定分区方案中，使用大小不等的分区有何好处？</span><br><span class="line"></span><br><span class="line">答：可缓解因程序太大而无法放到固定大小的分区和因程序太小产生大量内部碎片的问题。</span><br><span class="line"></span><br><span class="line">#### 7.6 内部碎片和外部碎片有何区别？</span><br><span class="line"></span><br><span class="line">答：固定分区中，由于装入的数据块小于分区大小，因而导致分区内存在空间浪费，这种现象称为内部碎片（internal fragmentation）；动态分区中，随着时间的推移，内存中形成越来越多的碎片，内存的利用率随之下降，这种现象称为外部碎片（external fragmentation），指在所有分区外的存储空间变成了越来越多的碎片。</span><br><span class="line"></span><br><span class="line">#### 7.7 逻辑地址、相对地址和物理地址有何区别？</span><br><span class="line"></span><br><span class="line">答：逻辑地址（logical address） 是指与**当前数据在内存中的物理分配地址无关的访问地址**，在执行对内存的访问之前必须把它转换为物理地址。相对地址（relative address） 是逻辑地址的一个特例，它是相对于某些已知点（通常是程序的开始处）的存储单元。物理地址（physical address） 或绝对地址是数据在内存中的实际位置。</span><br><span class="line"></span><br><span class="line">#### 7.8 页和页框有何区别？</span><br><span class="line"></span><br><span class="line">答：（个人理解）页是进程中的块，页框是内存中的块。</span><br><span class="line"></span><br><span class="line">#### 7.9 页和段有何区别？</span><br><span class="line"></span><br><span class="line">答：页大小相等，段可以大小不等；分页对程序员来说是透明的，而分段通常是可见的。</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line">## Charpter 8 虚拟内存</span><br><span class="line"></span><br><span class="line">#### 虚拟存储器的定义及实现</span><br><span class="line"></span><br><span class="line">- 定义：</span><br><span class="line">  - 基于局部性原理，在程序装入时，可以将程序的一部分装入内存，而将其余部分留在外存，就可以启动程序执行。在程序执行过程中，当所访问的信息不在内存时，由操作系统将所需要的部分调入内存。另一方面，操作系统将内存中暂时不使用的内容换出到外存上。这样，系统好像为用户提供了一个比实际内存大得多的存储器，称为虚拟存储器。</span><br><span class="line">- 实现方式：</span><br><span class="line">  - 虚拟存储器有以下三种实现方式∶请求分页，请求分段，请求段页式</span><br><span class="line"></span><br><span class="line">#### 8.1 硬件和控制结构</span><br><span class="line"></span><br><span class="line">![image-20210620230957970](C:\Users\10147\AppData\Roaming\Typora\typora-user-images\image-20210620230957970.png)</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line">#### 8.1.2 分页</span><br><span class="line"></span><br><span class="line">局部性原理——表明虚拟内存方案是可行的</span><br><span class="line"></span><br><span class="line">局部性原理</span><br><span class="line"></span><br><span class="line">**一个良好的计算机程序 常常具有良好的局部性，也就是说，它们倾向于引用邻近于其他最近引用过的数据项的数据项，或者最近引用过的数据项本身**</span><br><span class="line"></span><br><span class="line">1. **时间局部性**：如果程序中的某条指令一旦执行，不久之后该指令可能再次被执行。如果某数据彼访问过，不久之后该数据可能被再次访问</span><br><span class="line">2. **空间局部性**：一旦程序访问了某个存储单元，不久之后其附近的存储单元也将被访问（程序在一段时间内访问同一范围内的地址）</span><br><span class="line"></span><br><span class="line">分页：</span><br><span class="line"></span><br><span class="line">转换检测缓冲区（Translation Lookaside Buffer TLB）——虚拟内存方案为页表像使用的一个特殊高速缓存</span><br><span class="line"></span><br><span class="line">![image-20210620231438574](C:\Users\10147\AppData\Roaming\Typora\typora-user-images\image-20210620231438574.png)</span><br><span class="line"></span><br><span class="line">**TLB【重点】**</span><br><span class="line"></span><br><span class="line">转换检测缓冲区（TLB）是一个**特殊的高速缓存**，包含有最近用过的页表项</span><br><span class="line"></span><br><span class="line">![image-20210706194531023](C:\Users\10147\AppData\Roaming\Typora\typora-user-images\image-20210706194531023.png)</span><br><span class="line"></span><br><span class="line">​	给定一个虚拟地址，处理器首先检查TLB, 若需要的页表项在其中(TLB 命中），则**检索页框号并形成实地址**。若未找到需要的页表项(TLB 未命中），则**处理器用页号检索进程页表**，并检查相应的页表项。若“存在位”已置位，则该页在内存中，处理器从页表项中检索页框号以形成实地址。**处理器同时更新TLB, 使其包含这个新页表项**。最后，若“存在位”未置位，则表示需要的页不在内存中，这时会产生一次内存访问故障，称为**缺页( page fault )中断**。</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line">![在这里插入图片描述](https://img-blog.csdnimg.cn/20201120144918135.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L1RyYWN5Y29kZXI=,size_16,color_FFFFFF,t_70#pic_center)</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line">#### 8.1.3 分段</span><br><span class="line"></span><br><span class="line">![image-20210706200000705](C:\Users\10147\AppData\Roaming\Typora\typora-user-images\image-20210706200000705.png)</span><br><span class="line"></span><br><span class="line">#### 段页式</span><br><span class="line"></span><br><span class="line">在段页式系统中，用户的地址空间被程序员划分为许多段。每段依次划分为许多固定大小的页，页的长度等千内存中的页框大小。若某段的长度小于一页，则该段只占据一页。</span><br><span class="line"></span><br><span class="line">![image-20210706201040355](C:\Users\10147\AppData\Roaming\Typora\typora-user-images\image-20210706201040355.png)</span><br><span class="line"></span><br><span class="line">#### 读取策略</span><br><span class="line"></span><br><span class="line">读取策略决定某页何时取入内存，常用的两种方法是请求分页( demand paging) 和预先分页（prepaging) </span><br><span class="line"></span><br><span class="line">- 请求分页</span><br><span class="line">  - 只有当访问到某页中的一个单元时才将该页取入内存</span><br><span class="line">- 预先分页</span><br><span class="line">  - **读取的页并不是缺页中断请求的页**。预先分页利用了大多数辅存设备（如磁盘）的特性，这些设备有寻道时间和合理的延迟。若一个进程的页连续存储在辅存中，则一次读取许多连续的页要比隔一段时间读取一页有效。</span><br><span class="line"></span><br><span class="line">#### 放置策略</span><br><span class="line"></span><br><span class="line">第七章描述的最佳适配、首次适配、下次适配</span><br><span class="line"></span><br><span class="line">#### 置换策略（Replacement Policy)</span><br><span class="line"></span><br><span class="line">- 最佳(Optimal, OPT)</span><br><span class="line">  - 置换下次访问距当前时间最长的那些页</span><br><span class="line">- 最近最少使用(LeastRecently Used, LRU)</span><br><span class="line">  - 置换内存中最长时间未被引用的页</span><br><span class="line">- 先进先出(First In First Out, FIFO)</span><br><span class="line">- 时钟(Clock)</span><br><span class="line"></span><br><span class="line">#### 虚拟存储器的设计问题（Design Issues）</span><br><span class="line"></span><br><span class="line">- 工作集（Working Set）：工作集的概念可用千指导有关驻留集大小的策略：</span><br><span class="line"></span><br><span class="line">- 页面的大小（Page Size）：页越小，内部碎片越小，但需要的页的数量越多，意味着更大的页表。</span><br><span class="line">  - 碎片（Fragmentation）：</span><br><span class="line"></span><br><span class="line">- 装入页的时机（按需装入和预先装入， Demand Paging and Prepaging）</span><br><span class="line"></span><br><span class="line">- 全局和局部（Global or Local Scope）：</span><br><span class="line">  - 局部：仅在产生缺页的进程的驻留页中选择</span><br><span class="line">  - 全局：把内存中所有未被锁定的页都作为置换的候选页</span><br><span class="line"></span><br><span class="line">- 颠簸/抖动（Thrashing）：如果一块正好在将要用到之前换出，操作系统就不得不很快地把它取回。这类操作通常会导致一种称为系统抖动(thrashing )的情况：处理器的大部分时间都用于交换块而非执行指令。</span><br><span class="line"></span><br><span class="line">- 页面替换算法：Optimal、Least Recently Used、FIFO、Clock</span><br><span class="line"></span><br><span class="line">### 复习题</span><br><span class="line"></span><br><span class="line">#### 8.1 简单分页与虚拟内存分页有何区别？</span><br><span class="line"></span><br><span class="line">答：进程运行时，简单分页的所有页必须都在内存中，除非使用了覆盖技术，虚存分页并非所有页都须在内存页框中，仅在需要时才读入页，把一页读入内存可能需要把另一页写出到磁盘。</span><br><span class="line"></span><br><span class="line">#### 8.2 什么是抖动？</span><br><span class="line"></span><br><span class="line">答：处理器的大部分时间都用于交换块而非执行指令。</span><br><span class="line"></span><br><span class="line">#### 8.3 为何在使用虚拟内存时，局部性原理至关重要？</span><br><span class="line"></span><br><span class="line">答：局部性原理描述了一个进程中程序和数据引用的集簇倾向。因此，假设在很短的时间内仅需要进程的一部分块是合理的。同时，还可以对将来可能会访问的块进行猜测，从而避免系统抖动。局部性原理表明虚拟内存方案是可行的。</span><br><span class="line"></span><br><span class="line">#### 8.4 哪些元素是页表项中能找到的典型元素？简单定义每个元素。</span><br><span class="line"></span><br><span class="line">答：与内存中的页框相对应的页框号、表示它所对应的页是否在内存中的一位（P）、表示相应页的内容从上次装入内存到现在是否已改变的一位（M）。</span><br><span class="line"></span><br><span class="line">#### 8.5 转换检测缓冲区的目的是什么？</span><br><span class="line"></span><br><span class="line">答：为了克服简单的虚拟内存方案导致内存访问时间加倍的问题。原则上，每次虚存访问都可能会引起两次物理内存访问：一次取相应的页表项，另一次取需要的数据。</span><br><span class="line"></span><br><span class="line">#### 8.6 简单定义两种可供选择的页面读取策略。</span><br><span class="line"></span><br><span class="line">答：</span><br><span class="line">请求分页（demand paging）：只有当访问到某页中的一个单元时才将该页取入内存。</span><br><span class="line">预先分页（prepaging）：读取的页不是缺页中断请求的页。</span><br><span class="line"></span><br><span class="line">#### 8.7 驻留集管理和页面置换策略有何区别？</span><br><span class="line"></span><br><span class="line">答：驻留集管理的概念为：</span><br><span class="line">（1）给每个活动进程分配多少页框。</span><br><span class="line">（2）计划置换的页集是局限于那些缺页中断的进程，还是局限于所有页框都在内存中的进程。</span><br><span class="line">置换策略的概念为：在计划置换的页集中，选择换出哪一页。</span><br><span class="line"></span><br><span class="line">#### 8.8 FIFO和时钟页面置换策略有何区别？</span><br><span class="line"></span><br><span class="line">答：始终策略需要给每个页框关联一个称为使用位的附加位，在时钟策略中会跳过使用位为1的页框。</span><br><span class="line"></span><br><span class="line">#### 8.9 页缓冲实现什么功能？</span><br><span class="line"></span><br><span class="line">答：被置换的页仍然留在内存中。</span><br><span class="line"></span><br><span class="line">#### 8.10 为什么不能把全局置换策略和固定分配策略组合起来？</span><br><span class="line"></span><br><span class="line">答：为保持驻留集的大小固定，从内存中移出的一页必须由同一个进程的另一页置换。</span><br><span class="line"></span><br><span class="line">#### 8.11 驻留集和工作集有何区别？</span><br><span class="line"></span><br><span class="line">答：驻留集表示进程在内存中的页集，工作集表示进程在过去的一段时间中被访问到的页集。</span><br><span class="line"></span><br><span class="line">#### 8.12 请求式清除和预约式清除有何区别？</span><br><span class="line"></span><br><span class="line">答：对于请求式清除（demand cleaning），只有当一页被选择用于置换时才被写回辅存；而预约式清除（precleaning） 策略则将这些已修改的多页在需要使用它们所占据的页框之前成批写回辅存。</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line">## Charpter 9 单处理器调度</span><br><span class="line"></span><br><span class="line">#### 调度类型</span><br><span class="line"></span><br><span class="line">- 长程调度：决定加入待执行进程池。</span><br><span class="line">- 中程调度：决定加入部分或全部位于内存中的进程集合。</span><br><span class="line">- 短程调度：决定可用I/O设备处理哪个进程挂起的I/O请求。</span><br><span class="line"></span><br><span class="line">#### 调度策略</span><br><span class="line"></span><br><span class="line">略</span><br><span class="line"></span><br><span class="line">#### 9.1 简要描述三种类型的处理器调度。</span><br><span class="line"></span><br><span class="line">答：</span><br><span class="line">长程调度：决定加入待执行进程池。</span><br><span class="line">中程调度：决定加入部分或全部位于内存中的进程集合。</span><br><span class="line">短程调度：决定可用I/O设备处理哪个进程挂起的I/O请求。</span><br><span class="line"></span><br><span class="line">#### 9.2 在交互式操作系统中，通常最重要的性能要求是什么？</span><br><span class="line"></span><br><span class="line">答：响应时间。</span><br><span class="line"></span><br><span class="line">#### 9.3 周转时间和响应时间有何区别？</span><br><span class="line"></span><br><span class="line">答：周转时间指一个进程从提交到完成之间的时间间隔，包括实际执行时间和等待资源（包括处理器资源）的时间；响应时间指从提交一个请求到开始接收响应之间的时间间隔。</span><br><span class="line"></span><br><span class="line">#### 9.4 对于进程调度，较小的优先级值是表示较低的优先级还是表示较高的优先级？</span><br><span class="line"></span><br><span class="line">答：对于UNIX和许多其他操作系统中，优先级数值越大，表示的进程优先级越低。某些系统如Windows的用法正好相反，即大数值表示高优先级。</span><br><span class="line"></span><br><span class="line">#### 9.5 抢占式调度和非抢占式调度有何区别？</span><br><span class="line"></span><br><span class="line">答：</span><br><span class="line">非抢占：在这种情况下，一旦进程处于运行状态，就会不断执行直到终止，进程要么因为等待I/O，要么因为请求某些操作系统服务而阻塞自己。</span><br><span class="line">抢占：当前正运行进程可能被操作系统中断，并转换为就绪态。一个新进程到达时，或中断发生后把一个阻塞态进程置为就绪态时，或出现周期性的时间中断时，需要进行抢占决策。</span><br><span class="line"></span><br><span class="line">#### 9.6 简单定义FCFS调度。</span><br><span class="line"></span><br><span class="line">答：每个进程就绪后，会加入就绪队列。当前正运行的进程停止执行时，选择就绪队列中存在时间最长的进程运行。</span><br><span class="line"></span><br><span class="line">#### 9.7 简单定义轮转调度。</span><br><span class="line"></span><br><span class="line">答：这种算法周期性地产生时钟中断，出现中断时，当前正运行的进程会放置到就绪队列中，然后基于FCFS策略选择下一个就绪作业运行。</span><br><span class="line"></span><br><span class="line">#### 9.8 简单定义最短进程优先调度。</span><br><span class="line"></span><br><span class="line">答：这是一个非抢占策略，其原则是下次选择预计处理时间最短的进程。</span><br><span class="line"></span><br><span class="line">#### 9.9 简单定义最短剩余时间调度。</span><br><span class="line"></span><br><span class="line">答：最短剩余时间是在SPN中增加了抢占机制的策略。在这种情况下，调度程序总是选择预期剩余时间最短的进程。</span><br><span class="line"></span><br><span class="line">#### 9.10 简单定义最高响应比优先调度。</span><br><span class="line"></span><br><span class="line">答：当前进程完成或被阻塞时，选择R值最大的就绪进程。</span><br><span class="line"></span><br><span class="line">#### 9.11 简单定义反馈调度。</span><br><span class="line"></span><br><span class="line">答：调度基于抢占原则并使用动态优先级机制。</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line">## Charpter 11 I/0管理和磁盘调度</span><br><span class="line"></span><br><span class="line">​	I/O设备的特点</span><br><span class="line"></span><br><span class="line">​	I/O设备的分类</span><br><span class="line"></span><br><span class="line">​		块设备/字符设备（流设备）</span><br><span class="line"></span><br><span class="line">​	I/O软件的组织</span><br><span class="line"></span><br><span class="line">​	磁盘调度（Disk arm scheduling）</span><br><span class="line"></span><br><span class="line">​		磁盘I/O的过程（Seek time、Rotational Delay、Data Transfer Time）</span><br><span class="line"></span><br><span class="line">​	RAID</span><br><span class="line"></span><br><span class="line">### 11.1 I/0设备</span><br><span class="line"></span><br><span class="line">直接存储器访问（DMA）：一个DMA模块控制内存和I/0模块之间的数据交换。为传送一块数据，处理器给DMA模块发送请求，且只有在整个数据快传送结束后，它才被中断。</span><br><span class="line"></span><br><span class="line">越来越多的I/0功能可以在没有中央处理器参与的情况下执行。——只有在传送开始和结束时才会用到处理器</span><br><span class="line"></span><br><span class="line">**分类：**</span><br><span class="line"></span><br><span class="line">- 面向块（ block-oriented ) 的设备**将信息保存在块中**，块的大小通常是固定的，**传送过程中一次传送一块**。通常可以通过块号访问数据。**磁盘和USB 智能卡**都是面向块的设备。</span><br><span class="line"></span><br><span class="line">- 面向流( stream-oriented )的设备**以字节流的方式输入／输出数据**，它没有块结构。**终端、打印机、通信端口、鼠标**和其他指示设备及其他大多数非辅存设备，都属于面向流的设备。</span><br><span class="line"></span><br><span class="line">**I/O软件的组织**</span><br><span class="line"></span><br><span class="line">![image-20210706213408304](C:\Users\10147\AppData\Roaming\Typora\typora-user-images\image-20210706213408304.png)</span><br><span class="line"></span><br><span class="line">### 11.4 I/O缓冲</span><br><span class="line"></span><br><span class="line">为避免这些开销和低效操作，有时为了方便起见，在输入请求发出前就开始执行输入传送，并且在输出请求发出一段时间之后才开始执行输出传送，这项技术称为缓冲。</span><br><span class="line"></span><br><span class="line">有单缓冲、双缓冲、环形缓冲</span><br><span class="line"></span><br><span class="line">单缓冲方案：输入传送的数据被放到系统缓冲区内。当传送完成时，进程把该块移到用户空间，并立即请求另一块。这称为预读，或预先输入。这样做的原因是期望这块数据最终会被使用。</span><br><span class="line"></span><br><span class="line">### 11.5 磁盘调度</span><br><span class="line"></span><br><span class="line">磁盘性能参数：寻道时间、旋转延迟、传输时间、时序比较</span><br><span class="line"></span><br><span class="line">##### 磁盘调度策略</span><br><span class="line"></span><br><span class="line">写纸上了：		FIFO、SCAN、C-SCAN</span><br><span class="line"></span><br><span class="line">##### RAID（独立磁盘冗余阵列）</span><br><span class="line"></span><br><span class="line">1. RAID是一组物理磁盘驱动器，操作系统把它视为单个逻辑驱动器</span><br><span class="line">2. 数据分布在物理驱动器阵列中</span><br><span class="line">3. 使用冗余磁盘容量保存奇偶检验信息，保证在一个磁盘失效时，数据具有可恢复性</span><br><span class="line"></span><br><span class="line">##### 磁盘I/O的过程（Seek time、Rotational Delay、Data Transfer Time）</span><br><span class="line"></span><br><span class="line">- 寻道时间：寻道时间是将磁头臂移到指定磁道所需要的时间。寻道时间由两个重要部分组成：最初启动时间，以及访问臂达到一定的速度后，横跨那些其必须跨越的磁道所需要的时间。</span><br><span class="line">- 旋转延迟：旋转延迟是指将磁盘的待访问地址区域旋转到读／写磁头可访问的位置所需要的时间</span><br><span class="line">- 传输时间：![image-20210706213612886](C:\Users\10147\AppData\Roaming\Typora\typora-user-images\image-20210706213612886.png)</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line">### 复习题</span><br><span class="line"></span><br><span class="line">#### 11.1 列出并简单定义执行I/O的三种技术。</span><br><span class="line"></span><br><span class="line">答：</span><br><span class="line">程序控制I/O： 处理器代表一个进程给I/O模块发送一个I/O命令；该进程进入忙等待，直到操作完成才能继续执行。</span><br><span class="line">中断驱动I/O： 处理器代表进程向I/O模块发出一个I/O命令。有两种可能性：若来自进程的I/O指令是非阻塞的，则处理器继续执行发出I/O命令的进程的后续指令。若I/O指令是阻塞的，则处理器执行的下一条指令来自操作系统，它将当前的进程设置为阻塞态并调度其他进程。</span><br><span class="line">直接存储器访问（DMA）： 一个DMA模块控制内存和I/O模块之间的数据交换。为传送一块数据，处理器给DMA模块发请求，且只有在整个数据块传送结束后，它才被中断。</span><br><span class="line"></span><br><span class="line">#### 11.2 逻辑I/O和设备I/O有何区别？</span><br><span class="line"></span><br><span class="line">答：</span><br><span class="line">逻辑I/O：逻辑I/O模块把设备当作一个逻辑资源来处理，它并不关心实际控制设备的细节。逻辑I/O模块代表用户进程管理的普通I/O功能，允许用户进程根据设备标识符及诸如打开、关闭、读、写之类的简单指令与设备打交道。</span><br><span class="line">设备I/O：请求的操作和数据（缓冲的数据、记录等）被转换为适当的I/O指令序列、通道命令和控制器指令。可以使用缓冲技术来提高利用率。</span><br><span class="line"></span><br><span class="line">#### 11.3 面向块的设备和面向流的设备有何区别？各举一些例子。</span><br><span class="line"></span><br><span class="line">答：面向块（block-oriented）的设备将信息保存在块中，块的大小通常是固定的，传送过程中一次传送一块。通常可以通过块号访问数据。磁盘和USB智能卡都是面向块的设备。面向流（stream-oriented）的设备以字节流的方式输入/输出数据，它没有块结构。终端、打印机、通信端口、鼠标和其他指示设备以及其他大多数非辅存设备，都属于面向流的设备。</span><br><span class="line"></span><br><span class="line">#### 11.4 为什么希望用双缓冲而非单缓冲来提高I/O的性能？</span><br><span class="line"></span><br><span class="line">答：对于面向块的传送，我们可以粗略地估计执行时间为max[C,T]。因此，若C≤T，则有可能使面向块的设备全速运行；另一方面，若C＞T，则双缓冲能确保该进程不需要等待I/O。</span><br><span class="line"></span><br><span class="line">#### 11.5 在磁盘读或写时有哪些延迟因素？</span><br><span class="line"></span><br><span class="line">答：寻道时间（seek time）、旋转延迟（rotational delay）、存取时间（access time）、传输时间（transfer time）。</span><br><span class="line"></span><br><span class="line">#### 11.6 简单定义图11.7中描述的磁盘调度策略。</span><br><span class="line"></span><br><span class="line">答：</span><br><span class="line">先进先出（FIFO）：按顺序处理队列中的项目。</span><br><span class="line">最短服务时间优先（SSTF）：选择使磁头臂从当前位置开始移动最少的磁盘I/O请求。</span><br><span class="line">SCAN：要求磁头臂仅沿一个方向移动，并在途中满足所有未完成的请求，直到它到达这个方向上的最后一个磁道。</span><br><span class="line">C-SCAN：把扫描限定在一个方向上。因此，当访问到沿某个方向的最后一个磁道时，磁头臂返回到磁盘相反方向末端的磁道。</span><br><span class="line"></span><br><span class="line">#### 11.7 简单定义7个RAID级别。</span><br><span class="line"></span><br><span class="line">答：</span><br><span class="line">RAID 0：条带化、非冗余。</span><br><span class="line">RAID 1：镜像、被镜像。</span><br><span class="line">RAID 2：并行访问、通过汉明码实现冗余。</span><br><span class="line">RAID 3：并行访问、交错位奇偶校验。</span><br><span class="line">RAID 4：独立访问、交错块奇偶校验。</span><br><span class="line">RAID 5：独立访问、交错块分布奇偶校验。</span><br><span class="line">RAID 6：独立访问、交错块双重分布奇偶校验。</span><br><span class="line"></span><br><span class="line">#### 11.8 典型的磁盘扇区大小是多少？</span><br><span class="line"></span><br><span class="line">答：512字节。</span><br><span class="line"></span><br><span class="line">## CH 12</span><br><span class="line"></span><br><span class="line">### 文件、文件系统</span><br><span class="line"></span><br><span class="line">文件拥有的属性：</span><br><span class="line"></span><br><span class="line">![image-20210706214338989](C:\Users\10147\AppData\Roaming\Typora\typora-user-images\image-20210706214338989.png)</span><br><span class="line"></span><br><span class="line">文件系统不但提供存储数据（组织为文件）的手段，而且提供一系列对文件进行操作的功能接口。典型的操作如下：</span><br><span class="line"></span><br><span class="line">- 创建：在文件结构中定义并定位一个新文件。</span><br><span class="line">- 删除：从文件结构中删除并销毁一个文件。</span><br><span class="line">- 打开：进程将一个已有文件声明为“打开”状态，以便允许该进程对这个文件进行操作。</span><br><span class="line">- 关闭：相关进程关闭一个文件，以便不再能对该文件进行操作，直到该进程再次打开它。</span><br><span class="line">- 读：进程读取文件中的所有或部分数据。</span><br><span class="line">- 写：进程更新文件，要么通过添加新数据来扩大文件的尺寸，要么通过改变文件中已有数据项的值。</span><br><span class="line"></span><br><span class="line">### 文件的分类</span><br><span class="line"></span><br><span class="line">​	正规文件（Regular file）、特殊文件（Device Special File）、目录（Directory）、管道（Pipe：Anonymous Pipe/Named Pipe）等</span><br><span class="line"></span><br><span class="line">### 文件的常见操作</span><br><span class="line"></span><br><span class="line">**树形结构**</span><br><span class="line"></span><br><span class="line">![image-20210707010637386](C:\Users\10147\AppData\Roaming\Typora\typora-user-images\image-20210707010637386.png)</span><br><span class="line"></span><br><span class="line">​		路径及分类</span><br><span class="line"></span><br><span class="line">**根目录与当前目录（Root Directory and Current Directory/Working Directory）**</span><br><span class="line"></span><br><span class="line">**绝对路径与相对路径（Absolute Path and Relative Path）**</span><br><span class="line"></span><br><span class="line">**文件结构（字节流结构）**</span><br><span class="line"></span><br><span class="line">**磁盘空间的分配方法及优缺点**</span><br><span class="line"></span><br><span class="line">**磁盘块地址/编号**</span><br><span class="line"></span><br><span class="line">**连续分配**</span><br><span class="line"></span><br><span class="line">![image-20210706214908088](C:\Users\10147\AppData\Roaming\Typora\typora-user-images\image-20210706214908088.png)</span><br><span class="line"></span><br><span class="line">**不连续分配（链式分配、索引分配）**</span><br><span class="line"></span><br><span class="line">- 链式分配后局部性原理不再适用</span><br><span class="line"></span><br><span class="line">  ![image-20210706214924113](C:\Users\10147\AppData\Roaming\Typora\typora-user-images\image-20210706214924113.png)</span><br><span class="line"></span><br><span class="line">- 索引分配</span><br><span class="line"></span><br><span class="line">![image-20210706215018887](C:\Users\10147\AppData\Roaming\Typora\typora-user-images\image-20210706215018887.png)</span><br><span class="line"></span><br><span class="line">**空闲空间的记录**：</span><br><span class="line"></span><br><span class="line">需要磁盘分配表(DiskAllocation Table, DAT) </span><br><span class="line"></span><br><span class="line">**基于i-node的Unix文件系统**</span><br><span class="line"></span><br><span class="line">**文件的同时存取**</span><br><span class="line"></span><br><span class="line">**文件的访问权限**</span><br><span class="line"></span><br><span class="line">**i-node的结构**</span><br><span class="line"></span><br><span class="line">**基于i-node的路径分析**</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line">12.1 域和记录有何不同？</span><br><span class="line">答：域（field）是基本的数据单元。一个域包含一个值，如雇员的名字、日期或传感器读取的值。域可通过其长度和数据类型（如ASCII字符串、二进制数等）来描述。域的长度可以是定长的或变长的，具体取决于文件的设计。对于后一种情况，域通常包含两个或三个子域：要保存的实际值、域名，以及某些情况下的域长度。在其他情况下，域之间特殊的分隔符暗示了域的长度。</span><br><span class="line">记录（record）是一组相关域的集合，可视为应用程序的一个单元。例如，一条雇员记录可能包含以下域：名字、社会保险号、工作类型、雇用日期等。同样，记录的长度也可以是定长的或变长的，具体取决于设计。如果一条记录中的某些域是变长的，或记录中域的数量可变，则该记录是变长。对于后一种情况，每个域通常都有一个域名。对于这两种情况，整条记录通常都包含一个长度域。</span><br><span class="line"></span><br><span class="line">12.2 文件和数据库有何不同？</span><br><span class="line">答：文件是一组相似记录的集合，它被用户和应用程序视为一个实体，并可通过名字访问。文件有唯一的一个文件名，可被创建或删除。访问控制通常在文件级实施，也就是说，在共享系统中，用户和程序被允许或被拒绝访问整个文件。在有些更复杂的系统中，这类控制也可在记录级或域集实施。</span><br><span class="line">数据库是一组相关的数据的集合，其本质特征是数据元素间存在着明确的关系，且可供不同的应用程序使用。数据库可能包含与一个组织或项目相关的所有信息，如一家商店或一项科学研究。数据库自身由一种或多种类型的文件组成。通常，数据库管理系统是独立于操作系统的，尽管它可能会使用某些文件管理程序。</span><br><span class="line"></span><br><span class="line">12.3 什么是文件管理系统？</span><br><span class="line">答：文件管理系统是一组系统软件，它为使用文件的用户和应用程序提供服务。典型情况下，文件管理系统是用户或应用程序访问文件的唯一方式，它可使得用户或程序员不需要为每个应用程序开发专用软件，并为系统提供控制最重要资源的方法。</span><br><span class="line"></span><br><span class="line">12.4 选择文件组织时的重要原则是什么？</span><br><span class="line">答：快速访问、易于修改、节约存储空间、维护简单、可靠性。</span><br><span class="line"></span><br><span class="line">12.5 列出并简单定义5种文件组织。</span><br><span class="line">答：</span><br><span class="line">堆：是最简单的文件组织形式。数据按它们到达的顺序被收集，每条记录由一串数据组成。</span><br><span class="line">顺序文件：是最常用的文件组织形式。在这类文件中，每条记录都使用一种固定的格式。所有记录有具有相同的长度，并由相同数量、长度固定的域按特定的顺序组成。</span><br><span class="line">索引顺序文件：保留了顺序文件的关键特征：记录按照关键域的顺序组织。但它增加了两个特征：用于支持随机访问的文件索引和溢出文件。溢出文件类似于顺序文件中使用的日志文件，但溢出文件中的记录可根据它前面记录的指针进行定位。</span><br><span class="line">索引文件：只能通过索引来访问记录。</span><br><span class="line">直接文件或散列文件：开发直接访问磁盘中任何一个地址已知的块的能力。</span><br><span class="line"></span><br><span class="line">12.6 为何在索引顺序文件中查找一条记录的平均时间小于在顺序文件中的平均时间？</span><br><span class="line">答：索引提供了快速接近目标记录的查找能力。考虑一个包含100万条记录的顺序文件。要查找某个特定的关键域值，平均需要访问50万次记录。现在假设创建一个包含了1000项的索引，索引中的关键域均匀分布在主文件中。为找到这条记录，平均只需在索引文件中进行500次访问，接着在主文件中进行500次访问。查找的开销从500000降低到了1000。</span><br><span class="line"></span><br><span class="line">12.7 对目录执行的典型操作有哪些？</span><br><span class="line">答：查找、创建文件、删除文件、显示目录、修改目录。</span><br><span class="line"></span><br><span class="line">12.8 路径名和工作目录有何关系？</span><br><span class="line">答：一系列目录名和最后到达的文件名组成了该文件的路径名（pathname）。对交互用户或进程而言，总有一个当前路径与之相关联，通常称为工作目录（working directory）。</span><br><span class="line"></span><br><span class="line">12.9 可以授予或拒绝的某个特定用户对某个特定文件的访问权限通常有哪些？</span><br><span class="line">答：无、知道、执行、读、追加、更新、改变保护、删除。</span><br><span class="line"></span><br><span class="line">12.10 列出并简单定义三种组块方法。</span><br><span class="line">答：</span><br><span class="line">定长组块（fixed blocking）： 使用定长的记录，且若干完整的记录保存在一个块中。在每个块的末尾可能会有一些未使用的空间，称为内部碎片。</span><br><span class="line">变长跨越式组块（variable-length spanned blocking）： 使用变长的记录，并紧缩到块中，使得块中不存在未使用的空间。因此，某些记录可能会跨越两个块，两个块通过一个指向后续块的指针连接。</span><br><span class="line">变长非跨越式组块（variable-length unspanned blocking）： 使用变长的记录，但并不采用跨越方式。若下一条记录比块中剩余的未使用空间大，则无法使用这一部分，因此在大多数块中都会有未使用的空间。</span><br><span class="line"></span><br><span class="line">12.11 列出并简单定义三种文件分配方法。</span><br><span class="line">答：</span><br><span class="line">连续分配（continuous allocation）： 是指在创建文件时，给文件分配一组连续的块。</span><br><span class="line">链式分配（chained allocation）： 基于单个块，链中的每块都包含指向下一块的指针。</span><br><span class="line">索引分配（indexed allocation）： 每个文件在文件分配表中都有一个索引。分配给该文件的每个分区在索引中都有一个表项</span><br><span class="line">	</span><br><span class="line"></span><br><span class="line">## 预测题</span><br><span class="line"></span><br><span class="line">### 填空</span><br><span class="line"></span><br><span class="line">1. 产生死锁的必要条件</span><br><span class="line">   - 互斥：只有对必须互斥使用的资源的争夺才会导致死锁</span><br><span class="line">   - 不可抢占：进程所获得的资源在未使用完之前，不能由其他进程强行夺走，只能主动释放</span><br><span class="line">   - 占有且等待：当一个进程等待其他进程时，继续占有已分配的资源。</span><br><span class="line">   - 循环等待：存在一种进程资源的循环等待链，链中的每一个进程已获得的资源同时被下一个进程请求。</span><br><span class="line">2. 产生死锁的原因</span><br><span class="line">   - 竞争临界资源：各个进程对不可剥夺的资源的竞争可能引起死锁</span><br><span class="line">   - 进程推进顺序不当：进程推进顺序非法，请求和释放资源的顺序不当</span><br><span class="line"></span><br><span class="line">### 简答</span><br><span class="line"></span><br><span class="line">### 1.What is the kernel of an os?[1.2]</span><br><span class="line"></span><br><span class="line">### 2.What is multiprogramming?[1.3]</span><br><span class="line"></span><br><span class="line">### 3.Expalin the distination between a monolithic kernal and a microkernel.[1.9]</span><br><span class="line"></span><br><span class="line">​	单体内核（monolithic kernel）提供操作系统应提供的多数功能，包括调度、文件系统、网络、设备驱动器、存储管理等。典型情况下，这个大内核是作为一个进程来实现的，所有元素都共享相同的地址空间。微内核体系结构（microkernel architecture）只给内核分配一些最基本的功能，包括地址空间、进程间通信(Inter Process Communication, IPC)和基本的调度。</span><br><span class="line"></span><br><span class="line">### 4.[2.2]</span><br><span class="line"></span><br><span class="line">### 5.[2.5]</span><br><span class="line"></span><br><span class="line">### 6.[2.12]</span><br><span class="line"></span><br><span class="line">### 7.[3.2]</span><br><span class="line"></span><br><span class="line">### 8.[3.6]</span><br><span class="line"></span><br><span class="line">### 9.[8.2]</span><br><span class="line"></span><br><span class="line">### 10.[9.2]</span><br><span class="line"></span><br><span class="line">### 11.[9.6]</span><br><span class="line"></span><br><span class="line">### 12.[9.8]</span><br><span class="line"></span><br><span class="line">### 13.[5.3]</span><br><span class="line"></span><br><span class="line">### 14.[6.1]</span><br><span class="line"></span><br><span class="line">### 15.[6.8]</span><br><span class="line"></span><br><span class="line">### 16.[6.9]</span><br><span class="line"></span><br><span class="line">### 17.</span><br><span class="line"></span><br><span class="line">**什么是死锁？什么是饥饿？两者之间的共同点和区别是什么**</span><br><span class="line"></span><br><span class="line">- 死锁：指两个或两个以上的进程在执行过程中，因争夺资源而造成的一种互相等待，导致各进程都阻塞，无法向前推进的现象。</span><br><span class="line">- 饥饿：由于长期得不到想要的资源，某进程无法向前推进的现象</span><br><span class="line">- 共同点：都是进程无法顺利向前推进的现象</span><br><span class="line">- 不同点：如果有死锁现象，那么至少有两个或者两个以上的进程同时发生死锁，且发生死锁的进程一定处于阻塞态。但对于饥饿而言，可能只有一个进程发生饥饿，发生饥饿的进程既可以是阻塞态，也可以是就绪态。</span><br><span class="line"></span><br><span class="line">**死锁的处理策略有哪些？**</span><br><span class="line"></span><br><span class="line">- 预防死锁：破坏死锁产生的四个必要条件中的一个或几个</span><br><span class="line">  - 互斥：很多时候无法破坏互斥条件</span><br><span class="line">  - 不可抢占：</span><br><span class="line">    - 当某个进程请求新的资源得不到满足时，必须立即释放保持的所有资源，待以后需要时再重新申请。</span><br><span class="line">    - 当某个进程需要的资源被其他进程所占有的时候，可以有操作系统写出，将想要的资源强行抢占，这种方式需要考虑各个进程的优先级。</span><br><span class="line">    - 缺点是实现起来比较复杂，且释放已经互动二资源可能会造成前一阶段工作的失效。</span><br><span class="line">  - 占有且等待：可以要求进程一次性地请求所有需要的资源，并阻塞这个进程直到所有请求都同时满足</span><br><span class="line">  - 循环等待：可以采用顺序资源分配法，首先给系统中的资源编号，规定每个进程必须按照编号递增的顺序请求资源，同类资源一次申请完。</span><br><span class="line">  - ![img](https://img2018.cnblogs.com/blog/1358881/201909/1358881-20190927184318218-1388735870.png)</span><br><span class="line">- 避免死锁：用某种方法组织系统进入不安全状态，从而避免死锁</span><br><span class="line">  - 死锁避免需要直到未来几次资源请求的情况</span><br><span class="line">  - 两种避免方法：1.若一个进程的请求会导致死锁，则不启动该进程 2.若一个进程增加的资源请求会导致死锁，则不允许这一资源分配【银行家算法】。</span><br><span class="line">- 死锁的检测和接触：允许死锁的发生，不过OS会负责检测除死锁的发生，然后采取某种措施解除死锁。</span><br><span class="line"></span><br><span class="line">### 大题</span><br><span class="line"></span><br><span class="line">注:</span><br><span class="line"></span><br><span class="line">构造parbegin(P1,P2,......,pn)的含义为：阻塞	主程序，初始化并行过程P1.P2,...,Pn过程全部终止之后，才恢复主程序的执行</span><br><span class="line"></span><br><span class="line">##### **1.生产者消费者问题**</span><br><span class="line"></span><br><span class="line">![img](https://img2018.cnblogs.com/blog/1358881/201909/1358881-20190916201239112-1683803912.png)</span><br><span class="line"></span><br><span class="line">![img](https://img2018.cnblogs.com/blog/1358881/201909/1358881-20190915135612260-1362223675.png)</span><br><span class="line"></span><br><span class="line">```C</span><br><span class="line">semaphore mutex = 1;  //互斥信号量</span><br><span class="line">semaphore empty = n;  //同步信号量。空闲缓冲区的数量</span><br><span class="line">semaphore full = 0;   //同步信号量。产品的数量，非空缓冲区的数量</span><br><span class="line">void producer()&#123;</span><br><span class="line">    while(1)&#123;</span><br><span class="line">      produce()；//生成一个产品</span><br><span class="line">      semWait(empty); //消耗一个空闲缓冲区</span><br><span class="line">      semWait(mutex);</span><br><span class="line">      append();	//把产品放入缓冲区</span><br><span class="line">      semSignal(mutex);</span><br><span class="line">      semSignal(full)   //增加一个产品</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line">void consumer()&#123;</span><br><span class="line">    while(1)&#123;</span><br><span class="line">      semWait(full);   //消耗一个产品</span><br><span class="line">      semWait(mutex);</span><br><span class="line">      take();	//从缓冲区取出一个产品;</span><br><span class="line">      semSignal(mutex);</span><br><span class="line">      semSignal(empty);  //增加一个空闲缓冲区</span><br><span class="line">      consume(); //使用产品;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line">void main()</span><br><span class="line">&#123;</span><br><span class="line">    parbegin(producer,consumer);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></li>
+</ul>
+</li>
+</ul>
+<p><img src="https://img2018.cnblogs.com/blog/1358881/201909/1358881-20190916204052236-777473199.png" alt="img"></p>
+<h5 id="2-读者-x2F-写者问题"><a href="#2-读者-x2F-写者问题" class="headerlink" title="2.读者&#x2F;写者问题"></a>2.读者&#x2F;写者问题</h5><ul>
+<li><p>问题要求</p>
+<ul>
+<li>任意数量的读进程可同时读这个文件</li>
+<li>一次只有一个写进程可以写文件</li>
+<li>若一个写进程正在写文件，则禁止任何读进程读文件</li>
+</ul>
+</li>
+<li><p>读者优先方案</p>
+<ul>
+<li>数据结构及信号量：<ul>
+<li>信号量<strong>wsem</strong>：用于实施互斥。对于写进程</li>
+<li>全局变量<strong>readcount</strong>：用于记录读进程的数量</li>
+<li>信号量<strong>mutex</strong>：用于确保readcount被正确地更新。</li>
+</ul>
+</li>
+<li>思想：<ul>
+<li>对于写进程而言：只要有一个写进程正在访问共享数据去，其他进程（读，写）都不可以访问它。</li>
+<li>对于读进程而言：也用信号量wsm实施互斥，当至少有一个读进程在读时，随后的进程无需等待，可以直接进入</li>
+</ul>
+</li>
+<li>算法代码</li>
+</ul>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">int</span> readcount;</span><br><span class="line">semaphore mutex=<span class="number">1</span>,wsem=<span class="number">1</span>;</span><br><span class="line"><span class="type">void</span> <span class="title function_">reader</span><span class="params">()</span>&#123;</span><br><span class="line">    <span class="keyword">while</span>(<span class="number">1</span>)&#123;</span><br><span class="line">        semWait(mutex);</span><br><span class="line">        <span class="keyword">if</span>(readcount == <span class="number">0</span>)</span><br><span class="line">            semWait(wsem);</span><br><span class="line">        readcount++;</span><br><span class="line">        semSignal(mutex);</span><br><span class="line">        读;</span><br><span class="line">        sewWait(mutex);</span><br><span class="line">        readcount--;	<span class="comment">//不读了</span></span><br><span class="line">        <span class="keyword">if</span> (readcount == <span class="number">0</span>)</span><br><span class="line">            semSignal(wsem);</span><br><span class="line">        semSignal(mutex);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"><span class="type">void</span> <span class="title function_">writer</span><span class="params">()</span>&#123;</span><br><span class="line">    <span class="keyword">while</span>(<span class="number">1</span>)&#123;</span><br><span class="line">        semWait(wsem);</span><br><span class="line">        写;</span><br><span class="line">        semSignal(wsem);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"><span class="type">void</span> <span class="title function_">main</span><span class="params">()</span>&#123;</span><br><span class="line">    readcount = <span class="number">0</span>;</span><br><span class="line">    parbegin(writer,reader)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>写者优先方案</p>
+<ul>
+<li><p>不参考书上的解决方案了</p>
+</li>
+<li><p>新加入一个锁变量w，用于实现“写优先”</p>
+</li>
+<li><p><img src="https://img2018.cnblogs.com/blog/1358881/201909/1358881-20190918084250171-1423113268.png" alt="img"></p>
+</li>
+<li><p>这里我们来分析一下读者1-&gt;写者1-&gt;读者2这种情况。第一个读者1在进行到读文件操作的时候，有一个写者1操作，由于第一个读者1执行了V(w)，所以写者1不会阻塞在P(w)，但由于第一个读者1执行了P(rw)但没有执行V(rw)，写者1将会被阻塞在P(rw)上，这时候再有一个读者2，由于前面的写者1进程执行了P(w)但没有执行V(w)，所以读者2将会被阻塞在P(w)上，这样写者1和读者2都将阻塞，只有当读者1结束时执行V(rw)，此时写者1才能够继续执行直到执行V(w)，读者2也将能够执行下去。</p>
+</li>
+<li><p>代码</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">int</span> readcount;</span><br><span class="line">semaphore mutex=<span class="number">1</span>,wsem=<span class="number">1</span>,w=<span class="number">1</span>;</span><br><span class="line"><span class="type">void</span> <span class="title function_">reader</span><span class="params">()</span>&#123;</span><br><span class="line">    <span class="keyword">while</span>(<span class="number">1</span>)&#123;</span><br><span class="line">        semWait(w);</span><br><span class="line">        semWait(mutex);</span><br><span class="line">        <span class="keyword">if</span>(readcount == <span class="number">0</span>)</span><br><span class="line">            semWait(wsem);</span><br><span class="line">        readcount++;</span><br><span class="line">        semSignal(mutex);</span><br><span class="line">        semSignal(w);</span><br><span class="line">        读;</span><br><span class="line">        sewWait(mutex);</span><br><span class="line">        readcount--;	<span class="comment">//不读了</span></span><br><span class="line">        <span class="keyword">if</span> (readcount == <span class="number">0</span>)</span><br><span class="line">            semSignal(wsem);</span><br><span class="line">        semSignal(mutex);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"><span class="type">void</span> <span class="title function_">writer</span><span class="params">()</span>&#123;</span><br><span class="line">    <span class="keyword">while</span>(<span class="number">1</span>)&#123;</span><br><span class="line">        semWait(w);</span><br><span class="line">        semWait(wsem);</span><br><span class="line">        写;</span><br><span class="line">        semSignal(wsem);</span><br><span class="line">        semSignal(w);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"><span class="type">void</span> <span class="title function_">main</span><span class="params">()</span>&#123;</span><br><span class="line">    readcount = <span class="number">0</span>;</span><br><span class="line">    parbegin(writer,reader)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></li>
+</ul>
+</li>
+</ul>
+<h5 id="3-哲学家就餐问题"><a href="#3-哲学家就餐问题" class="headerlink" title="3.哲学家就餐问题"></a>3.哲学家就餐问题</h5><img src="C:\Users\10147\AppData\Roaming\Typora\typora-user-images\image-20210703092242763.png" alt="image-20210703092242763" style="zoom: 67%;" />
+
+<p>解决方案思路：</p>
+<p>增加一名服务员，他只允许四位哲学家同时进入餐厅，因为至少有一位哲学家可以拿到两把叉子</p>
+<p>代码：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line">semaphore fork[<span class="number">5</span>]=&#123;<span class="number">1</span>&#125;;</span><br><span class="line">semaphore room=<span class="number">4</span>;</span><br><span class="line"><span class="type">int</span> i;</span><br><span class="line"><span class="type">void</span> <span class="title function_">philosopher</span> <span class="params">(<span class="type">int</span> i)</span></span><br><span class="line">&#123;</span><br><span class="line">	<span class="keyword">while</span>(<span class="literal">true</span>)&#123;</span><br><span class="line">        think();</span><br><span class="line">        wait(room);		<span class="comment">//room锁p操作</span></span><br><span class="line">        wait(fork[i]);	<span class="comment">//拿起左边叉子</span></span><br><span class="line">        wait(fork[(i+<span class="number">1</span>) mod <span class="number">5</span>]);<span class="comment">//拿起右边叉子</span></span><br><span class="line">        eat();</span><br><span class="line">        signal(fork[(i+<span class="number">1</span>) mod <span class="number">5</span>]);<span class="comment">//放下右边叉子</span></span><br><span class="line">        signal(fork[i]);	<span class="comment">//放下左边叉子</span></span><br><span class="line">        signal(room);	<span class="comment">//room锁v操作</span></span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"><span class="type">void</span> <span class="title function_">main</span><span class="params">()</span></span><br><span class="line">&#123;</span><br><span class="line">  	parbegin(philosopher(<span class="number">0</span>),philosopher(<span class="number">1</span>),philosopher(<span class="number">2</span>),philosopher(<span class="number">3</span>),philosopher(<span class="number">4</span>))</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h5 id="4-资源分配拒绝策略【银行家算法banker-algorithm】"><a href="#4-资源分配拒绝策略【银行家算法banker-algorithm】" class="headerlink" title="4.资源分配拒绝策略【银行家算法banker algorithm】"></a>4.资源分配拒绝策略【银行家算法banker algorithm】</h5><ul>
+<li><p>安全序列</p>
+<ul>
+<li>所谓安全序列，就是指如果系统按照这种序列分配资源，则每个进程都能顺利完成。只要能找出一个安全序列，系统就是安全状态。安全系列可能有多个。</li>
+<li>如果找不出任何一个安全序列，系统就进入了不安全状态，这意味着之后可能所有进程都无法顺利地执行下去，<strong>如果有进程提前</strong>归还了一些资源，那么系统也有可能重新回到安全状态。</li>
+<li>出于安全状态一定不会发生死锁，进入不安全状态不一定会发生死锁。</li>
+</ul>
+</li>
+<li><p>算法实现</p>
+<ul>
+<li><p>数据结构：</p>
+<p>Claim矩阵C【最大需求】</p>
+<p>Allocation矩阵A【当前已分配】</p>
+<p>Resource向量R【初始总的资源有多少】</p>
+<p>Available向量V【现在还有多少资源可以分配】</p>
+<p>C-A矩阵【最大需求-已经分配&#x3D;还需要的资源矩阵】</p>
+</li>
+<li><p>算法步骤：</p>
+<ul>
+<li>先计算C-A</li>
+<li>找到满足（C-A）ij &lt;&#x3D;  V ij 的对应资源，这就是本次分配的资源Pi</li>
+<li>V矩阵+&#x3D;本次分配的资源Pi的A矩阵【手头又有资源了】</li>
+<li>重复第一步，直到找到一个安全序列。</li>
+</ul>
+</li>
+<li><p>实战：</p>
+<ul>
+<li><img src="https://img-blog.csdnimg.cn/20200629120616713.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L2FvX21pa2U=,size_16,color_FFFFFF,t_70" alt="img"></li>
+<li><img src="C:\Users\10147\AppData\Roaming\Typora\typora-user-images\image-20210703102530255.png" alt="image-20210703102530255"></li>
+<li>资源分配拒绝策略的限制：<ul>
+<li>必须事先声明每个进程请求的最大资源</li>
+<li>所讨论的进程必须是无关的，即它们的执行顺序必须没有任何同步要求的限制</li>
+<li>分配的资源数量必须是固定的</li>
+<li>在占有资源时，进程不退出【如果先退出，那么这个安全序列就没用了】</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<h5 id="5-pro-2-2"><a href="#5-pro-2-2" class="headerlink" title="5.pro[2.2]"></a>5.pro[2.2]</h5><h5 id="6-8-2"><a href="#6-8-2" class="headerlink" title="6.[8.2]"></a>6.[8.2]</h5><h5 id="7-9-7"><a href="#7-9-7" class="headerlink" title="7.[9.7]"></a>7.[9.7]</h5><h5 id="8-4-2"><a href="#8-4-2" class="headerlink" title="8.[4.2]"></a>8.[4.2]</h5><h5 id="9-5-5"><a href="#9-5-5" class="headerlink" title="9.[5.5]"></a>9.[5.5]</h5><h5 id="10-6-12"><a href="#10-6-12" class="headerlink" title="10.[6.12]"></a>10.[6.12]</h5><h5 id="11-6-13"><a href="#11-6-13" class="headerlink" title="11.[6.13]"></a>11.[6.13]</h5><h5 id="12-7-4"><a href="#12-7-4" class="headerlink" title="12.[7.4]"></a>12.[7.4]</h5><h5 id="13-7-15"><a href="#13-7-15" class="headerlink" title="13.[7.15]"></a>13.[7.15]</h5><h5 id="14-10-12"><a href="#14-10-12" class="headerlink" title="14.[10.12]"></a>14.[10.12]</h5><h5 id="15-磁盘调度策略"><a href="#15-磁盘调度策略" class="headerlink" title="15.磁盘调度策略"></a>15.磁盘调度策略</h5><h5 id="16-进程调度策略"><a href="#16-进程调度策略" class="headerlink" title="16.进程调度策略"></a>16.进程调度策略</h5>
+    </div>
+
+    
+    
+    
+        
+
+<div>
+<ul class="post-copyright">
+  <li class="post-copyright-author">
+    <strong>本文作者： </strong>Wanjia Huang
+  </li>
+  <li class="post-copyright-link">
+    <strong>本文链接：</strong>
+    <a href="http://example.com/2021/06/15/OS%E6%9C%9F%E6%9C%AB%E5%A4%8D%E4%B9%A0/" title="【笔记】OS期末复习">http://example.com/2021/06/15/OS期末复习/</a>
+  </li>
+  <li class="post-copyright-license">
+    <strong>版权声明： </strong>本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" rel="noopener" target="_blank"><i class="fab fa-fw fa-creative-commons"></i>BY-NC-SA</a> 许可协议。转载请注明出处！
+  </li>
+</ul>
+</div>
+
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/OS/" rel="tag"># OS</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2021/01/13/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/" rel="prev" title="【笔记】数据结构期末复习">
+      <i class="fa fa-chevron-left"></i> 【笔记】数据结构期末复习
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2021/07/04/%E7%AE%97%E6%B3%95%E5%88%86%E6%9E%90%E4%B8%8E%E8%AE%BE%E8%AE%A1/" rel="next" title="【笔记】算法分析与设计">
+      【笔记】算法分析与设计 <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#CH3-%E8%BF%9B%E7%A8%8B%E6%8F%8F%E8%BF%B0%E5%92%8C%E6%8E%A7%E5%88%B6"><span class="nav-number">1.</span> <span class="nav-text">CH3 进程描述和控制</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%BB%80%E4%B9%88%E6%98%AF%E8%BF%9B%E7%A8%8B"><span class="nav-number">1.1.</span> <span class="nav-text">什么是进程</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%BF%9B%E7%A8%8B%E7%8A%B6%E6%80%81"><span class="nav-number">1.2.</span> <span class="nav-text">进程状态</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%BF%9B%E7%A8%8B%E6%8F%8F%E8%BF%B0"><span class="nav-number">1.3.</span> <span class="nav-text">进程描述</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%BF%9B%E7%A8%8B%E6%8E%A7%E5%88%B6"><span class="nav-number">1.4.</span> <span class="nav-text">进程控制</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F%E7%9A%84%E6%89%A7%E8%A1%8C"><span class="nav-number">1.5.</span> <span class="nav-text">操作系统的执行</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%BF%9B%E7%A8%8B%E6%8C%82%E8%B5%B7%E7%9A%84%E7%89%B9%E7%82%B9"><span class="nav-number">1.6.</span> <span class="nav-text">进程挂起的特点</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#SVR4-%E8%BF%9B%E7%A8%8B%E7%AE%A1%E7%90%86"><span class="nav-number">1.7.</span> <span class="nav-text">SVR4 进程管理</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#CH-4-%E7%BA%BF%E7%A8%8B"><span class="nav-number">2.</span> <span class="nav-text">CH 4 线程</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%BF%9B%E7%A8%8B%E5%92%8C%E7%BA%BF%E7%A8%8B"><span class="nav-number">2.1.</span> <span class="nav-text">进程和线程</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%BA%BF%E7%A8%8B%E7%8A%B6%E6%80%81%EF%BC%88%E7%94%9F%E5%91%BD%E6%9C%9F%EF%BC%89"><span class="nav-number">2.2.</span> <span class="nav-text">线程状态（生命期）</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%B9%B6%E5%8F%91%E4%B8%8E%E5%B9%B6%E8%A1%8C-x2F-%E8%BF%9B%E7%A8%8B%E5%B9%B6%E5%8F%91%E7%9A%84%E5%AE%9E%E7%8E%B0%EF%BC%88interleaving%E5%92%8Coverlapping%EF%BC%89"><span class="nav-number">2.3.</span> <span class="nav-text">并发与并行&#x2F;进程并发的实现（interleaving和overlapping）</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#CH-5-%E5%B9%B6%E5%8F%91%E6%80%A7%EF%BC%9A%E4%BA%92%E6%96%A5%E5%92%8C%E5%90%8C%E6%AD%A5"><span class="nav-number">3.</span> <span class="nav-text">CH 5 并发性：互斥和同步</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%85%B1%E4%BA%AB%E8%B5%84%E6%BA%90%EF%BC%88Shared-Resource%EF%BC%89"><span class="nav-number">3.1.</span> <span class="nav-text">共享资源（Shared Resource）</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%AB%9E%E4%BA%89%E6%9D%A1%E4%BB%B6%EF%BC%88race-condition%EF%BC%89"><span class="nav-number">3.2.</span> <span class="nav-text">竞争条件（race condition）</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%B8%B4%E7%95%8C%E5%8C%BA%EF%BC%88critical-section-x2F-region%EF%BC%89"><span class="nav-number">3.3.</span> <span class="nav-text">临界区（critical section&#x2F;region）</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%A1%AC%E4%BB%B6%E8%A7%A3%E5%86%B3%E6%96%B9%E6%A1%88%EF%BC%9A%E5%85%B3%E4%B8%AD%E6%96%AD%E3%80%81TSL%E5%92%8CExchange%E6%8C%87%E4%BB%A4"><span class="nav-number">3.4.</span> <span class="nav-text">硬件解决方案：关中断、TSL和Exchange指令</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#2-%E8%AF%BB%E8%80%85-x2F-%E5%86%99%E8%80%85%E9%97%AE%E9%A2%98"><span class="nav-number">3.4.0.1.</span> <span class="nav-text">2.读者&#x2F;写者问题</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#3-%E5%93%B2%E5%AD%A6%E5%AE%B6%E5%B0%B1%E9%A4%90%E9%97%AE%E9%A2%98"><span class="nav-number">3.4.0.2.</span> <span class="nav-text">3.哲学家就餐问题</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#4-%E8%B5%84%E6%BA%90%E5%88%86%E9%85%8D%E6%8B%92%E7%BB%9D%E7%AD%96%E7%95%A5%E3%80%90%E9%93%B6%E8%A1%8C%E5%AE%B6%E7%AE%97%E6%B3%95banker-algorithm%E3%80%91"><span class="nav-number">3.4.0.3.</span> <span class="nav-text">4.资源分配拒绝策略【银行家算法banker algorithm】</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#5-pro-2-2"><span class="nav-number">3.4.0.4.</span> <span class="nav-text">5.pro[2.2]</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#6-8-2"><span class="nav-number">3.4.0.5.</span> <span class="nav-text">6.[8.2]</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#7-9-7"><span class="nav-number">3.4.0.6.</span> <span class="nav-text">7.[9.7]</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#8-4-2"><span class="nav-number">3.4.0.7.</span> <span class="nav-text">8.[4.2]</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#9-5-5"><span class="nav-number">3.4.0.8.</span> <span class="nav-text">9.[5.5]</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#10-6-12"><span class="nav-number">3.4.0.9.</span> <span class="nav-text">10.[6.12]</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#11-6-13"><span class="nav-number">3.4.0.10.</span> <span class="nav-text">11.[6.13]</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#12-7-4"><span class="nav-number">3.4.0.11.</span> <span class="nav-text">12.[7.4]</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#13-7-15"><span class="nav-number">3.4.0.12.</span> <span class="nav-text">13.[7.15]</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#14-10-12"><span class="nav-number">3.4.0.13.</span> <span class="nav-text">14.[10.12]</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#15-%E7%A3%81%E7%9B%98%E8%B0%83%E5%BA%A6%E7%AD%96%E7%95%A5"><span class="nav-number">3.4.0.14.</span> <span class="nav-text">15.磁盘调度策略</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#16-%E8%BF%9B%E7%A8%8B%E8%B0%83%E5%BA%A6%E7%AD%96%E7%95%A5"><span class="nav-number">3.4.0.15.</span> <span class="nav-text">16.进程调度策略</span></a></li></ol></li></ol></li></ol></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="Wanjia Huang"
+      src="https://i.loli.net/2020/07/12/D6CZiKA4O2jmwus.jpg">
+  <p class="site-author-name" itemprop="name">Wanjia Huang</p>
+  <div class="site-description" itemprop="description">向分布式存储探索</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">25</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">6</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">11</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://https//github.com/Hackerismydream" title="GitHub → https:&#x2F;&#x2F;https:&#x2F;&#x2F;github.com&#x2F;Hackerismydream" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="/1014774261@qq.com" title="E-Mail → 1014774261@qq.com"><i class="fa fa-envelope fa-fw"></i>E-Mail</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://www.zhihu.com/people/huang-wan-jia-12" title="知乎 → https:&#x2F;&#x2F;www.zhihu.com&#x2F;people&#x2F;huang-wan-jia-12" rel="noopener" target="_blank"><i class="gratipay fa-fw"></i>知乎</a>
+      </span>
+  </div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2022</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Wanjia Huang</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://mist.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Mist</a> 强力驱动
+  </div>
+
+
+    <script async src="//dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+    <span id="busuanzi_container_site_pv">总访问量<span id="busuanzi_value_site_pv"></span>次</span>
+    <span class="post-meta-divider">|</span>
+    <span id="busuanzi_container_site_uv">总访客数<span id="busuanzi_value_site_uv"></span>人</span>
+    <span class="post-meta-divider">|</span>
+<!-- 不蒜子计数初始值纠正 -->
+<script>
+$(document).ready(function() {
+
+    var int = setInterval(fixCount, 50);  // 50ms周期检测函数
+    var countOffset = 20000;  // 初始化首次数据
+
+    function fixCount() {            
+       if (document.getElementById("busuanzi_container_site_pv").style.display != "none")
+        {
+            $("#busuanzi_value_site_pv").html(parseInt($("#busuanzi_value_site_pv").html()) + countOffset); 
+            clearInterval(int);
+        }                  
+        if ($("#busuanzi_container_site_pv").css("display") != "none")
+        {
+            $("#busuanzi_value_site_uv").html(parseInt($("#busuanzi_value_site_uv").html()) + countOffset); // 加上初始数据 
+            clearInterval(int); // 停止检测
+        }  
+    }
+       	
+});
+</script> 
+
+        
+<div class="busuanzi-count">
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+    <span class="post-meta-item" id="busuanzi_container_site_uv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-user"></i>
+      </span>
+      <span class="site-uv" title="总访客量">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item" id="busuanzi_container_site_pv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-eye"></i>
+      </span>
+      <span class="site-pv" title="总访问量">
+        <span id="busuanzi_value_site_pv"></span>
+      </span>
+    </span>
+</div>
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/muse.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+</body>
+</html>

@@ -1,0 +1,1284 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 6.2.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+  <link rel="stylesheet" href="/lib/pace/pace-theme-minimal.min.css">
+  <script src="/lib/pace/pace.min.js"></script>
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"example.com","root":"/","scheme":"Mist","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+  </script>
+
+  <meta name="description" content="​	2021年JAVA期末复习笔记 Java语言基础 动态数组的创建 123456789101112public static void main(String[] args) &amp;#123;        &#x2F;&#x2F;输入n个实数，建立数组，排序后输出         Scanner in &#x3D; new Scanner(System.in);         System.out.println(&amp;quot">
+<meta property="og:type" content="article">
+<meta property="og:title" content="【笔记】JAVA期末复习[上]">
+<meta property="og:url" content="http://example.com/2021/12/28/JAVA%E6%9C%9F%E6%9C%AB%E8%80%83%E8%AF%95/index.html">
+<meta property="og:site_name" content="Wanjia Huang">
+<meta property="og:description" content="​	2021年JAVA期末复习笔记 Java语言基础 动态数组的创建 123456789101112public static void main(String[] args) &amp;#123;        &#x2F;&#x2F;输入n个实数，建立数组，排序后输出         Scanner in &#x3D; new Scanner(System.in);         System.out.println(&amp;quot">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="c:/Users/10147/AppData/Roaming/Typora/typora-user-images/image-20211223090849349.png">
+<meta property="og:image" content="c:/Users/10147/AppData/Roaming/Typora/typora-user-images/image-20211223105502771.png">
+<meta property="og:image" content="c:/Users/10147/AppData/Roaming/Typora/typora-user-images/image-20211223134307967.png">
+<meta property="og:image" content="c:/Users/10147/AppData/Roaming/Typora/typora-user-images/image-20211223140721153.png">
+<meta property="og:image" content="c:/Users/10147/AppData/Roaming/Typora/typora-user-images/image-20211223141146046.png">
+<meta property="og:image" content="c:/Users/10147/AppData/Roaming/Typora/typora-user-images/image-20211223141325068.png">
+<meta property="og:image" content="c:/Users/10147/AppData/Roaming/Typora/typora-user-images/image-20211223141358751.png">
+<meta property="og:image" content="c:/Users/10147/AppData/Roaming/Typora/typora-user-images/image-20211223141653908.png">
+<meta property="og:image" content="c:/Users/10147/AppData/Roaming/Typora/typora-user-images/image-20211223142330201.png">
+<meta property="og:image" content="c:/Users/10147/AppData/Roaming/Typora/typora-user-images/image-20211223142149274.png">
+<meta property="og:image" content="c:/Users/10147/AppData/Roaming/Typora/typora-user-images/image-20211223154721967.png">
+<meta property="og:image" content="c:/Users/10147/AppData/Roaming/Typora/typora-user-images/image-20211223154914038.png">
+<meta property="og:image" content="c:/Users/10147/AppData/Roaming/Typora/typora-user-images/image-20211223155213013.png">
+<meta property="og:image" content="c:/Users/10147/AppData/Roaming/Typora/typora-user-images/image-20211223155224836.png">
+<meta property="og:image" content="c:/Users/10147/AppData/Roaming/Typora/typora-user-images/image-20211223155733385.png">
+<meta property="og:image" content="c:/Users/10147/AppData/Roaming/Typora/typora-user-images/image-20211223160954314.png">
+<meta property="article:published_time" content="2021-12-28T09:05:33.000Z">
+<meta property="article:modified_time" content="2022-08-22T15:48:01.986Z">
+<meta property="article:author" content="Wanjia Huang">
+<meta property="article:tag" content="JAVA">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="c:/Users/10147/AppData/Roaming/Typora/typora-user-images/image-20211223090849349.png">
+
+<link rel="canonical" href="http://example.com/2021/12/28/JAVA%E6%9C%9F%E6%9C%AB%E8%80%83%E8%AF%95/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>【笔记】JAVA期末复习[上] | Wanjia Huang</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">Wanjia Huang</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+      <p class="site-subtitle" itemprop="description">西南交通大学 软件工程</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2021/12/28/JAVA%E6%9C%9F%E6%9C%AB%E8%80%83%E8%AF%95/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="https://i.loli.net/2020/07/12/D6CZiKA4O2jmwus.jpg">
+      <meta itemprop="name" content="Wanjia Huang">
+      <meta itemprop="description" content="向分布式存储探索">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Wanjia Huang">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          【笔记】JAVA期末复习[上]
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2021-12-28 17:05:33" itemprop="dateCreated datePublished" datetime="2021-12-28T17:05:33+08:00">2021-12-28</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2022-08-22 23:48:01" itemprop="dateModified" datetime="2022-08-22T23:48:01+08:00">2022-08-22</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E7%AC%94%E8%AE%B0/" itemprop="url" rel="index"><span itemprop="name">笔记</span></a>
+                </span>
+            </span>
+
+          
+            <span class="post-meta-item" title="阅读次数" id="busuanzi_container_page_pv" style="display: none;">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
+              </span>
+              <span class="post-meta-item-text">阅读次数：</span>
+              <span id="busuanzi_value_page_pv"></span>
+            </span>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <p>​	2021年JAVA期末复习笔记</p>
+<h2 id="Java语言基础"><a href="#Java语言基础" class="headerlink" title="Java语言基础"></a>Java语言基础</h2><ol>
+<li><p>动态数组的创建</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title function_">main</span><span class="params">(String[] args)</span> &#123;</span><br><span class="line">        <span class="comment">//输入n个实数，建立数组，排序后输出</span></span><br><span class="line">         <span class="type">Scanner</span> <span class="variable">in</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">Scanner</span>(System.in);</span><br><span class="line">         System.out.println(<span class="string">&quot;请输入n=&quot;</span>);</span><br><span class="line">         <span class="type">int</span> i,j,n;</span><br><span class="line">         n = in.nextInt();</span><br><span class="line">         <span class="type">double</span> a[]=<span class="keyword">new</span> <span class="title class_">double</span>[n];</span><br><span class="line">         System.out.println(<span class="string">&quot;请输入n个实数&quot;</span>);</span><br><span class="line">         <span class="keyword">for</span>(i=<span class="number">0</span>;i&lt;n;i++)&#123;</span><br><span class="line">             a[i]=in.nextDouble();</span><br><span class="line">         &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<span id="more"></span>
+</li>
+<li><p>控制台输入输出</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">用Scanner类实现数据输入</span><br><span class="line">     (仅JDK1<span class="number">.50</span>或更高版本支持)</span><br><span class="line"> 用法:   <span class="keyword">import</span> java.util.Scanner;</span><br><span class="line"> Scanner in=<span class="keyword">new</span> <span class="title class_">Scanner</span>(System.in);</span><br><span class="line"> String s=in.next(); <span class="comment">//输入1个字符串(空格/Tab/换行分隔)</span></span><br><span class="line"> String t=in.nextLine(); <span class="comment">//输入1个字符串(换行分隔)</span></span><br><span class="line"> <span class="type">int</span> a=in.nextInt();        <span class="comment">//输入1个整数</span></span><br><span class="line"> <span class="type">float</span> b=in.nextFloat();  <span class="comment">//输入1个单精度实数</span></span><br><span class="line"> <span class="type">double</span> c=in.nextDouble();  <span class="comment">//输入1个双精度实数</span></span><br></pre></td></tr></table></figure>
+</li>
+<li><p>数组的定义与使用</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">  先定义数组名再使用<span class="keyword">new</span></span><br><span class="line">    <span class="title class_">syntax</span>:  数组名=<span class="keyword">new</span>  <span class="title class_">T</span>[元素个数];  </span><br><span class="line">    例:  <span class="type">float</span> a[];</span><br><span class="line">            a=<span class="keyword">new</span> <span class="title class_">float</span>[<span class="number">10</span>]; <span class="comment">// 数组a有10个元素</span></span><br><span class="line"> 已分配空间的数组可以用<span class="keyword">new</span>重新分配空间</span><br><span class="line">    例:  <span class="type">double</span> a[]=<span class="keyword">new</span> <span class="title class_">double</span>[<span class="number">5</span>]; <span class="comment">// 数组a有5个元素</span></span><br><span class="line">            …</span><br><span class="line">            a=<span class="keyword">new</span> <span class="title class_">double</span>[<span class="number">10</span>]; <span class="comment">// 数组a重新分配10个元素</span></span><br></pre></td></tr></table></figure>
+
+<p>二维数组</p>
+<img src="C:\Users\10147\AppData\Roaming\Typora\typora-user-images\image-20211223090849349.png" alt="image-20211223090849349" style="zoom:67%;" />
+</li>
+<li><p>标识符的语法规定</p>
+</li>
+</ol>
+<p>大小写约定：变量名小写开头；类名大写开头.</p>
+<ol start="5">
+<li><p>Java变量</p>
+<p> Java程序中不允许在类定义之外定义全局变量，即Java语言没有全局变量的概念; Java没有指针类型的变量，从而提高了程序的可读性和安全性。</p>
+</li>
+<li><p>Java类外不能定义函数，因此所有函数必须定义在某个类中；</p>
+</li>
+</ol>
+<h2 id="类与对象基础"><a href="#类与对象基础" class="headerlink" title="类与对象基础"></a>类与对象基础</h2><ol>
+<li><p>类是抽象的概念，仅仅是模板</p>
+<p>对象是一个你能够看得到、摸得着的具体实体</p>
+</li>
+<li><p>初始值及同名问题</p>
+<ul>
+<li>Java会给成员变量一个初始值</li>
+<li>Java不会给局部变量赋予初始值</li>
+<li>在同一个类中，成员变量和局部变量同名时，局部变量具有更高的优先级</li>
+</ul>
+</li>
+<li><p>java doc注释</p>
+<p>使用“&#x2F;*<em>”开始和“</em>&#x2F;”结束，用来注释类、属性和方法等</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * mySchool类          </span></span><br><span class="line"><span class="comment"> *<span class="doctag">@author</span> John</span></span><br><span class="line"><span class="comment"> *<span class="doctag">@version</span>  1.0  2016/06/21</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"> 方法的doc注释</span><br><span class="line"> <span class="comment">/**</span></span><br><span class="line"><span class="comment">	 * 计算总成绩</span></span><br><span class="line"><span class="comment">	 * <span class="doctag">@return</span> total</span></span><br><span class="line"><span class="comment">	 */</span></span><br></pre></td></tr></table></figure>
+
+<p>JavaDoc能够从源代码中抽取类、属性、方法等的注释，形成一个配套的API帮助文档 </p>
+</li>
+<li><p>调用方法时不能指定实参类型！</p>
+</li>
+<li><p>包管理</p>
+<p>创建包使用关键字package<br>导入包使用关键字import</p>
+</li>
+<li><p><strong>方法重载</strong></p>
+<ul>
+<li><p>一个类名字相同的多个方法</p>
+</li>
+<li><p>这些方法的参数必须不同。Java可通过参数列表的不同来辨别重载的方法</p>
+</li>
+<li><p>返回值可以相同，也可以不同</p>
+</li>
+</ul>
+</li>
+<li><p><strong>类的访问控制</strong></p>
+<p>面向对象的三大特性：<strong>封装，继承，多态</strong></p>
+<p>封装的步骤：1.修改属性可见性 2.创建共有的setter&#x2F;getter方法  3.在setter&#x2F;getter方法中加入属性控制语句</p>
+<ul>
+<li><p>类的访问控制</p>
+<ul>
+<li>类的访问控制只有两种，无修饰符（缺省）以及public，当使用无修饰符时，其他包的类不能访问。</li>
+</ul>
+</li>
+<li><p>类成员的访问控制</p>
+<p>·公有(public)<br>可以被其他任何对象访问(前提是对类成员所在的类有访问权限)<br>·保护(protected)<br>只可被同一类及其子类的实例对象访问<br>·私有(private)<br>只能被这个类本身访问，在类外不可见<br>&#96;默认(default)<br><strong>仅允许同一个包内的访问；又被称为“包（package)访问权限”</strong></p>
+</li>
+<li><p>关键字“this”</p>
+<p>如果形式参数名与实例变量名相同，则需要在实例变量名之前加this关键字，否则系统会将实例变量当成形式参数。</p>
+</li>
+</ul>
+</li>
+<li><p>构造方法</p>
+<ul>
+<li><p>一种和类同名的特殊方法，用来初始化对象</p>
+</li>
+<li><p>Java中的每个类都有构造方法，用来初始化该类的一个新的对象，没有定义构造方法的类，系统自动提供默认的构造方法</p>
+</li>
+<li><p>特点</p>
+<ul>
+<li>方法名与类相同</li>
+<li>没有返回类型，修饰符void也不行</li>
+<li>通常被声明为公有的</li>
+<li>可以有任意多个参数</li>
+<li>主要工作是完成对象的初始化</li>
+<li>不能在程序中显式的调用【显示调用即为直接使用类名调用，隐式调用的思想是构件不直接调用一个过程，而是触发或广播一个或多个事件。系统中的其它构件中的过程在一个或多个事件中注册，当一个事件被触发，系统自动调用在这个事件中注册的所有过程，这样，一个事件的触发就导致了另一模块中的过程的调用。】</li>
+<li>在生成一个对象时，系统会自动调用该类的构造方法为新生成的对象初始化</li>
+</ul>
+</li>
+<li><p>默认构造方法</p>
+<ul>
+<li>如果类的声明中没有声明构造方法，那么Java编译器会提供一个默认的构造方法</li>
+<li>默认构造方法没有参数，其方法体为空</li>
+<li>使用默认的构造方法初始化对象时，如果在类声明中没有给实例变量赋初值，则对象的属性值为零或空</li>
+</ul>
+</li>
+<li><p>自定义构造方法与重载</p>
+<ul>
+<li>构造方法可以被重载，其重载与方法的重载一致。</li>
+<li>在方法调用时，Java可以通过参数列表的不同来辨别应调用哪一个方法</li>
+</ul>
+</li>
+<li><p><strong>自定义无参构造方法（易错，重要）</strong></p>
+<ul>
+<li><p>无参的构造方法对其子类的声明很重要。如果在一个类中不存在无参的构造方法，则要求其子类声明时必须声明构造方法，否则在子类对象的初始化时会出错</p>
+</li>
+<li><p>用户在进行类声明时，如果没有声明任何构造方法，系统会赋给此类一个默认（无参）的构造方法。但是，只要用户声明了构造方法，即使没有声明无参的构造方法，系统也不再赋默认的构造方法</p>
+</li>
+<li><p>&#96;&#96;&#96;java<br>class Bush {<br>Bush(int i) {}<br>   Bush(double d) {}<br> }<br>如果写：new Bush();<br> 编译器将要告诉你找不到对应的构造方法</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">       改正的方法是要再声明一个无参的构造方法。</span><br><span class="line"></span><br><span class="line">9. 静态变量【类变量】</span><br><span class="line"></span><br><span class="line">   - 也称为静态变量，声明时需要加static修饰符</span><br><span class="line"></span><br><span class="line">   - 不管类的对象有多少，类变量只存在一份，在整个类中只有一个值</span><br><span class="line"></span><br><span class="line">   - **类初始化的同时就被赋值**</span><br><span class="line"></span><br><span class="line">   - 调用方式</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<p>类名.属性<br>类名.方法名()<br>对象.属性<br>对象.方法名()</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">     </span><br><span class="line"></span><br><span class="line">## 继承</span><br><span class="line"></span><br><span class="line">1. JAVA只支持类的单继承，每个子类只能有一个直接父类【但是可以用接口实现多重继承】</span><br><span class="line"></span><br><span class="line">   子类对象与父类对象存在“IS A”(或“is a kind of”)的关系</span><br><span class="line"></span><br><span class="line">   父类是所有子类的公共属性及方法的集合，子类则是父类的特殊化</span><br><span class="line"></span><br><span class="line">2. 继承的语法</span><br><span class="line"></span><br><span class="line">   ```java</span><br><span class="line">   class childClass extends parentClass</span><br><span class="line">   &#123; </span><br><span class="line">   	//类体</span><br><span class="line">   &#125;</span><br></pre></td></tr></table></figure></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><p>属性隐藏</p>
+<ul>
+<li><p>子类中声明了与父类中相同的成员变量名，则从父类继承的变量将被隐藏。</p>
+</li>
+<li><p>访问隐藏的父类属性【两种方法】</p>
+<ul>
+<li><p>调用从父类继承的方法，则操作的就是父类继承的属性</p>
+</li>
+<li><p>调用被隐藏的属性</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">super</span>.属性</span><br></pre></td></tr></table></figure></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><p>方法覆盖</p>
+<ul>
+<li><p>覆盖方法的返回类型，方法名称，参数的个数及类型必须和被覆盖的方法一摸一样</p>
+</li>
+<li><p>覆盖方法的访问权限可以比被覆盖的宽松，但是不能更为严格</p>
+</li>
+<li><p>必须覆盖的方法</p>
+<p>派生类必须覆盖基类中的抽象的方法，否则派生类自身也成为抽象类.</p>
+</li>
+<li><p>不能覆盖的方法</p>
+<ul>
+<li>基类中声明为final的终结方法</li>
+<li>基类中声明为static 的静态方法</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><p><strong>有继承时的构造方法【易错】</strong></p>
+<p>遵循以下原则：</p>
+<ul>
+<li><p>子类不能从父类继承构造方法</p>
+</li>
+<li><p>好的程序设计方法是在子类的构造方法中调用某一个父类构造方法，调用语句必须出现在子类构造方法的第一行，可使用<strong>super关键字</strong></p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="title function_">Professor</span><span class="params">(<span class="type">int</span> aNumber, String aPhoneNumber, String aResearch)</span> &#123;</span><br><span class="line">        <span class="built_in">super</span>(aNumber, aPhoneNumber);</span><br><span class="line">        research = aResearch;</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>如子类构造方法的声明中没有明确调用父类构造方法，则系统在执行子类的构造方法时会<strong>自动调用父类的默认构造方法</strong>（即无参的构造方法）</p>
+</li>
+</ul>
+</li>
+<li><p>终结类与终结方法</p>
+<ul>
+<li><p>定义</p>
+<p>被final修饰符修饰的类和方法</p>
+</li>
+<li><p>特点</p>
+<p>终结类：不能有派生类</p>
+<p>终结方法：不能被派生类覆盖</p>
+</li>
+<li><p>终结类作用</p>
+<ul>
+<li>安全：黑客用来搅乱系统的一个手法是建立一个类的派生类，然后用他们的类代替原来的类</li>
+<li>设计：你认为你的类是最好的或从概念上你的类不应该有任何派生类</li>
+</ul>
+</li>
+<li><p>终结方法作用</p>
+<ul>
+<li>对于一些比较重要且不希望子类进行更改的方法，可以声明为终结方法。可防止子类对父类关键方法的错误重写，增加了代码的安全性和正确性</li>
+<li>提高运行效率。通常，当java运行环境（如java解释器）运行方法时，它将首先在当前类中查找该方法，接下来在其超类中查找，并一直沿类层次向上查找，直到找到该方法为止</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><p>抽象类及抽象方法</p>
+<ul>
+<li><p>定义及特点</p>
+<ul>
+<li>代表一个抽象概念的类</li>
+<li>没有具体实例化对象的类，不能用new进行实例化</li>
+<li>类前需要加修饰符abstract</li>
+<li>可包含常规类能够包含的任何东西，例如构造方法，非抽象方法</li>
+<li>也可包含抽象方法，这种方法只有方法的声明，而没有方法的实现</li>
+<li><strong>只有抽象类才能有抽象方法，即如果一个类中含有抽象方法，则必须将这个类声明为抽象类</strong></li>
+</ul>
+</li>
+<li><p>定义</p>
+<ul>
+<li><p>抽象类的定义</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">abstract</span> <span class="keyword">class</span> <span class="title class_">Number</span> &#123;</span><br><span class="line">    . . .</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>抽象方法的定义</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">abstract</span> &lt;returnType&gt; &lt;methodName&gt;(...);</span><br></pre></td></tr></table></figure>
+
+<p>仅有方法头，而没有方法体和操作实现<br><strong>具体实现由当前类的不同子类在它们各自的类声明中完成</strong></p>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><p>类的组合</p>
+<ul>
+<li>继承是”is a”，组合是”has a”</li>
+</ul>
+</li>
+</ol>
+<h2 id="接口与多态"><a href="#接口与多态" class="headerlink" title="接口与多态"></a>接口与多态</h2><ol>
+<li><p>接口定义</p>
+<ul>
+<li>与抽象类一样都是定义多个类的共同属性</li>
+<li>使抽象的概念更深入了一层，是一个“纯”抽象类，它只提供一种形式，并不提供实现</li>
+</ul>
+</li>
+<li><p>接口语法</p>
+<ul>
+<li><p>声明格式</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">[接口修饰符] interface 接口名称 [extends 父接口名]&#123;</span><br><span class="line">…<span class="comment">//方法的原型声明或静态常量</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>数据成员要求</p>
+<p>数据成员一定要赋初值，并且不能再修改，允许直接省略final关键字</p>
+</li>
+<li><p>方法要求</p>
+<p>接口中的方法必须是“抽象方法”，不允许有方法体，允许省略public及abstract关键字</p>
+</li>
+</ul>
+</li>
+<li><p>接口的实现</p>
+<ul>
+<li><p>接口不能用new运算符直接产生对象，必须利用其特性设计新的类，再用新类来创建对象</p>
+</li>
+<li><p>利用接口设计类的过程，称为<strong>接口的实现</strong>，使用implements关键字</p>
+</li>
+<li><p>语法</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> class 类名称 implements 接口名称 &#123; </span><br><span class="line">        <span class="comment">/* Bodies for the interface methods */</span> </span><br><span class="line">        <span class="comment">/* Own data and methods. */</span> </span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>注意：必须实现接口的所有方法，<strong>来自接口的方法必须声明为public</strong></p>
+</li>
+</ul>
+</li>
+<li><p><strong>多重继承</strong></p>
+<ul>
+<li><p>Java的设计以简单实用为导向，不允许一个类有多个父类</p>
+</li>
+<li><p>但允许一个类可以实现多个接口，通过这种机制可实现多重继承</p>
+</li>
+<li><p>语法</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">[类修饰符] class  类名称  implements 接口<span class="number">1</span>,接口<span class="number">2</span>,  …</span><br><span class="line">&#123;</span><br><span class="line">	… …</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></li>
+</ul>
+</li>
+<li><p>接口的扩展</p>
+<p>继承的接口应该实现原先接口的所有方法</p>
+</li>
+<li><p>塑型</p>
+<ul>
+<li>又称类型转换</li>
+<li>有两种方式，显式跟隐式</li>
+<li>塑型的对象<ul>
+<li>基本数据类型</li>
+<li>引用变量<ul>
+<li>将对象暂时当成更一般的对象来对待，<strong>并不改变其类型</strong></li>
+<li>只能被塑型为<ul>
+<li>任何一个父类类型</li>
+<li>对象所属的类实现的一个接口</li>
+<li>被塑型为父类或接口后，再被塑型回其本身所在的类</li>
+<li><img src="C:\Users\10147\AppData\Roaming\Typora\typora-user-images\image-20211223105502771.png" alt="image-20211223105502771"></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>塑型为父类之后，方法会减少</li>
+</ul>
+</li>
+<li><p><strong>静态绑定与动态绑定</strong></p>
+<ul>
+<li><p>什么是绑定</p>
+<ul>
+<li>方法定义与方法调用的关联称为绑定</li>
+</ul>
+</li>
+<li><p>静态绑定</p>
+<ul>
+<li><p>编译器在编译时可以解析的绑定称为静态或早期绑定。<code>static</code>，<code>private</code>和<code>final</code>、<strong>构造方法</strong>的绑定是<a target="_blank" rel="noopener" href="https://geek-docs.com/java/java-tutorial/runtime-compile-time-polymorphism.html">编译时</a>。 <strong>为什么？</strong> 原因是无法覆盖这些方法，并且在编译时确定类的类型。</p>
+</li>
+<li><p>示例：在这里，我们有两个类人类和男孩。这两个类都有相同的方法<code>walk()</code>，但方法是静态的，这意味着它不能被覆盖，所以即使我在创建对象<code>obj</code>时使用了<code>Boy</code>类的对象，它也会调用父类方法。因为引用是<code>Human</code>类型（父类）。因此，每当静态，私有和最终方法的绑定发生时，类的类型由编译器在编译时确定，然后绑定发生在那里。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">class</span> <span class="title class_">Human</span>&#123;</span><br><span class="line">   <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title function_">walk</span><span class="params">()</span></span><br><span class="line">   &#123;</span><br><span class="line">       System.out.println(<span class="string">&quot;Human walks&quot;</span>);</span><br><span class="line">   &#125;</span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">class</span> <span class="title class_">Boy</span> <span class="keyword">extends</span> <span class="title class_">Human</span>&#123;</span><br><span class="line">   <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title function_">walk</span><span class="params">()</span>&#123;</span><br><span class="line">       System.out.println(<span class="string">&quot;Boy walks&quot;</span>);</span><br><span class="line">   &#125;</span><br><span class="line">   <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title function_">main</span><span class="params">( String args[])</span> &#123;</span><br><span class="line">       <span class="comment">/* Reference is of Human type and object is</span></span><br><span class="line"><span class="comment">        * Boy type</span></span><br><span class="line"><span class="comment">        */</span></span><br><span class="line">       <span class="type">Human</span> <span class="variable">obj</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">Boy</span>();</span><br><span class="line">       <span class="comment">/* Reference is of HUman type and object is</span></span><br><span class="line"><span class="comment">        * of Human type.</span></span><br><span class="line"><span class="comment">        */</span></span><br><span class="line">       <span class="type">Human</span> <span class="variable">obj2</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">Human</span>();</span><br><span class="line">       obj.walk();</span><br><span class="line">       obj2.walk();</span><br><span class="line">   &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>输出：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">Human walks</span><br><span class="line">Human walks</span><br></pre></td></tr></table></figure></li>
+</ul>
+</li>
+<li><p>动态绑定</p>
+<ul>
+<li>当编译器无法在编译时解析调用&#x2F;绑定时，此类绑定称为动态绑定或后期绑定。<a target="_blank" rel="noopener" href="https://geek-docs.com/java/java-tutorial/method-overriding-in-java-with-example.html">方法覆盖</a>是动态绑定的一个完美示例，因为覆盖父类和子类具有相同的方法，在这种情况下，对象的<strong>类型确定要执行的方法。对象的类型在运行时确定，因此称为动态绑定</strong>。</li>
+</ul>
+</li>
+<li><p>二次分发</p>
+<ul>
+<li><p>对输出消息的请求被分发两次</p>
+</li>
+<li><p>&#96;&#96;&#96;java<br>public class Car{<br>      public void start(){<br>          System.out.println(“Car start”);<br>      }<br>  }<br><br>  public class CarA extents Car{<br>      public void start(){<br>          System.out.println(“CarA start”);<br>      }<br>  }<br><br>  public class CarB extents Car{<br>      public void start(){<br>          System.out.println(“CarB start”);<br>      }<br>  }<br><br>  public class DoMain{<br>      public void startCar(Car car){<br>          System.out.println(“car start”);<br>      }<br><br>      public void startCar(CarA carA){<br>          System.out.println(“CarA start”);<br>      }<br><br>      public void startCar(CarB carB){<br>          System.out.println(“CarB start”);<br>      }<br><br>      public static void main(String[] args){<br>          Car car &#x3D; new Car();<br>          Car carA &#x3D; new CarA();<br>          Car carB &#x3D; new CarB();<br><br>          DoMain domain &#x3D; new DoMain();<br>          domain.startCar(car);<br>          domain.startCar(carA);<br>          domain.startCar(carB);<br>      }<br>  }</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">这里的结果很简单：3次都是 `Car start`,因为这里涉及到了java中放入静态绑定，也就是说`domain`实例调用哪个方法是在编译期就确定了，而编译期间三次调用的方法的参数都是`Car`类型的。而关于jvm的静态绑定和动态绑定又是另外一方面的内容了，所以这里就不展开来讲了。</span><br><span class="line"></span><br><span class="line">改进之后：</span><br><span class="line"></span><br><span class="line">```JAVA</span><br><span class="line">	public class DoMain&#123;</span><br><span class="line">		public void startCar(Car car)&#123;</span><br><span class="line">			car.start();</span><br><span class="line">		&#125;</span><br><span class="line"></span><br><span class="line">		public void startCar(CarA carA)&#123;</span><br><span class="line">			carA.start();</span><br><span class="line">		&#125;</span><br><span class="line"></span><br><span class="line">		public void startCar(CarB carB)&#123;</span><br><span class="line">			carB.start();</span><br><span class="line">		&#125;</span><br><span class="line">		</span><br><span class="line">		public static void main(String[] args)&#123;</span><br><span class="line">			Car car = new Car();</span><br><span class="line">			Car carA = new CarA();</span><br><span class="line">			Car carB = new CarB();</span><br><span class="line">			</span><br><span class="line">			DoMain domain = new DoMain();</span><br><span class="line">			domain.startCar(car);</span><br><span class="line">			domain.startCar(carA);</span><br><span class="line">			domain.startCar(carB);</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br></pre></td></tr></table></figure></li>
+</ul>
+</li>
+</ul>
+</li>
+</ol>
+<h2 id="字符串"><a href="#字符串" class="headerlink" title="字符串"></a>字符串</h2><ol>
+<li><p>字符串是常量，它们的值在创建之后不能被修改</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title function_">main</span><span class="params">(String[] args)</span></span><br><span class="line"> &#123; </span><br><span class="line">	<span class="type">String</span> <span class="variable">s</span> <span class="operator">=</span> <span class="string">&quot;ABCDEF&quot;</span>; 	</span><br><span class="line">	System.out.println(<span class="string">&quot;s = &quot;</span> + s);</span><br><span class="line"> 	s = <span class="string">&quot;123456&quot;</span>; 	</span><br><span class="line">	System.out.println(<span class="string">&quot;s = &quot;</span> + s); </span><br><span class="line">&#125;</span><br><span class="line">打印的结果：</span><br><span class="line">s = <span class="type">ABCDEF</span></span><br><span class="line"> <span class="variable">s</span> <span class="operator">=</span> <span class="number">123456</span></span><br></pre></td></tr></table></figure>
+
+<p>从结果上看，确实是如此，s的值改变了。</p>
+<p>•其实，这里存在一个误区，s呢 ，<strong>仅仅是一个String对象的引用</strong>，<strong>并不是对象本身</strong>。对象在内存中是一块内存区，而s只是一个引用，它指向了一个具体的对象。</p>
+<p>•在创建String对象的时候，s指向的是内存中的”ABDCEF”,当执行语句s &#x3D; “123456”后，<strong>其实又创建了一个新的对象”123456”</strong>,<strong>而s重新指向了这个新的对象</strong>，同时原来的”ABCDEF”并没有发生改变，仍保存在内存中。</p>
+<ul>
+<li>无论你是用s&#x3D;新的s，还是s&#x3D;s.replace，这里虽然打印出来的值变了，但其实是其将引用s指向了一个新的String对象</li>
+<li>value成员变量是private final修饰的，而String类中并没有提供set&#x2F;get等公共方法来修改值，所以String类的外部无法修改String，同时final保证了在String内部，只要值初始化了，也不能被改变。</li>
+</ul>
+</li>
+<li><p>字符缓冲区支持可变的字符串</p>
+<ul>
+<li>在使用String同StringBuffer类时，虽然两者都是final类，不允许被继承，在本质上都是字符数组。<ul>
+<li>不同的是，String的长度是不可变的而后者长度可变，在进行连接操作时，String每次返回一个新的String实例，而StringBuffer的append方法直接返回this</li>
+<li>所以当进行大量的字符串连接操作时，<strong>不推荐使用String</strong>，<strong>因为它会产生大量的中间String对象</strong>。</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><p>String类常用方法</p>
+<ul>
+<li><p>length()</p>
+<p>返回此字符串长度</p>
+</li>
+<li><p>equals()</p>
+<p>比较存储在两个字符串对象的内容是否一致 </p>
+</li>
+<li><img src="C:\Users\10147\AppData\Roaming\Typora\typora-user-images\image-20211223134307967.png" alt="image-20211223134307967" style="zoom:67%;" />
+</li>
+<li><p>字符串比较，不考虑大小写</p>
+<p>使用equalsIgnoreCase()方法<br>使用toLowerCase()方法<br>使用toUpperCase( )方法</p>
+</li>
+<li><p>字符串连接</p>
+<ul>
+<li><p>使用“+”</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">s=s1+s2</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>使用.concat()方法</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">String s = new String(&quot;你好，&quot;);</span><br><span class="line">String name = new String(&quot;张三！&quot;);</span><br><span class="line">String sentence = s.concat(name);</span><br><span class="line">System.out.println(sentence);</span><br></pre></td></tr></table></figure></li>
+</ul>
+</li>
+<li><p>字符串检查</p>
+<ul>
+<li><p>如检查邮箱格式是否正确</p>
+</li>
+<li><p>&#96;&#96;&#96;java<br>&#x2F;&#x2F;检查邮箱格式<br>if (email.indexOf(‘@’) !&#x3D;- 1 &amp;&amp; email.indexOf(‘.’) !&#x3D; -1  &gt;  email.indexOf(‘@’)){<br>emailCorrect &#x3D; true;<br>}else{<br>System.out.println(“Email无效。”);<br>}</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">- substring</span><br><span class="line"></span><br><span class="line">  - public String substring(int beginindex, int endindex)</span><br><span class="line">  - 提取beginindex和endindex之间的字符串部分</span><br><span class="line">  - beginindex: 字符串的位置从0开始算；endindex: 字符串的位置从1开始算 </span><br><span class="line"></span><br><span class="line">- 字符串拆分</span><br><span class="line"></span><br><span class="line">  - String类提供了split()方法，将一个字符串分割为子字符串，结果作为字符串数组返回</span><br><span class="line"></span><br><span class="line">  - ```java</span><br><span class="line">    public class Lyric &#123;</span><br><span class="line">        	public static void main(String[] args) &#123;</span><br><span class="line">            	String words=&quot;长亭外 古道边 芳草碧连天 晚风扶 柳笛声残 夕阳山外山&quot;;</span><br><span class="line">            	String[	] printword=new String[100];		</span><br><span class="line">           		System.out.println(&quot;***原歌词格式***\n&quot;+words);</span><br><span class="line">            	System.out.println(&quot;\n***拆分后歌词格式***&quot;);</span><br><span class="line">            	printword=words.split(&quot; &quot;); 	//拆分字符串，返回值为字符串数组</span><br><span class="line">    			for(int i=0;i&lt;printword.length;i++)&#123;</span><br><span class="line">            		System.out.println( printword[i] );</span><br><span class="line">            	&#125;</span><br><span class="line">        	&#125;</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><p>StringBuffer</p>
+<ul>
+<li><p>声明</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">StringBuffer</span> <span class="variable">sb</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">StringBuffer</span>();</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>用法</p>
+<p>sb.toString();           &#x2F;&#x2F;转化为String类型<br>sb.append<code>(&quot;**&quot;)</code>;      &#x2F;&#x2F;追加字符串<br>sb.insert (1, “**”);    &#x2F;&#x2F;插入字符串</p>
+</li>
+</ul>
+</li>
+<li><p>总结</p>
+<p>String类提供了大量的操作字符串的方法<br>获得字符串的长度：length()<br>比较字符串：equals()<br>连接字符串：concat()<br>提取字符串：substring()<br>搜索字符串：indexOf()<br>拆分字符串：split()<br>常用的StringBuffer类提供的方法<br>转换成String类型：toString()<br>连接字符串：append()<br>插入字符串：insert()</p>
+</li>
+</ol>
+<h2 id="异常"><a href="#异常" class="headerlink" title="异常"></a>异常</h2><ol>
+<li><p>JAVA如何进行异常处理</p>
+<img src="C:\Users\10147\AppData\Roaming\Typora\typora-user-images\image-20211223140721153.png" alt="image-20211223140721153" style="zoom:67%;" />
+
+<img src="C:\Users\10147\AppData\Roaming\Typora\typora-user-images\image-20211223141146046.png" alt="image-20211223141146046" style="zoom:67%;" />
+
+<ul>
+<li><p>异常对象常用的方法</p>
+<table>
+<thead>
+<tr>
+<th>方法名</th>
+<th>说  明</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>void printStackTrace()</td>
+<td>输出异常的堆栈信息</td>
+</tr>
+<tr>
+<td>String getMessage()</td>
+<td>返回异常信息描述字符串， 是printStackTrace()输出信息的一部分</td>
+</tr>
+</tbody></table>
+<img src="C:\Users\10147\AppData\Roaming\Typora\typora-user-images\image-20211223141325068.png" alt="image-20211223141325068" style="zoom:67%;" />
+
+<img src="C:\Users\10147\AppData\Roaming\Typora\typora-user-images\image-20211223141358751.png" alt="image-20211223141358751" style="zoom:67%;" /></li>
+</ul>
+</li>
+<li><p>常见异常类型</p>
+<table>
+<thead>
+<tr>
+<th>异 常 类 型</th>
+<th>说  明</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Exception</td>
+<td>异常层次结构的父类</td>
+</tr>
+<tr>
+<td>ArithmeticException</td>
+<td>算术错误情形，如以零作除数</td>
+</tr>
+<tr>
+<td>ArrayIndexOutOfBoundsException</td>
+<td>数组下标越界</td>
+</tr>
+<tr>
+<td>NullPointerException</td>
+<td>尝试访问 null 对象成员</td>
+</tr>
+<tr>
+<td>ClassNotFoundException</td>
+<td>不能加载所需的类</td>
+</tr>
+<tr>
+<td>IllegalArgumentException</td>
+<td>方法接收到非法参数</td>
+</tr>
+<tr>
+<td>ClassCastException</td>
+<td>对象强制类型转换出错</td>
+</tr>
+<tr>
+<td>NumberFormatException</td>
+<td>数字格式转换异常，如把”abc”转换成数字</td>
+</tr>
+</tbody></table>
+</li>
+<li><p><strong>try-catch-finally【重点】</strong></p>
+<img src="C:\Users\10147\AppData\Roaming\Typora\typora-user-images\image-20211223141653908.png" alt="image-20211223141653908" style="zoom:67%;" />
+
+<p>finally 关键字用来创建在 try 代码块后面执行的代码块。</p>
+<p>无论是否发生异常，finally 代码块中的代码总会被执行。</p>
+<p>在 finally 代码块中，可以运行清理类型等收尾善后性质的语句。</p>
+<p>finally 代码块出现在 catch 代码块最后，语法如下：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">try</span>&#123;</span><br><span class="line">  <span class="comment">// 程序代码</span></span><br><span class="line">&#125;<span class="keyword">catch</span>(异常类型<span class="number">1</span> 异常的变量名<span class="number">1</span>)&#123;</span><br><span class="line">  <span class="comment">// 程序代码</span></span><br><span class="line">&#125;<span class="keyword">catch</span>(异常类型<span class="number">2</span> 异常的变量名<span class="number">2</span>)&#123;</span><br><span class="line">  <span class="comment">// 程序代码</span></span><br><span class="line">&#125;<span class="keyword">finally</span>&#123;</span><br><span class="line">  <span class="comment">// 程序代码</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>存在return的try-catch-finally块</p>
+<img src="C:\Users\10147\AppData\Roaming\Typora\typora-user-images\image-20211223142330201.png" alt="image-20211223142330201" style="zoom:67%;" />
+
+
+</li>
+<li><p><strong>多重catch【重点】</strong></p>
+<img src="C:\Users\10147\AppData\Roaming\Typora\typora-user-images\image-20211223142149274.png" alt="image-20211223142149274" style="zoom:80%;" />
+</li>
+<li><p>两个问题</p>
+<ul>
+<li>面试题：try-catch块中存在return语句，是否还执行finally块，如果执行，说出执行顺序<ul>
+<li>还执行</li>
+<li>先执行finally块，再执行return语句</li>
+</ul>
+</li>
+<li>try-catch- finally块中， finally块唯一不执行的情况是什么？<ul>
+<li>exit(1);</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><p>throw和throws的区别</p>
+<p>​	throws: 当一个方法产生一个它不处理的异常时，那么就需要在该方法的头部声明这个异常，以便将该异常传递到方法的外部进行处理。使用 throws 声明的方法表示此方法不处理异常。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">returnType <span class="title function_">method_name</span><span class="params">(paramList)</span> <span class="keyword">throws</span> Exception <span class="number">1</span>,Exception2,…&#123;…&#125;</span><br></pre></td></tr></table></figure>
+
+<p>​	子类方法声明抛出的异常类型应该是父类方法声明抛出的异常类型的子类或相同，子类方法声明抛出的异常不允许比父类方法声明抛出的异常多。</p>
+<p>​	throw: throw 语句用来直接拋出一个异常，后接一个可拋出的异常类对象，其语法格式如下：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">throw ExceptionObject;</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>throws表示出现异常的一种可能性，并不一定会发生这些异常；throw则是抛出了异常，执行throw则一定抛出了某种异常</li>
+<li>两种不会由函数去处理，真正的处理由函数的上层调用处理</li>
+<li>throw是具体向外抛异常的，抛出的是一个异常实例；throws声明了是哪种类型的异常，使它的调用者可以捕获这个异常</li>
+<li>throws出现在方法函数头；而throw出现在函数体</li>
+<li>通常在一个方法（类）的声明处通过 throws 声明方法（类）可能拋出的异常信息，而在方法（类）内部通过 throw 声明一个具体的异常信息。</li>
+</ul>
+</li>
+</ol>
+<h2 id="Applet"><a href="#Applet" class="headerlink" title="Applet"></a>Applet</h2><p>java.awt包含用于创建用户界面和绘制图形图像的所有类</p>
+<ol>
+<li><p>Applet工作原理</p>
+<ul>
+<li><p>Applet与Application的不同</p>
+<p>Applet与Application的主要区别在于<strong>它们的执行方式不同</strong>：<br>Application是使用命令行命令直接运行，从其main()方法开始运行的；<br>Applet则是在浏览器中运行的；</p>
+</li>
+<li><p>Applet程序开发主要步骤</p>
+<ul>
+<li>编辑建立Java Applet源程序</li>
+<li>编译Applet源程序生成字节码文件</li>
+<li>编辑建立HTML文件，在HTML文件内利用<br>＜applet＞标记，嵌入Applet小应用程序。</li>
+<li>直接在浏览器中运行</li>
+</ul>
+</li>
+<li><p>first Applet</p>
+<ul>
+<li>&#96;&#96;&#96;java<br>import java.applet.*;<br>public class MyApplet extends Applet</li>
+</ul>
+</li>
+</ul>
+<p>{  … …}<br>    <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">  每一个小应用程序都继承自java.applet.Applet类，而且必 须是public类，与文件名同名；</span><br><span class="line"></span><br><span class="line">- 编辑HTML网页文件；嵌入小应用程序</span><br><span class="line"></span><br><span class="line">  ```html</span><br><span class="line">  hello.html:</span><br><span class="line">  &lt;HTML&gt;</span><br><span class="line">      &lt;HEAD&gt; </span><br><span class="line">  		&lt;TITLE&gt;嵌入网页中的应用程序&lt;/TITLE&gt;  &lt;/HEAD&gt;</span><br><span class="line">      &lt;APPLET CODE=&quot;HelloApplet.class&quot; WIDTH=200 HEIGHT=100&gt;</span><br><span class="line">  &lt;/HTML&gt;</span><br></pre></td></tr></table></figure></p>
+</li>
+<li><p>Applet生命周期</p>
+<p>小应用程序的生命周期与浏览器相关，完全由浏览器控制；</p>
+<ol>
+<li>打开浏览器时，创建(init)方法运行；<ul>
+<li>Applet第一次加载时，自动调用创建并初始化Applet 对象；</li>
+<li>他只会被加载一次</li>
+</ul>
+</li>
+<li>显示Applet时，启动(start)方法运行；<ul>
+<li>浏览器运行Applet时，start方法会被自动调用；</li>
+<li>或者从其它页面返回包含Applet的页面时，start方法也会被自动调用；</li>
+<li>start方法可被多次调用</li>
+</ul>
+</li>
+<li>不显示Applet时，停止(stop)方法运行；<ul>
+<li>离开Applet所在页面时，会调用stop()停止Applet的运行；</li>
+<li>stop作用: 用户离开包含Applet的页面时，停止一些耗费系统资源的活动，如播放动画，播放音乐文件等。</li>
+<li>如果Applet中没有动画、音乐文件，可不使用</li>
+</ul>
+</li>
+<li>关闭浏览器时，撤销(destroy)方法运行；</li>
+</ol>
+</li>
+<li><p>Graphics</p>
+<p>任何与绘图有关的操作第一个要用的是java.awt.Graphics类，Graphics类的对象不是由new产生的,而是由系统或其他方式直接将生成好的Graphics对象当作方法的参数,再交给程序设计者去处理.</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">paint(Graphics g)</span><br></pre></td></tr></table></figure>
+
+<p>相关的函数：</p>
+<ul>
+<li><p><strong>drawLine</strong></p>
+<ul>
+<li><p>public abstract void drawLine(int x1, int y1, int x2, int y2)</p>
+</li>
+<li><p>在此图形上下文的坐标系中，使用当前颜色在点 (x1, y1) 和 (x2, y2) 之间画一条线。</p>
+</li>
+<li><p>&#96;&#96;&#96;java<br>public void paint(Graphics g) {<br>   g.drawLine(20,200,300,200);<br>   g.drawLine(20,200,20,20);<br>   g.drawLine(20,170,15,170);<br>   g.drawLine(20,140,15,140);<br>   g.drawLine(20,110,15,110);<br>   g.drawLine(20,80,15,80);<br>   g.drawLine(20,50,15,50);<br>} </p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">- **drawString**</span><br><span class="line"></span><br><span class="line">  - public abstract void drawString(String str, int x, int y)</span><br><span class="line"></span><br><span class="line">  - 使用此图形上下文的当前字体和颜色绘制由指定 string 给定的文本。最左侧字符的基线位于此图形上下文坐标系的 (x, y) 位置处。 </span><br><span class="line"></span><br><span class="line">  - ```java</span><br><span class="line">    g.drawString(&quot;50-60&quot;,25,213)</span><br></pre></td></tr></table></figure></li>
+</ul>
+</li>
+<li><p><strong>fillRect</strong></p>
+<ul>
+<li>public abstract void fillRect(int x, int y, int width, int height)</li>
+<li>填充指定的矩形。该矩形左边缘和右边缘分别位于 x 和 x + width - 1。上边缘和下边缘分别位于 y 和 y + height - 1。得到的矩形覆盖 width 像素宽乘以 height 像素高的区域。使用图形上下文的当前颜色填充该矩形。</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><p>Color类</p>
+<ul>
+<li><p>g.setColor(Color.red)；设置红色</p>
+</li>
+<li><p>其他设置颜色方法</p>
+<ul>
+<li>Color(int r，int  g，int b) &#x2F;&#x2F;RGB</li>
+<li>Color(int  rgb)</li>
+</ul>
+</li>
+<li><p>&#96;&#96;&#96;java<br>   Color c &#x3D; new Color(0,255,0);<br>     g.setColor(c);</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">5. Font类</span><br><span class="line"></span><br><span class="line">   - 常用构造方法</span><br><span class="line">     - Font(字体名，字型，字号)</span><br><span class="line"></span><br><span class="line">## GUI设计</span><br><span class="line"></span><br><span class="line">1. 界面的基本组织方式</span><br><span class="line"></span><br><span class="line">   - 由JFrame创建初始的用户界面</span><br><span class="line">   - 由JPanel、JscrollPane、JTabbedPane等创建中间容器</span><br><span class="line">   - 由基本组件类创建有关的组件</span><br><span class="line">   - 将基本组件按照某种布局添加到中间容器中。</span><br><span class="line">   - 将中间容器按照某种布局添加到顶层容器中，形成满足用户需求的操作界面</span><br><span class="line"></span><br><span class="line">2. DEMO1 获得JFrame的容器并添加组件</span><br><span class="line"></span><br><span class="line">   ```java</span><br><span class="line">   Container 	con = getContentPane();</span><br><span class="line">   JPanel panel = new JPanel();</span><br><span class="line">   JButton butt = new JButton(&quot;Press Me&quot;);</span><br><span class="line">   panel.add(butt);</span><br><span class="line">   con.add(panel);</span><br></pre></td></tr></table></figure></li>
+</ul>
+</li>
+<li><p>JLabel</p>
+<p><strong>标签（JLabel）是最简单的组件，用于显示单行静态文本。用户只能查看其内容而不能对其进行修改。</strong></p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">JLabel</span> <span class="variable">label1</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">JLabel</span>(“姓名”);</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>JButton</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">JButton b_sub=<span class="keyword">new</span> <span class="title class_">JButton</span>(<span class="string">&quot;确认&quot;</span>);</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>文本框</p>
+<ul>
+<li><p>JTextField：单行的文本框</p>
+<p>【记忆点：setEditable()方法可以设置是否可编辑】</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">JTextField tf1 = new JTextField(10);</span><br><span class="line">pan.add(tf1);</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>JTextArea：多行的文本区</p>
+<p>应用中经常将文本区对象放入一个滚动窗格中，以使用滚动条功能，方法如下</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">JTextArea result=<span class="keyword">new</span> <span class="title class_">JTextArea</span>(<span class="number">10</span>,<span class="number">30</span>);</span><br><span class="line">JScrollPane sp=<span class="keyword">new</span> <span class="title class_">JScrollPane</span>(result);</span><br><span class="line">pan.add(sp); </span><br></pre></td></tr></table></figure></li>
+</ul>
+</li>
+<li><p>单选按钮（JRadioButton)</p>
+<p>使用单选按钮经常用到ButtonGrup类，其负责维持只有一个单选按钮处于选中状态，如下</p>
+<ol>
+<li><p>创建按钮对象</p>
+<p>ButtonGroup bg  &#x3D; new ButoonGroup();</p>
+</li>
+<li><p>创建若干单选按钮对象</p>
+<p>JRadioButton b1 &#x3D; new JRadioButton(“x”);</p>
+<p>JRadioButton b2 &#x3D; new JRadioButton(“y”);</p>
+</li>
+<li><p>将各单选按钮添加到按钮组中</p>
+<p>bg.add(b1);</p>
+<p>bg.add(b2);</p>
+</li>
+<li><p>将单选按钮添加到其他容器中</p>
+<p>容器对象.add(b1);</p>
+<p>容器对象.add(b2);</p>
+</li>
+</ol>
+</li>
+<li><p>复选框 JCheckbox</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">Jlabel l_ah=new JLabel(&quot;爱好&quot;);</span><br><span class="line">JCheckBox[] hobby=&#123;new JCheckBox(&quot;音乐&quot;),new JCheckBox(&quot;足球&quot;),new JCheckBox(&quot;绘画&quot;)&#125;;</span><br><span class="line">pan.add(l_ah);</span><br><span class="line">pan.add(hobby[0]);</span><br><span class="line">pan.add(hobby[1]);</span><br><span class="line">pan.add(hobby[2]); </span><br></pre></td></tr></table></figure>
+
+<p><img src="C:\Users\10147\AppData\Roaming\Typora\typora-user-images\image-20211223154721967.png" alt="image-20211223154721967"></p>
+</li>
+<li><p>JList【列表框】</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">JLabel   l_xk=<span class="keyword">new</span> <span class="title class_">JLabel</span>(<span class="string">&quot;选课&quot;</span>);</span><br><span class="line">String[] coursesNames = &#123;<span class="string">&quot;数据结构“,&quot;</span>操作系统“,<span class="string">&quot;网络原理&quot;</span>,</span><br><span class="line"><span class="string">&quot;Java程序设计“,&quot;</span>分布式系统开发技术<span class="string">&quot;,</span></span><br><span class="line"><span class="string">&quot;</span>计算机导论“,<span class="string">&quot;密码学&quot;</span>,</span><br><span class="line"><span class="string">&quot;计算机组成原理“,&quot;</span>编译原理<span class="string">&quot;,</span></span><br><span class="line"><span class="string">&quot;</span>图形学”&#125;;</span><br><span class="line">course = <span class="keyword">new</span> <span class="title class_">JList</span>(coursesNames);</span><br><span class="line">pan.add(l_xk);</span><br><span class="line">pan.add(course);</span><br></pre></td></tr></table></figure></li>
+</ol>
+<p><img src="C:\Users\10147\AppData\Roaming\Typora\typora-user-images\image-20211223154914038.png" alt="image-20211223154914038"></p>
+<ol start="9">
+<li><p>JComboBox【下拉列表】</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">JLabel  l_yx=<span class="keyword">new</span> <span class="title class_">JLabel</span>(<span class="string">&quot;院系&quot;</span>);</span><br><span class="line">pan.add(l_yx);</span><br><span class="line">String[] departmentNames = &#123;</span><br><span class="line"><span class="string">&quot;计算机科学与技术系&quot;</span>,</span><br><span class="line"><span class="string">&quot;电子信息与技术系&quot;</span>,</span><br><span class="line"><span class="string">&quot;计算机工程系”&#125;;</span></span><br><span class="line"><span class="string">JComboBox  department = new JComboBox(departmentNames);</span></span><br><span class="line"><span class="string">department.setEditable(false);</span></span><br><span class="line"><span class="string">pan.add(department);</span></span><br></pre></td></tr></table></figure>
+
+<p><img src="C:\Users\10147\AppData\Roaming\Typora\typora-user-images\image-20211223155213013.png" alt="image-20211223155213013"></p>
+</li>
+<li><p>JPasswordField【密码域】</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">password=new JPasswordField(20);</span><br><span class="line">password.setEchoChar(&#x27;*&#x27;);</span><br><span class="line">pan.add(password);</span><br></pre></td></tr></table></figure>
+
+<p><img src="C:\Users\10147\AppData\Roaming\Typora\typora-user-images\image-20211223155224836.png" alt="image-20211223155224836"></p>
+</li>
+<li><p>JSlider【滑动条】</p>
+</li>
+<li><p>布局</p>
+<ul>
+<li><p>BorderLayout</p>
+<img src="C:\Users\10147\AppData\Roaming\Typora\typora-user-images\image-20211223155733385.png" alt="image-20211223155733385" style="zoom:67%;" />
+
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">按照东、西、南、北、中5个方位排列各组件</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">创建BorderLayout布局对象<span class="type">BorderLayout</span> <span class="variable">l</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">BorderLayout</span>();</span><br><span class="line">创建容器对象<span class="type">JPanel</span> <span class="variable">panel</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">JPanel</span>();</span><br><span class="line">设置容器对象的布局或使用默认布局panel.setLayout(l);</span><br><span class="line">向容器中添加组件对象(设组件对象已创建) panel.add(组件对象,方位);</span><br><span class="line"><span class="comment">//方位的取值为：BorderLayout.EAST    或  </span></span><br><span class="line">“East”BorderLayout.WEST    或 </span><br><span class="line">    “West”BorderLayout.SOUTH  </span><br><span class="line">    或  “South”BorderLayout.NORTH  </span><br><span class="line">    或  “North”BorderLayout.CENTER </span><br><span class="line">    或  “Center”(默认)</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>GridLayout</p>
+<ul>
+<li><p><strong>按照二维网格以相同大小依次排列各组件</strong></p>
+</li>
+<li><p>&#96;&#96;&#96;java<br>GridLayout();&#x2F;&#x2F;一行、每个组件一列<br>GridLayout(int rows,int cols);&#x2F;&#x2F;行列数<br>GridLayout(rows,cols,int hgap,int vgap);&#x2F;&#x2F;行行、列列的间距，默认值为0个像素</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">- 布局的使用</span><br><span class="line"></span><br><span class="line">  ```java</span><br><span class="line">  创建GridLayout布局对象</span><br><span class="line">      GridLayout l = new GridLayout(2,2);</span><br><span class="line">  创建容器对象</span><br><span class="line">      JPanel panel = new JPanel();</span><br><span class="line">  设置容器对象的布局或使用默认布局</span><br><span class="line">      panel.setLayout(l);</span><br><span class="line">  向容器中添加组件对象(设组件对象已创建)</span><br><span class="line">      panel.add(组件对象);</span><br></pre></td></tr></table></figure>
+
+<p>​	<strong>FlowLayout</strong>：Ø<strong>该布局以行为单位依次排列各组件，一行排不下时，另起一行</strong>，其为JPanel的默认布局</p>
+<p>BorderLayout：按照东、西、南、北、中5个方位排列各组件 顶层容器的默认布局都是BorderLayout</p>
+<p>GridLayout：按照二维网格以相同大小依次排列各组件</p>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ol>
+<h2 id="AWT组件及其事件处理机制"><a href="#AWT组件及其事件处理机制" class="headerlink" title="AWT组件及其事件处理机制"></a>AWT组件及其事件处理机制</h2><ol>
+<li><p>委托事件模型</p>
+<p>当事件发生时，产生事件对象（即事件源），会把信息转给“事件监听器”处理的一种方式。<br>信息是java.awt.event事件类库中，某个类所创建的对象，称为“事件对象（event object）”</p>
+</li>
+<li><p>三个重要概念</p>
+<p>1.事件源——发生事件的对象，如：按钮<br>2.监听器——对事件源实施监视的对象，如：包含按钮的窗口<br>3.处理事件的接口——监听器对象自动调用一个方法，负责处理事件源发生的事件。</p>
+</li>
+<li><p>最简单的实现流程</p>
+<ul>
+<li><p>导入ActionEvent事件包</p>
+<ul>
+<li>import java.awt.event.*</li>
+</ul>
+</li>
+<li><p>类MyFrame声明实现ActionListener接口</p>
+<ul>
+<li>&#96;&#96;&#96;java<br>class MyFrame extends Frame implements ActionListener{<br>}<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">- 将窗口注册为btnChange的监听器</span><br><span class="line"></span><br><span class="line">  - ```java</span><br><span class="line">    btnChange.addActionListener(this); </span><br></pre></td></tr></table></figure></li>
+</ul>
+</li>
+<li><p>实现接口的方法</p>
+<ul>
+<li>&#96;&#96;&#96;java<br>public void actionPerformed(ActionEvent e)	&#x2F;&#x2F;④实现接口的方法<br>     {<br>       setBackground(Color.yellow);		<br>      }<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">- ```java</span><br><span class="line">  import java.awt.*;</span><br><span class="line">  import java.awt.event.*;   // ①导入ActionEvent事件包</span><br><span class="line">  </span><br><span class="line">  class MyFrame extends Frame implements ActionListener </span><br><span class="line">  // ②类MyFrame声明实现ActionListener接口</span><br><span class="line">  &#123;</span><br><span class="line">  	Button btnChange=new Button(&quot;变色&quot;);</span><br><span class="line">  	MyFrame(String s)</span><br><span class="line">  	&#123;</span><br><span class="line">  	    super(s); </span><br><span class="line">          setSize(300,200);</span><br><span class="line">          setBackground(Color.white);</span><br><span class="line">          setResizable(false);</span><br><span class="line">          setVisible(true);</span><br><span class="line">          setLayout(new FlowLayout());</span><br><span class="line">  </span><br><span class="line">          add(btnChange);</span><br><span class="line">          btnChange.addActionListener(this);  //③将窗口注册为btnChange的监听器</span><br><span class="line">  	&#125;</span><br><span class="line">  	public void actionPerformed(ActionEvent e)	//④实现接口的方法</span><br><span class="line">           &#123; </span><br><span class="line">  	       setBackground(Color.yellow);		</span><br><span class="line">            &#125;</span><br><span class="line">  &#125;</span><br><span class="line">  public class testButton </span><br><span class="line">  &#123;	 </span><br><span class="line">       public static void main(String args[])</span><br><span class="line">       &#123;</span><br><span class="line">             MyFrame myFrm=new MyFrame(&quot;变色窗口&quot;);	</span><br><span class="line">       &#125;</span><br><span class="line">  &#125;</span><br><span class="line">  </span><br></pre></td></tr></table></figure></li>
+</ul>
+</li>
+<li><img src="C:\Users\10147\AppData\Roaming\Typora\typora-user-images\image-20211223160954314.png" alt="image-20211223160954314" style="zoom:67%;" /></li>
+</ul>
+</li>
+<li><p>部分事件类、监听接口及接口中的方法</p>
+<table>
+<thead>
+<tr>
+<th><strong>事件源</strong></th>
+<th><strong>产生事件****的类型</strong></th>
+<th><strong>监听器接口</strong></th>
+<th><strong>监听器接口提供的方法</strong></th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>Button</strong></td>
+<td><strong>ActionEvent</strong></td>
+<td><strong>ActionListener</strong></td>
+<td><strong>actionPerformed(ActionEvent</strong> <strong>e)</strong></td>
+</tr>
+<tr>
+<td><strong>CheckBox</strong></td>
+<td><strong>ItemEvent</strong></td>
+<td><strong>ItemListener</strong></td>
+<td><strong>itemStateChange(ItemEvent</strong> <strong>e)</strong></td>
+</tr>
+<tr>
+<td><strong>TextField</strong></td>
+<td><strong>ActionEvent****TextEvent</strong></td>
+<td><strong>ActionListener****TextListener</strong></td>
+<td>**actionPerformed(ActionEvent e)textValueChange(TextEvent **e)</td>
+</tr>
+<tr>
+<td><strong>Window</strong></td>
+<td><strong>WindowEvent</strong></td>
+<td><strong>WindowListener</strong></td>
+<td><strong>windowActivated(WindowEvent</strong> **e)**<strong>windowClosing(WindowEvent</strong> **e)**<strong>windowOpened(WindowEvent</strong> **e)**<strong>……</strong></td>
+</tr>
+<tr>
+<td><strong>…</strong></td>
+<td><strong>…</strong></td>
+<td><strong>…</strong></td>
+<td><strong>…</strong></td>
+</tr>
+</tbody></table>
+</li>
+<li><p>例子：猜数字</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">step1:</span><br><span class="line">声明组件</span><br><span class="line"><span class="keyword">private</span> <span class="type">int</span> number;</span><br><span class="line">    <span class="type">Button</span> <span class="variable">button_getnum</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">Button</span>(<span class="string">&quot;得到随机数&quot;</span>);</span><br><span class="line">    <span class="type">Button</span> <span class="variable">button_yep</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">Button</span>(<span class="string">&quot;确定&quot;</span>);</span><br><span class="line">    <span class="type">Label</span> <span class="variable">label_info</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">Label</span>(<span class="string">&quot;请输入你的猜测&quot;</span>,Label.CENTER);</span><br><span class="line">    <span class="type">TextField</span> <span class="variable">tx</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">TextField</span>(<span class="string">&quot;0&quot;</span>,<span class="number">10</span>);</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">step2：</span><br><span class="line">设置窗口属性，这一步在该类的构造函数里面写。</span><br><span class="line">guessFrame(String s)</span><br><span class="line">    &#123;</span><br><span class="line">        <span class="built_in">super</span>(s);</span><br><span class="line">        setSize(<span class="number">300</span>,<span class="number">200</span>);</span><br><span class="line">        setResizable(<span class="literal">false</span>);</span><br><span class="line">        setVisible(<span class="literal">true</span>);</span><br><span class="line">        setLayout(<span class="literal">null</span>);</span><br><span class="line">        &#125;</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line">step3：</span><br><span class="line">添加控件</span><br><span class="line">guessFrame(String s)</span><br><span class="line">    &#123;</span><br><span class="line">        <span class="built_in">super</span>(s);</span><br><span class="line">        setSize(<span class="number">300</span>,<span class="number">200</span>);</span><br><span class="line">        setResizable(<span class="literal">false</span>);</span><br><span class="line">        setVisible(<span class="literal">true</span>);</span><br><span class="line">        setLayout(<span class="literal">null</span>);</span><br><span class="line"></span><br><span class="line">        lblInfo.setBounds(<span class="number">50</span>,<span class="number">50</span>,<span class="number">120</span>,<span class="number">20</span>);</span><br><span class="line">        add(lblInfo);</span><br><span class="line">        txtInput.setBounds(<span class="number">50</span>,<span class="number">80</span>,<span class="number">120</span>,<span class="number">20</span>);</span><br><span class="line">        add(txtInput);</span><br><span class="line">        btnGetNum.setBounds(<span class="number">50</span>,<span class="number">120</span>,<span class="number">80</span>,<span class="number">20</span>);</span><br><span class="line">        add(btnGetNum);</span><br><span class="line">        btnEnter.setBounds(<span class="number">150</span>,<span class="number">120</span>,<span class="number">50</span>,<span class="number">20</span>);</span><br><span class="line">        add(btnEnter);</span><br><span class="line">        &#125;</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">step4:</span><br><span class="line">添加监听器【控件.addActionListener】</span><br><span class="line">btn_getnum.addActionListener(<span class="built_in">this</span>);</span><br><span class="line">btn_yep.addActionListener(<span class="built_in">this</span>);</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br></pre></td><td class="code"><pre><span class="line">step5:</span><br><span class="line">实现ActionListener接口中的actionPerformed方法</span><br><span class="line">【记忆点：lable.getText()可以取文本框中的值】</span><br><span class="line">【记忆点：Integer.parseInt(String)可以将String转换为Int】</span><br><span class="line">【记忆点：NumberFormatException为值类型异常】</span><br><span class="line"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">actionPerformed</span><span class="params">(ActionEvent e)</span></span><br><span class="line">&#123;</span><br><span class="line">       <span class="keyword">if</span>(e.getSource()==btnGetNum)		<span class="comment">//单击 “得到随机数”接钮</span></span><br><span class="line">       &#123;</span><br><span class="line">            number=(<span class="type">int</span>)(Math.random()*<span class="number">100</span>)+<span class="number">1</span>;</span><br><span class="line">       &#125;</span><br><span class="line">       <span class="keyword">else</span> <span class="keyword">if</span>(e.getSource()==btnEnter)		<span class="comment">//单击 “确定”接钮</span></span><br><span class="line">       &#123;</span><br><span class="line">            <span class="type">int</span> guess=<span class="number">0</span>;</span><br><span class="line">            <span class="keyword">try</span></span><br><span class="line">            &#123;</span><br><span class="line">	           guess=Integer.parseInt(txtInput.getText());	<span class="comment">//获取文本框中的数值</span></span><br><span class="line">	           <span class="keyword">if</span> (guess==number)</span><br><span class="line">	           &#123;</span><br><span class="line">	    	      lblInfo.setText(<span class="string">&quot;你猜对!&quot;</span>);</span><br><span class="line">	           &#125;</span><br><span class="line">	           <span class="keyword">else</span> <span class="keyword">if</span>(guess&gt;number)</span><br><span class="line">	           &#123;</span><br><span class="line">	    	      lblInfo.setText(<span class="string">&quot;你猜高了!&quot;</span>);</span><br><span class="line">	    	      txtInput.setText(<span class="literal">null</span>);</span><br><span class="line">	           &#125;	</span><br><span class="line">	           <span class="keyword">else</span> <span class="keyword">if</span>(guess&lt;number)</span><br><span class="line">	           &#123;</span><br><span class="line">	    	      lblInfo.setText(<span class="string">&quot;你猜低了!&quot;</span>);</span><br><span class="line">	    	      txtInput.setText(<span class="literal">null</span>);</span><br><span class="line">	           &#125;		</span><br><span class="line">            &#125;</span><br><span class="line">	 <span class="keyword">catch</span>(NumberFormatException event)</span><br><span class="line">            &#123;</span><br><span class="line">	            lblInfo.setText(<span class="string">&quot;请输入数字字符&quot;</span>);</span><br><span class="line">	  &#125;</span><br><span class="line">       &#125;</span><br><span class="line">&#125;	</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">guessFrame</span> <span class="keyword">extends</span> <span class="title class_">Frame</span> <span class="keyword">implements</span> <span class="title class_">ActionListener</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="keyword">private</span> number;</span><br><span class="line">    <span class="type">TextFiled</span> <span class="variable">txt</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">TextFiled</span>(<span class="number">0</span>,<span class="string">&quot;10&quot;</span>);</span><br><span class="line">    <span class="type">Button</span> <span class="variable">btn1</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">Button</span>(<span class="string">&quot;得到随机数&quot;</span>);</span><br><span class="line">    <span class="type">Button</span> <span class="variable">btn2</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">Button</span>(<span class="string">&quot;确定&quot;</span>);</span><br><span class="line">    <span class="type">Label</span> <span class="variable">label_info</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">Label</span>(<span class="string">&quot;请输入你的猜测&quot;</span>,Label.CENTER);</span><br><span class="line">    </span><br><span class="line">    guessFrame(String s)&#123;</span><br><span class="line">        <span class="built_in">super</span>(s);</span><br><span class="line">        setResizable(<span class="literal">false</span>);	<span class="comment">//这里拼错了</span></span><br><span class="line">        setVisiable(<span class="literal">true</span>);</span><br><span class="line">        setLayout(<span class="literal">null</span>);		<span class="comment">//这里忘了</span></span><br><span class="line">        </span><br><span class="line">        add(label_info);</span><br><span class="line">        ...;</span><br><span class="line">           </span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">actionPerformed</span><span class="params">(ActionEvent e)</span>&#123;</span><br><span class="line">        <span class="keyword">if</span>(e.getSource()==btn1)&#123;</span><br><span class="line">            number = (<span class="type">int</span>)(Math.random()*<span class="number">100</span>)+<span class="number">1</span>;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">else</span> <span class="keyword">if</span>(e.getSource()==btn2)&#123;</span><br><span class="line">            <span class="type">int</span> <span class="variable">guess</span> <span class="operator">=</span><span class="number">0</span>;</span><br><span class="line">            <span class="keyword">try</span>&#123;</span><br><span class="line">                guess=Integer.parseInt(txtInput.getText());</span><br><span class="line">                <span class="keyword">if</span>(guess = number)&#123;</span><br><span class="line">                    ...</span><br><span class="line">                &#125;</span><br><span class="line">                <span class="keyword">else</span> <span class="keyword">if</span>(guess &lt; number)&#123;</span><br><span class="line">                    ...</span><br><span class="line">                &#125;</span><br><span class="line">                <span class="keyword">else</span> <span class="keyword">if</span>(guess &gt; number)&#123;</span><br><span class="line">                    ...</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></li>
+</ol>
+
+    </div>
+
+    
+    
+    
+        
+
+<div>
+<ul class="post-copyright">
+  <li class="post-copyright-author">
+    <strong>本文作者： </strong>Wanjia Huang
+  </li>
+  <li class="post-copyright-link">
+    <strong>本文链接：</strong>
+    <a href="http://example.com/2021/12/28/JAVA%E6%9C%9F%E6%9C%AB%E8%80%83%E8%AF%95/" title="【笔记】JAVA期末复习[上]">http://example.com/2021/12/28/JAVA期末考试/</a>
+  </li>
+  <li class="post-copyright-license">
+    <strong>版权声明： </strong>本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" rel="noopener" target="_blank"><i class="fab fa-fw fa-creative-commons"></i>BY-NC-SA</a> 许可协议。转载请注明出处！
+  </li>
+</ul>
+</div>
+
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/JAVA/" rel="tag"># JAVA</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2021/11/03/2021-11-3%20LKA%E7%AC%94%E8%AE%B0%20192100/" rel="prev" title="【笔记】Linux内核分析">
+      <i class="fa fa-chevron-left"></i> 【笔记】Linux内核分析
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2021/12/28/JAVA%E6%9C%9F%E6%9C%AB%E5%A4%8D%E4%B9%A02/" rel="next" title="【笔记】JAVA期末复习[下]">
+      【笔记】JAVA期末复习[下] <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#Java%E8%AF%AD%E8%A8%80%E5%9F%BA%E7%A1%80"><span class="nav-number">1.</span> <span class="nav-text">Java语言基础</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%B1%BB%E4%B8%8E%E5%AF%B9%E8%B1%A1%E5%9F%BA%E7%A1%80"><span class="nav-number">2.</span> <span class="nav-text">类与对象基础</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%8E%A5%E5%8F%A3%E4%B8%8E%E5%A4%9A%E6%80%81"><span class="nav-number">3.</span> <span class="nav-text">接口与多态</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%AD%97%E7%AC%A6%E4%B8%B2"><span class="nav-number">4.</span> <span class="nav-text">字符串</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%BC%82%E5%B8%B8"><span class="nav-number">5.</span> <span class="nav-text">异常</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Applet"><span class="nav-number">6.</span> <span class="nav-text">Applet</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#AWT%E7%BB%84%E4%BB%B6%E5%8F%8A%E5%85%B6%E4%BA%8B%E4%BB%B6%E5%A4%84%E7%90%86%E6%9C%BA%E5%88%B6"><span class="nav-number">7.</span> <span class="nav-text">AWT组件及其事件处理机制</span></a></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="Wanjia Huang"
+      src="https://i.loli.net/2020/07/12/D6CZiKA4O2jmwus.jpg">
+  <p class="site-author-name" itemprop="name">Wanjia Huang</p>
+  <div class="site-description" itemprop="description">向分布式存储探索</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">25</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">6</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">11</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://https//github.com/Hackerismydream" title="GitHub → https:&#x2F;&#x2F;https:&#x2F;&#x2F;github.com&#x2F;Hackerismydream" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="/1014774261@qq.com" title="E-Mail → 1014774261@qq.com"><i class="fa fa-envelope fa-fw"></i>E-Mail</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://www.zhihu.com/people/huang-wan-jia-12" title="知乎 → https:&#x2F;&#x2F;www.zhihu.com&#x2F;people&#x2F;huang-wan-jia-12" rel="noopener" target="_blank"><i class="gratipay fa-fw"></i>知乎</a>
+      </span>
+  </div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2022</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Wanjia Huang</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://mist.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Mist</a> 强力驱动
+  </div>
+
+
+    <script async src="//dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+    <span id="busuanzi_container_site_pv">总访问量<span id="busuanzi_value_site_pv"></span>次</span>
+    <span class="post-meta-divider">|</span>
+    <span id="busuanzi_container_site_uv">总访客数<span id="busuanzi_value_site_uv"></span>人</span>
+    <span class="post-meta-divider">|</span>
+<!-- 不蒜子计数初始值纠正 -->
+<script>
+$(document).ready(function() {
+
+    var int = setInterval(fixCount, 50);  // 50ms周期检测函数
+    var countOffset = 20000;  // 初始化首次数据
+
+    function fixCount() {            
+       if (document.getElementById("busuanzi_container_site_pv").style.display != "none")
+        {
+            $("#busuanzi_value_site_pv").html(parseInt($("#busuanzi_value_site_pv").html()) + countOffset); 
+            clearInterval(int);
+        }                  
+        if ($("#busuanzi_container_site_pv").css("display") != "none")
+        {
+            $("#busuanzi_value_site_uv").html(parseInt($("#busuanzi_value_site_uv").html()) + countOffset); // 加上初始数据 
+            clearInterval(int); // 停止检测
+        }  
+    }
+       	
+});
+</script> 
+
+        
+<div class="busuanzi-count">
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+    <span class="post-meta-item" id="busuanzi_container_site_uv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-user"></i>
+      </span>
+      <span class="site-uv" title="总访客量">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item" id="busuanzi_container_site_pv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-eye"></i>
+      </span>
+      <span class="site-pv" title="总访问量">
+        <span id="busuanzi_value_site_pv"></span>
+      </span>
+    </span>
+</div>
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/muse.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+</body>
+</html>

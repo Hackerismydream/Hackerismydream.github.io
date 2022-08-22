@@ -33,7 +33,7 @@
 <meta property="og:image" content="https://media.geeksforgeeks.org/wp-content/uploads/20190806160342/Basic-Working-of-Extendible-Hashing.png">
 <meta property="og:image" content="https://media.geeksforgeeks.org/wp-content/uploads/20190803103752/OverFlow3.png">
 <meta property="article:published_time" content="2022-08-22T09:51:59.000Z">
-<meta property="article:modified_time" content="2022-08-22T13:06:23.592Z">
+<meta property="article:modified_time" content="2022-08-22T15:56:23.400Z">
 <meta property="article:author" content="Wanjia Huang">
 <meta property="article:tag" content="BusTub">
 <meta name="twitter:card" content="summary">
@@ -198,7 +198,7 @@
               <span class="post-meta-item-text">发表于</span>
               
 
-              <time title="创建时间：2022-08-22 17:51:59 / 修改时间：21:06:23" itemprop="dateCreated datePublished" datetime="2022-08-22T17:51:59+08:00">2022-08-22</time>
+              <time title="创建时间：2022-08-22 17:51:59 / 修改时间：23:56:23" itemprop="dateCreated datePublished" datetime="2022-08-22T17:51:59+08:00">2022-08-22</time>
             </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -228,20 +228,20 @@
     <div class="post-body" itemprop="articleBody">
 
       
-        <h2 id="BusTub"><a href="#BusTub" class="headerlink" title="BusTub"></a>BusTub</h2><p>​	BusTub是卡内基梅隆大学CMU 15-445的课程Lab，该Lab是在一个基础的框架上实现储存引擎的各项主要功能。为BusTub DBMS构建一个新的面向磁盘的存储管理器，该存储管理器假定数据库的主要存储位置在磁盘上。</p>
-<h4 id="特点"><a href="#特点" class="headerlink" title="特点"></a>特点</h4><ol>
+        <h1 id="BusTub"><a href="#BusTub" class="headerlink" title="BusTub"></a>BusTub</h1><p>​	BusTub是卡内基梅隆大学CMU 15-445的课程Lab，该Lab是在一个基础的框架上实现储存引擎的各项主要功能。为BusTub DBMS构建一个新的面向磁盘的存储管理器，该存储管理器假定数据库的主要存储位置在磁盘上。</p>
+<h3 id="特点"><a href="#特点" class="headerlink" title="特点"></a>特点</h3><ol>
 <li>基于LRU策略的缓冲池</li>
 <li>索引方式：动态哈希</li>
 </ol>
 <span id="more"></span>
 
 <h2 id="Lab1-BUFFER-POOL"><a href="#Lab1-BUFFER-POOL" class="headerlink" title="Lab1 BUFFER POOL"></a>Lab1 BUFFER POOL</h2><p>​	第一个Lab为存储引擎实现缓冲池（Buffer Pool）。缓冲池负责将物理页面从主内存来回移动到磁盘。它允许 DBMS 支持大于系统可用内存量的数据库。缓冲池的操作对系统中的其他部分是透明的，系统使用其唯一标识符 （page_id_t）向缓冲池请求页面。</p>
-<h4 id="技术点"><a href="#技术点" class="headerlink" title="技术点"></a>技术点</h4><ul>
+<h2 id="技术点"><a href="#技术点" class="headerlink" title="技术点"></a>技术点</h2><ul>
 <li>使用互斥锁保证缓冲池的线程安全性，允许多个线程同时访问内部数据结构。</li>
 <li>使用LRU的缓存替换策略，以减少磁盘IO次数，提高性能。</li>
 <li>使用闩锁（latch）完成并行的Buffer Pool，避免单个Buffer Pool情形下每个线程与缓冲池交互时都进行资源争夺。</li>
 </ul>
-<h4 id="实现细节"><a href="#实现细节" class="headerlink" title="实现细节"></a>实现细节</h4><ul>
+<h2 id="实现细节"><a href="#实现细节" class="headerlink" title="实现细节"></a>实现细节</h2><ul>
 <li><p>LRU的实现：</p>
 <ul>
 <li>页面需要使用一个数据结构来存储，考虑到需要不断地进行插入操作（头插）和删除操作（尾删），因此选择使用双向链表。但为了更快地查找速度，增加一个哈希表，以双向链表+哈希表实现O(1)的查找速度。</li>
@@ -273,12 +273,12 @@
 </li>
 </ul>
 <h2 id="Lab2-EXTENDIBLE-HASH-INDEX"><a href="#Lab2-EXTENDIBLE-HASH-INDEX" class="headerlink" title="Lab2 EXTENDIBLE HASH INDEX"></a>Lab2 EXTENDIBLE HASH INDEX</h2><p>​	第二个Lab是为储存引擎实现一个索引。索引负责快速数据检索，无需搜索数据库表中的每一行，为快速随机查找和高效访问有序记录提供基础。</p>
-<h4 id="技术点-1"><a href="#技术点-1" class="headerlink" title="技术点"></a>技术点</h4><ul>
+<h2 id="技术点-1"><a href="#技术点-1" class="headerlink" title="技术点"></a>技术点</h2><ul>
 <li>使用可扩展哈希表为底层数据结构为储存引擎实现多级索引与可扩展。</li>
 <li>使用动态散列（Dynamic Hashing）技术完成扩展容量时对桶容量和目录的容量，性能开销小。</li>
 <li>使用节点粒度的锁保证在多线程并发访问下的线程安全性。</li>
 </ul>
-<h4 id="实现细节-1"><a href="#实现细节-1" class="headerlink" title="实现细节"></a>实现细节</h4><ul>
+<h2 id="实现细节-1"><a href="#实现细节-1" class="headerlink" title="实现细节"></a>实现细节</h2><ul>
 <li><p>Bustbub中通过可扩展哈希的数据索引过程：</p>
 <ul>
 <li><img src="https://media.geeksforgeeks.org/wp-content/uploads/20190806160342/Basic-Working-of-Extendible-Hashing.png" alt="img" style="zoom:50%;" /></li>
@@ -324,13 +324,13 @@
 </li>
 </ul>
 <h2 id="Lab3-QUERY-EXECUTION"><a href="#Lab3-QUERY-EXECUTION" class="headerlink" title="Lab3 QUERY EXECUTION"></a>Lab3 QUERY EXECUTION</h2><p>​	第三个Lab是为储存引擎实现查询执行。查询执行负责获取查询计划节点并执行它们的执行器，这部分执行器包括：顺序扫描（Sequential Scan）、插入（Insert）、更新（Update）、删除（Delete）、嵌套循环连接算法（Nested Loop Join）、哈希连接算法（Hash Join）、聚合（Aggregation）、限制（Limit）、唯一（Distinct）。Bustub中采用的是迭代模型（火山模型）实现，将关系代数中每一种操作抽象为一个 Operator，将整个 SQL 构建成一个 Operator 树，查询树自顶向下地调用next()接口，数据则自底向上的被拉取处理。</p>
-<h4 id="技术点-2"><a href="#技术点-2" class="headerlink" title="技术点"></a>技术点</h4><ul>
+<h3 id="技术点-2"><a href="#技术点-2" class="headerlink" title="技术点"></a>技术点</h3><ul>
 <li>使用火山模型实现了查询计划，将关系代数中的每一种操作抽象为一个Operator，将整个 SQL 构建成一个 Operator 树。</li>
 <li>采取工厂模式调用每个执行器，通过工厂模式类将输入查询计划转换为查询执行器，并执行它直到收集到所有结果。</li>
 <li>对于连接算法，相较传统的嵌套循环连接算法，提供了HashJoin的方式。</li>
 <li>对于聚合函数的实现，采用了HashAggregate的方式。</li>
 </ul>
-<h4 id="实现细节-2"><a href="#实现细节-2" class="headerlink" title="实现细节"></a>实现细节</h4><ul>
+<h3 id="实现细节-2"><a href="#实现细节-2" class="headerlink" title="实现细节"></a>实现细节</h3><ul>
 <li><p>数据结构</p>
 <ul>
 <li>Value：从最小的类开始。Value可以理解为单元格，并且提供了一些比较和运算的函数。</li>
@@ -432,11 +432,11 @@
 </li>
 </ul>
 <h2 id="Lab4-CONCURRENCY-CONTROL"><a href="#Lab4-CONCURRENCY-CONTROL" class="headerlink" title="Lab4 CONCURRENCY CONTROL"></a>Lab4 CONCURRENCY CONTROL</h2><p>​	第三个Lab是为储存引擎实现并发控制系统。基本思路是实现一个锁管理器，然后用它来支持并发查询执行。锁管理器负责跟踪向事务发出的元组级锁，并支持基于隔离级别适当授予和释放的共享锁和排他锁。</p>
-<h4 id="技术点-3"><a href="#技术点-3" class="headerlink" title="技术点"></a>技术点</h4><ul>
+<h3 id="技术点-3"><a href="#技术点-3" class="headerlink" title="技术点"></a>技术点</h3><ul>
 <li>使用Wound-Wait算法实现死锁预防算法，通过杀死年轻事务，等待老事务的方式预防死锁发生。</li>
 <li>使用悲观的两阶段封锁并发控制协议实现了常见的三种隔离级别READ_UNCOMMITED、READ_COMMITTED 和 REPEATABLE_READ。</li>
 </ul>
-<h4 id="实现细节-3"><a href="#实现细节-3" class="headerlink" title="实现细节"></a>实现细节</h4><ul>
+<h3 id="实现细节-3"><a href="#实现细节-3" class="headerlink" title="实现细节"></a>实现细节</h3><ul>
 <li><p>数据结构：</p>
 <ul>
 <li>Transaction：采用2PL锁协议的事务状态，GROWING -&gt; SHRINKING -&gt; COMMITTED   ABORTED。</li>
@@ -581,7 +581,7 @@
 
       <!--noindex-->
       <div class="post-toc-wrap sidebar-panel">
-          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#BusTub"><span class="nav-number">1.</span> <span class="nav-text">BusTub</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E7%89%B9%E7%82%B9"><span class="nav-number">1.0.1.</span> <span class="nav-text">特点</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Lab1-BUFFER-POOL"><span class="nav-number">2.</span> <span class="nav-text">Lab1 BUFFER POOL</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%8A%80%E6%9C%AF%E7%82%B9"><span class="nav-number">2.0.1.</span> <span class="nav-text">技术点</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%AE%9E%E7%8E%B0%E7%BB%86%E8%8A%82"><span class="nav-number">2.0.2.</span> <span class="nav-text">实现细节</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Lab2-EXTENDIBLE-HASH-INDEX"><span class="nav-number">3.</span> <span class="nav-text">Lab2 EXTENDIBLE HASH INDEX</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%8A%80%E6%9C%AF%E7%82%B9-1"><span class="nav-number">3.0.1.</span> <span class="nav-text">技术点</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%AE%9E%E7%8E%B0%E7%BB%86%E8%8A%82-1"><span class="nav-number">3.0.2.</span> <span class="nav-text">实现细节</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Lab3-QUERY-EXECUTION"><span class="nav-number">4.</span> <span class="nav-text">Lab3 QUERY EXECUTION</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%8A%80%E6%9C%AF%E7%82%B9-2"><span class="nav-number">4.0.1.</span> <span class="nav-text">技术点</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%AE%9E%E7%8E%B0%E7%BB%86%E8%8A%82-2"><span class="nav-number">4.0.2.</span> <span class="nav-text">实现细节</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Lab4-CONCURRENCY-CONTROL"><span class="nav-number">5.</span> <span class="nav-text">Lab4 CONCURRENCY CONTROL</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%8A%80%E6%9C%AF%E7%82%B9-3"><span class="nav-number">5.0.1.</span> <span class="nav-text">技术点</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%AE%9E%E7%8E%B0%E7%BB%86%E8%8A%82-3"><span class="nav-number">5.0.2.</span> <span class="nav-text">实现细节</span></a></li></ol></li></ol></li></ol></div>
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#BusTub"><span class="nav-number">1.</span> <span class="nav-text">BusTub</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%89%B9%E7%82%B9"><span class="nav-number">1.0.1.</span> <span class="nav-text">特点</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Lab1-BUFFER-POOL"><span class="nav-number">1.1.</span> <span class="nav-text">Lab1 BUFFER POOL</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%8A%80%E6%9C%AF%E7%82%B9"><span class="nav-number">1.2.</span> <span class="nav-text">技术点</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%AE%9E%E7%8E%B0%E7%BB%86%E8%8A%82"><span class="nav-number">1.3.</span> <span class="nav-text">实现细节</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Lab2-EXTENDIBLE-HASH-INDEX"><span class="nav-number">1.4.</span> <span class="nav-text">Lab2 EXTENDIBLE HASH INDEX</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%8A%80%E6%9C%AF%E7%82%B9-1"><span class="nav-number">1.5.</span> <span class="nav-text">技术点</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%AE%9E%E7%8E%B0%E7%BB%86%E8%8A%82-1"><span class="nav-number">1.6.</span> <span class="nav-text">实现细节</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Lab3-QUERY-EXECUTION"><span class="nav-number">1.7.</span> <span class="nav-text">Lab3 QUERY EXECUTION</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%8A%80%E6%9C%AF%E7%82%B9-2"><span class="nav-number">1.7.1.</span> <span class="nav-text">技术点</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%AE%9E%E7%8E%B0%E7%BB%86%E8%8A%82-2"><span class="nav-number">1.7.2.</span> <span class="nav-text">实现细节</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Lab4-CONCURRENCY-CONTROL"><span class="nav-number">1.8.</span> <span class="nav-text">Lab4 CONCURRENCY CONTROL</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%8A%80%E6%9C%AF%E7%82%B9-3"><span class="nav-number">1.8.1.</span> <span class="nav-text">技术点</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%AE%9E%E7%8E%B0%E7%BB%86%E8%8A%82-3"><span class="nav-number">1.8.2.</span> <span class="nav-text">实现细节</span></a></li></ol></li></ol></li></ol></div>
       </div>
       <!--/noindex-->
 
@@ -597,20 +597,20 @@
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">19</span>
+          <span class="site-state-item-count">25</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
       <div class="site-state-item site-state-categories">
             <a href="/categories/">
           
-        <span class="site-state-item-count">5</span>
+        <span class="site-state-item-count">6</span>
         <span class="site-state-item-name">分类</span></a>
       </div>
       <div class="site-state-item site-state-tags">
             <a href="/tags/">
           
-        <span class="site-state-item-count">6</span>
+        <span class="site-state-item-count">11</span>
         <span class="site-state-item-name">标签</span></a>
       </div>
   </nav>
