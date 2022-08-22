@@ -1,0 +1,577 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 6.2.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+  <link rel="stylesheet" href="/lib/pace/pace-theme-minimal.min.css">
+  <script src="/lib/pace/pace.min.js"></script>
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"example.com","root":"/","scheme":"Gemini","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+  </script>
+
+  <meta name="description" content="层次分析法简介​		层次分析法（AHP）主要是通过建立梯阶层次结构，将复杂的问题分解成主要的目标(O)、方案§、准则©三个结构层，并通过对准则和方案的两两比较，确定各准则、方案间的权重。 层次分析法的基本步骤​		(i) 分析问题中各因素间的关系，建立递阶层次结构模型。 ​		(ii) 构造出各层次的所有判断矩阵 ​		(iii) 根据判断矩阵计算被比较元素对于该准则的相对权重，进行一致性检验 ​">
+<meta property="og:type" content="article">
+<meta property="og:title" content="【数学建模】层次分析法">
+<meta property="og:url" content="http://example.com/2020/07/17/%E3%80%90%E6%95%B0%E5%AD%A6%E5%BB%BA%E6%A8%A1%E3%80%91%E5%B1%82%E6%AC%A1%E5%88%86%E6%9E%90%E6%B3%95/index.html">
+<meta property="og:site_name" content="Wanjia Huang">
+<meta property="og:description" content="层次分析法简介​		层次分析法（AHP）主要是通过建立梯阶层次结构，将复杂的问题分解成主要的目标(O)、方案§、准则©三个结构层，并通过对准则和方案的两两比较，确定各准则、方案间的权重。 层次分析法的基本步骤​		(i) 分析问题中各因素间的关系，建立递阶层次结构模型。 ​		(ii) 构造出各层次的所有判断矩阵 ​		(iii) 根据判断矩阵计算被比较元素对于该准则的相对权重，进行一致性检验 ​">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="http://example.com/%E3%80%90%E6%95%B0%E5%AD%A6%E5%BB%BA%E6%A8%A1%E3%80%91%E5%B1%82%E6%AC%A1%E5%88%86%E6%9E%90%E6%B3%95/%E4%BE%8B%E5%AD%901.png">
+<meta property="og:image" content="http://example.com/%E3%80%90%E6%95%B0%E5%AD%A6%E5%BB%BA%E6%A8%A1%E3%80%91%E5%B1%82%E6%AC%A1%E5%88%86%E6%9E%90%E6%B3%95/%E4%BE%8B%E5%AD%902.png">
+<meta property="article:published_time" content="2020-07-17T10:35:55.000Z">
+<meta property="article:modified_time" content="2020-07-27T14:52:07.768Z">
+<meta property="article:author" content="Wanjia Huang">
+<meta property="article:tag" content="数学建模">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://example.com/%E3%80%90%E6%95%B0%E5%AD%A6%E5%BB%BA%E6%A8%A1%E3%80%91%E5%B1%82%E6%AC%A1%E5%88%86%E6%9E%90%E6%B3%95/%E4%BE%8B%E5%AD%901.png">
+
+<link rel="canonical" href="http://example.com/2020/07/17/%E3%80%90%E6%95%B0%E5%AD%A6%E5%BB%BA%E6%A8%A1%E3%80%91%E5%B1%82%E6%AC%A1%E5%88%86%E6%9E%90%E6%B3%95/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>【数学建模】层次分析法 | Wanjia Huang</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">Wanjia Huang</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+      <p class="site-subtitle" itemprop="description">西南交通大学 软件工程</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a>
+
+  </li>
+        <li class="menu-item menu-item-schedule">
+
+    <a href="/schedule/" rel="section"><i class="fa fa-calendar fa-fw"></i>日程表</a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2020/07/17/%E3%80%90%E6%95%B0%E5%AD%A6%E5%BB%BA%E6%A8%A1%E3%80%91%E5%B1%82%E6%AC%A1%E5%88%86%E6%9E%90%E6%B3%95/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="https://i.loli.net/2020/07/12/D6CZiKA4O2jmwus.jpg">
+      <meta itemprop="name" content="Wanjia Huang">
+      <meta itemprop="description" content="向分布式存储探索">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Wanjia Huang">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          【数学建模】层次分析法
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2020-07-17 18:35:55" itemprop="dateCreated datePublished" datetime="2020-07-17T18:35:55+08:00">2020-07-17</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2020-07-27 22:52:07" itemprop="dateModified" datetime="2020-07-27T22:52:07+08:00">2020-07-27</time>
+              </span>
+
+          
+            <span class="post-meta-item" title="阅读次数" id="busuanzi_container_page_pv" style="display: none;">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
+              </span>
+              <span class="post-meta-item-text">阅读次数：</span>
+              <span id="busuanzi_value_page_pv"></span>
+            </span>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <h4 id="层次分析法简介"><a href="#层次分析法简介" class="headerlink" title="层次分析法简介"></a>层次分析法简介</h4><p>​		层次分析法（AHP）主要是通过建立梯阶层次结构，将复杂的问题分解成主要的目标(O)、方案§、准则©三个结构层，并通过对准则和方案的两两比较，确定各准则、方案间的权重。</p>
+<h4 id="层次分析法的基本步骤"><a href="#层次分析法的基本步骤" class="headerlink" title="层次分析法的基本步骤"></a>层次分析法的基本步骤</h4><p>​		(i) 分析问题中各因素间的关系，建立递阶层次结构模型。</p>
+<p>​		(ii) 构造出各层次的所有判断矩阵</p>
+<p>​		(iii) 根据判断矩阵计算被比较元素对于该准则的相对权重，进行<strong>一致性检验</strong></p>
+<p>​		(iv) 层次总排序及一致性检验</p>
+<h4 id="模型建立过程"><a href="#模型建立过程" class="headerlink" title="模型建立过程"></a>模型建立过程</h4><h5 id="建立递阶层次结构模型"><a href="#建立递阶层次结构模型" class="headerlink" title="建立递阶层次结构模型"></a>建立递阶层次结构模型</h5><p>​		在应用AHP模型时，我们需要对模型解决的问题进行层次化，构造出一个有层次地结构模型。该模型将复杂地问题分解为三个层次（目标层、准则层、措施层&#x2F;方案层），每个层次又包含着若干元素。上一层次的元素作为准则对下一层次有关元素起着支配作用。下面是各个层次的简介：</p>
+<p>​		(i) 目标层：分析问题的预定目标或者结果，该层次只有一个元素。</p>
+<p>​		(ii) 准则层：为了实现目标而涉及的中间环节，它可以由若干个层次。</p>
+<p>​		(iii)方案层&#x2F;措施层：为实现目标可供选择的各种措施、决策方案。</p>
+<p>​		一般来说每一层次中的元素不要超过9个，因为支配的元素过度哦会给两两比较判断带来困难。</p>
+<p>​		引用《数学建模算法与应用》中的一个例子：</p>
+<p>​		例：<img src="/%E3%80%90%E6%95%B0%E5%AD%A6%E5%BB%BA%E6%A8%A1%E3%80%91%E5%B1%82%E6%AC%A1%E5%88%86%E6%9E%90%E6%B3%95/%E4%BE%8B%E5%AD%901.png"></p>
+<p>​		在该例中，为了解决“选择旅游目的地”问题，将准则层分为“景色”、“费用”、“居住”、“饮食”、“旅途”五个准则层，措施层有P1、P2、P3三个。</p>
+<h5 id="构造出各层次的所有判断矩阵"><a href="#构造出各层次的所有判断矩阵" class="headerlink" title="构造出各层次的所有判断矩阵"></a>构造出各层次的所有判断矩阵</h5><p>​		AHP中构建判断矩阵<em>A</em>的方式是对因子进行两两比较，其中判断矩阵中a<sub>ij</sub>表示与i指标相比，j的重要程度。确定a<sub>ij</sub>的值一般采用Satty建议的标度：</p>
+<table>
+<thead>
+<tr>
+<th>标度</th>
+<th>标度</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>1</td>
+<td>表示两个因素相比，具有相同重要性</td>
+</tr>
+<tr>
+<td>3</td>
+<td>表示两个因素相比，前者比后者稍重要</td>
+</tr>
+<tr>
+<td>5</td>
+<td>表示两个因素相比，前者比后者明显重要</td>
+</tr>
+<tr>
+<td>7</td>
+<td>表示两个因素相比，前者比后者强烈重要</td>
+</tr>
+<tr>
+<td>9</td>
+<td>表示两个因素相比，前者比后者极端重要</td>
+</tr>
+<tr>
+<td>2，4，6，8</td>
+<td>表示上述相邻判断的中间值</td>
+</tr>
+</tbody></table>
+<h5 id="计算权重，进行一致性检验"><a href="#计算权重，进行一致性检验" class="headerlink" title="计算权重，进行一致性检验"></a>计算权重，进行一致性检验</h5><p>​		判断矩阵<em><strong>A</strong></em>对应最大特征值**$\lambda$<strong>的特征向量</strong><em>W</em><strong>,该特征向量进行</strong>归一化处理**后既为同一层次的权重。</p>
+<p>​		再将<em><strong>W</strong></em>经归一化后进行排序，得到同一层次相应因素对于上一层次某因素相对重要性的排序权值。但我们综合全部比较结果时，难免包含一定的<strong>非一致性</strong>，所以需要我们进行一致性检验。</p>
+<h6 id="一致性检验的步骤"><a href="#一致性检验的步骤" class="headerlink" title="一致性检验的步骤"></a>一致性检验的步骤</h6><p>​		(1) 计算一致性指标<em><strong>CI</strong></em><br>$$<br>CI&#x3D;\frac{\lambda_m-n}{n-1}<br>$$<br>​		(2) 查找相应的平均随机一致性指标<em><strong>RI</strong></em>(RI的计算方法略，直接查表就好了。)</p>
+<table>
+<thead>
+<tr>
+<th><em>n</em></th>
+<th>1      2      3       4         5       6       7       8       9</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><em><strong>RI</strong></em></td>
+<td>0     0    0.58   0.90   1.12  1.24  1.32  1.41  1.45</td>
+</tr>
+</tbody></table>
+<p>​		(3) 计算一致性比例<em><strong>CR</strong></em><br>$$<br>CR&#x3D;\frac{CI}{CR}<br>$$<br>​		当<em><strong>CR</strong></em>&lt;0.10时，认为判断举证的一致性是可以接受的，<strong>否则要对判断矩阵作适当修改</strong></p>
+<h5 id="计算总得分，进行排序"><a href="#计算总得分，进行排序" class="headerlink" title="计算总得分，进行排序"></a>计算总得分，进行排序</h5><p>​		在AHP中，总排序权重要自上而下地将单准则下的权重进行合成。计算的方法类似于将权重*因素得分，但需要注意的是，计算出来的层次总排序也需要作一致性检验。</p>
+<p>​		<br>$$<br>CR&#x3D;\frac{\sum_{j&#x3D;1}^{m}CI(j)a_j}{\sum_{j&#x3D;1}^{m}RI(j)a_j}<br>$$<br>​	当<em><strong>CR</strong></em>&lt;0.10时认为层次总排序结果具有较满意的一致性并接受该分析结果</p>
+<h4 id="Matlab实现"><a href="#Matlab实现" class="headerlink" title="Matlab实现"></a>Matlab实现</h4><figure class="highlight matlab"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br></pre></td><td class="code"><pre><span class="line">clc,clear</span><br><span class="line">fid=fopen(<span class="string">&#x27;txt3.txt&#x27;</span>,<span class="string">&#x27;r&#x27;</span>);</span><br><span class="line">n1=<span class="number">6</span>;n2=<span class="number">3</span>;<span class="comment">%n1为准则层元素个数，n2为方案层个数</span></span><br><span class="line">a=[];</span><br><span class="line"><span class="keyword">for</span> <span class="built_in">i</span>=<span class="number">1</span>:n1</span><br><span class="line">    tmp=str2num(fgetl(fid));</span><br><span class="line">    a=[a;tmp]; <span class="comment">%读准则层判断矩阵</span></span><br><span class="line"><span class="keyword">end</span></span><br><span class="line"><span class="keyword">for</span> <span class="built_in">i</span>=<span class="number">1</span>:n1</span><br><span class="line">    str1=char([<span class="string">&#x27;b&#x27;</span>,int2str(<span class="built_in">i</span>),<span class="string">&#x27;=[];&#x27;</span>]);</span><br><span class="line">    str2=char([<span class="string">&#x27;b&#x27;</span>,int2str(<span class="built_in">i</span>),<span class="string">&#x27;=[b&#x27;</span>,int2str(<span class="built_in">i</span>),<span class="string">&#x27;;tmp];&#x27;</span>]);</span><br><span class="line">    eval(str1);</span><br><span class="line">    <span class="keyword">for</span> <span class="built_in">j</span>=<span class="number">1</span>:n2</span><br><span class="line">        tmp=str2num(fgetl(fid));</span><br><span class="line">        eval(str2); <span class="comment">%读方案层的判断矩阵</span></span><br><span class="line">    <span class="keyword">end</span></span><br><span class="line"><span class="keyword">end</span></span><br><span class="line">ri=[<span class="number">0</span>,<span class="number">0</span>,<span class="number">0.58</span>,<span class="number">0.90</span>,<span class="number">1.12</span>,<span class="number">1.24</span>,<span class="number">1.32</span>,<span class="number">1.41</span>,<span class="number">1.45</span>]; <span class="comment">%一致性指标</span></span><br><span class="line">[x,y]=eig(a);  <span class="comment">% matlab eig(a) 返回矩阵的特征值和特征向量， 这里的 x 为矩阵 a 的 n 个特征向量， y 为矩阵 a 的 n 个特征值</span></span><br><span class="line">lamda=<span class="built_in">max</span>(<span class="built_in">diag</span>(y));  <span class="comment">%  eig 函数返回的 y 是矩阵形式保存的， dig(y) 提取对角线上的n 个特征值到一个数组中， 求出最大特征值 lamda</span></span><br><span class="line">num=<span class="built_in">find</span>(<span class="built_in">diag</span>(y)==lamda);  <span class="comment">% 返回最大特征的索引</span></span><br><span class="line">w0=x(:,num)/sum(x(:,num));  <span class="comment">% x( :num) 为最大特征值所对应的那一列特征向量。 w0 中准则层计算出的 包含归一化后的n 个权重值</span></span><br><span class="line">cr0=(lamda-n1)/(n1<span class="number">-1</span>)/ri(n1)</span><br><span class="line"></span><br><span class="line"><span class="keyword">for</span> <span class="built_in">i</span>=<span class="number">1</span>:n1 <span class="comment">% 循环 n 个维度， 针对每个维度， 都计算一次方案层的比较矩阵及其权重值</span></span><br><span class="line">    [x,y]=eig(eval(char([<span class="string">&#x27;b&#x27;</span>,int2str(<span class="built_in">i</span>)])));</span><br><span class="line">    lamda=<span class="built_in">max</span>(<span class="built_in">diag</span>(y));</span><br><span class="line">    num=<span class="built_in">find</span>(<span class="built_in">diag</span>(y)==lamda);</span><br><span class="line">    w1(:,<span class="built_in">i</span>)=x(:,num)/sum(x(:,num));</span><br><span class="line">    cr1(<span class="built_in">i</span>)=(lamda-n2)/(n2<span class="number">-1</span>)/ri(n2);</span><br><span class="line"><span class="keyword">end</span></span><br><span class="line">cr1, ts=w1*w0, cr=cr1*w0  <span class="comment">%ts 为得分</span></span><br></pre></td></tr></table></figure>
+
+<p>​		其中<code>fid=fopen(&#39;txt3.txt&#39;,&#39;r&#39;);</code>为打开txt3.txt文件，该文件为引例中的判断矩阵</p>
+<p><img src="/%E3%80%90%E6%95%B0%E5%AD%A6%E5%BB%BA%E6%A8%A1%E3%80%91%E5%B1%82%E6%AC%A1%E5%88%86%E6%9E%90%E6%B3%95/%E4%BE%8B%E5%AD%902.png"></p>
+<figure class="highlight matlab"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">	输出结果为：</span><br><span class="line">ts = </span><br><span class="line"><span class="number">0.3952</span></span><br><span class="line"><span class="number">0.2996</span></span><br><span class="line"><span class="number">0.3052</span></span><br><span class="line"></span><br><span class="line">cr =</span><br><span class="line"></span><br><span class="line">    <span class="number">0.0117</span> <span class="comment">%需要重改矩阵~但我懒</span></span><br></pre></td></tr></table></figure>
+
+<p>​		方案1得分最高为0.3952，说明选择方案1。</p>
+<h4 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h4><blockquote>
+<p>[1]司守奎,孙兆亮，数学建模算法与应用，北京：国防工业出版社，2015年，p192-p194.</p>
+<p>[2]司守奎，数学建模算法与应用，海军航空工程学院，p167-p172</p>
+<p>[3]黄san岁.数学建模-层次分析[EB&#x2F;OL].<a target="_blank" rel="noopener" href="https://blog.csdn.net/hyd_hss/article/details/106745446?ops_request_misc=%7B%22request_id%22:%22159496639319725250150451%22,%22scm%22:%2220140713.130102334..%22%7D&request_id=159496639319725250150451&biz_id=0&utm_medium=distribute.pc_search_result.none-task-blog-2~all~top_click~default-2-106745446.first_rank_ecpm_v3_pc_rank_v2&utm_term=%E5%B1%82%E6%AC%A1%E5%88%86%E6%9E%90%E6%B3%95">https://blog.csdn.net/hyd_hss&#x2F;article&#x2F;details&#x2F;106745446?ops_request_misc&#x3D;%257B%2522request%255Fid%2522%253A%2522159496639319725250150451%2522%252C%2522scm%2522%253A%252220140713.130102334..%2522%257D&amp;request_id&#x3D;159496639319725250150451&amp;biz_id&#x3D;0&amp;utm_medium&#x3D;distribute.pc_search_result.none-task-blog-2<del>all</del>top_click~default-2-106745446.first_rank_ecpm_v3_pc_rank_v2&amp;utm_term&#x3D;%E5%B1%82%E6%AC%A1%E5%88%86%E6%9E%90%E6%B3%95</a>,2020-06-14</p>
+</blockquote>
+
+    </div>
+
+    
+    
+    
+        
+
+<div>
+<ul class="post-copyright">
+  <li class="post-copyright-author">
+    <strong>本文作者： </strong>Wanjia Huang
+  </li>
+  <li class="post-copyright-link">
+    <strong>本文链接：</strong>
+    <a href="http://example.com/2020/07/17/%E3%80%90%E6%95%B0%E5%AD%A6%E5%BB%BA%E6%A8%A1%E3%80%91%E5%B1%82%E6%AC%A1%E5%88%86%E6%9E%90%E6%B3%95/" title="【数学建模】层次分析法">http://example.com/2020/07/17/【数学建模】层次分析法/</a>
+  </li>
+  <li class="post-copyright-license">
+    <strong>版权声明： </strong>本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" rel="noopener" target="_blank"><i class="fab fa-fw fa-creative-commons"></i>BY-NC-SA</a> 许可协议。转载请注明出处！
+  </li>
+</ul>
+</div>
+
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/%E6%95%B0%E5%AD%A6%E5%BB%BA%E6%A8%A1/" rel="tag"># 数学建模</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2020/07/12/%E4%B8%BA%E4%BB%80%E4%B9%88%E6%98%AF%E5%AE%83/" rel="prev" title="为什么是它">
+      <i class="fa fa-chevron-left"></i> 为什么是它
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2020/07/27/%E3%80%90PTA%E3%80%916-3/" rel="next" title="【PTA】6-3">
+      【PTA】6-3 <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%B1%82%E6%AC%A1%E5%88%86%E6%9E%90%E6%B3%95%E7%AE%80%E4%BB%8B"><span class="nav-number">1.</span> <span class="nav-text">层次分析法简介</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%B1%82%E6%AC%A1%E5%88%86%E6%9E%90%E6%B3%95%E7%9A%84%E5%9F%BA%E6%9C%AC%E6%AD%A5%E9%AA%A4"><span class="nav-number">2.</span> <span class="nav-text">层次分析法的基本步骤</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%A8%A1%E5%9E%8B%E5%BB%BA%E7%AB%8B%E8%BF%87%E7%A8%8B"><span class="nav-number">3.</span> <span class="nav-text">模型建立过程</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#%E5%BB%BA%E7%AB%8B%E9%80%92%E9%98%B6%E5%B1%82%E6%AC%A1%E7%BB%93%E6%9E%84%E6%A8%A1%E5%9E%8B"><span class="nav-number">3.1.</span> <span class="nav-text">建立递阶层次结构模型</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#%E6%9E%84%E9%80%A0%E5%87%BA%E5%90%84%E5%B1%82%E6%AC%A1%E7%9A%84%E6%89%80%E6%9C%89%E5%88%A4%E6%96%AD%E7%9F%A9%E9%98%B5"><span class="nav-number">3.2.</span> <span class="nav-text">构造出各层次的所有判断矩阵</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#%E8%AE%A1%E7%AE%97%E6%9D%83%E9%87%8D%EF%BC%8C%E8%BF%9B%E8%A1%8C%E4%B8%80%E8%87%B4%E6%80%A7%E6%A3%80%E9%AA%8C"><span class="nav-number">3.3.</span> <span class="nav-text">计算权重，进行一致性检验</span></a><ol class="nav-child"><li class="nav-item nav-level-6"><a class="nav-link" href="#%E4%B8%80%E8%87%B4%E6%80%A7%E6%A3%80%E9%AA%8C%E7%9A%84%E6%AD%A5%E9%AA%A4"><span class="nav-number">3.3.1.</span> <span class="nav-text">一致性检验的步骤</span></a></li></ol></li><li class="nav-item nav-level-5"><a class="nav-link" href="#%E8%AE%A1%E7%AE%97%E6%80%BB%E5%BE%97%E5%88%86%EF%BC%8C%E8%BF%9B%E8%A1%8C%E6%8E%92%E5%BA%8F"><span class="nav-number">3.4.</span> <span class="nav-text">计算总得分，进行排序</span></a></li></ol></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Matlab%E5%AE%9E%E7%8E%B0"><span class="nav-number">4.</span> <span class="nav-text">Matlab实现</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%8F%82%E8%80%83"><span class="nav-number">5.</span> <span class="nav-text">参考</span></a></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="Wanjia Huang"
+      src="https://i.loli.net/2020/07/12/D6CZiKA4O2jmwus.jpg">
+  <p class="site-author-name" itemprop="name">Wanjia Huang</p>
+  <div class="site-description" itemprop="description">向分布式存储探索</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">7</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-tags">
+        <span class="site-state-item-count">3</span>
+        <span class="site-state-item-name">标签</span>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://https//github.com/Hackerismydream" title="GitHub → https:&#x2F;&#x2F;https:&#x2F;&#x2F;github.com&#x2F;Hackerismydream" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="/1014774261@qq.com" title="E-Mail → 1014774261@qq.com"><i class="fa fa-envelope fa-fw"></i>E-Mail</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://www.zhihu.com/people/huang-wan-jia-12" title="知乎 → https:&#x2F;&#x2F;www.zhihu.com&#x2F;people&#x2F;huang-wan-jia-12" rel="noopener" target="_blank"><i class="gratipay fa-fw"></i>知乎</a>
+      </span>
+  </div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2022</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Wanjia Huang</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a> 强力驱动
+  </div>
+
+
+    <script async src="//dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+    <span id="busuanzi_container_site_pv">总访问量<span id="busuanzi_value_site_pv"></span>次</span>
+    <span class="post-meta-divider">|</span>
+    <span id="busuanzi_container_site_uv">总访客数<span id="busuanzi_value_site_uv"></span>人</span>
+    <span class="post-meta-divider">|</span>
+<!-- 不蒜子计数初始值纠正 -->
+<script>
+$(document).ready(function() {
+
+    var int = setInterval(fixCount, 50);  // 50ms周期检测函数
+    var countOffset = 20000;  // 初始化首次数据
+
+    function fixCount() {            
+       if (document.getElementById("busuanzi_container_site_pv").style.display != "none")
+        {
+            $("#busuanzi_value_site_pv").html(parseInt($("#busuanzi_value_site_pv").html()) + countOffset); 
+            clearInterval(int);
+        }                  
+        if ($("#busuanzi_container_site_pv").css("display") != "none")
+        {
+            $("#busuanzi_value_site_uv").html(parseInt($("#busuanzi_value_site_uv").html()) + countOffset); // 加上初始数据 
+            clearInterval(int); // 停止检测
+        }  
+    }
+       	
+});
+</script> 
+
+        
+<div class="busuanzi-count">
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+    <span class="post-meta-item" id="busuanzi_container_site_uv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-user"></i>
+      </span>
+      <span class="site-uv" title="总访客量">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item" id="busuanzi_container_site_pv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-eye"></i>
+      </span>
+      <span class="site-pv" title="总访问量">
+        <span id="busuanzi_value_site_pv"></span>
+      </span>
+    </span>
+</div>
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+</body>
+</html>
