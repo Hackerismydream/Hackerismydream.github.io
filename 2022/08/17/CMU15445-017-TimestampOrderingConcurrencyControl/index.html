@@ -1,0 +1,582 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 6.2.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+  <link rel="stylesheet" href="/lib/pace/pace-theme-minimal.min.css">
+  <script src="/lib/pace/pace.min.js"></script>
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"example.com","root":"/","scheme":"Mist","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+  </script>
+
+  <meta name="description" content="Timestamp Ordering Concurrency Control时间戳排序（Timestamp ordering T&#x2F;O）是一种乐观的并发控制协议 其中DBMS假设事务冲突很少。DBMS不要求事务在被允许读&#x2F;写数据库对象之前获取锁，而是使用时间戳来确定事务的可串行化顺序。  每个事务Ti被分配一个唯一的固定时间戳TS（Ti），其单调递增。不同的方案在事务期间的不同时">
+<meta property="og:type" content="article">
+<meta property="og:title" content="CMU15445-017-TimestampOrderingConcurrencyControl">
+<meta property="og:url" content="http://example.com/2022/08/17/CMU15445-017-TimestampOrderingConcurrencyControl/index.html">
+<meta property="og:site_name" content="Wanjia Huang">
+<meta property="og:description" content="Timestamp Ordering Concurrency Control时间戳排序（Timestamp ordering T&#x2F;O）是一种乐观的并发控制协议 其中DBMS假设事务冲突很少。DBMS不要求事务在被允许读&#x2F;写数据库对象之前获取锁，而是使用时间戳来确定事务的可串行化顺序。  每个事务Ti被分配一个唯一的固定时间戳TS（Ti），其单调递增。不同的方案在事务期间的不同时">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2022-08-17T04:10:23.000Z">
+<meta property="article:modified_time" content="2022-08-22T15:24:24.792Z">
+<meta property="article:author" content="Wanjia Huang">
+<meta property="article:tag" content="CMU15445">
+<meta name="twitter:card" content="summary">
+
+<link rel="canonical" href="http://example.com/2022/08/17/CMU15445-017-TimestampOrderingConcurrencyControl/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>CMU15445-017-TimestampOrderingConcurrencyControl | Wanjia Huang</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">Wanjia Huang</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+      <p class="site-subtitle" itemprop="description">西南交通大学 软件工程</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2022/08/17/CMU15445-017-TimestampOrderingConcurrencyControl/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="https://i.loli.net/2020/07/12/D6CZiKA4O2jmwus.jpg">
+      <meta itemprop="name" content="Wanjia Huang">
+      <meta itemprop="description" content="向分布式存储探索">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Wanjia Huang">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          CMU15445-017-TimestampOrderingConcurrencyControl
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2022-08-17 12:10:23" itemprop="dateCreated datePublished" datetime="2022-08-17T12:10:23+08:00">2022-08-17</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2022-08-22 23:24:24" itemprop="dateModified" datetime="2022-08-22T23:24:24+08:00">2022-08-22</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Database-System/" itemprop="url" rel="index"><span itemprop="name">Database System</span></a>
+                </span>
+            </span>
+
+          
+            <span class="post-meta-item" title="阅读次数" id="busuanzi_container_page_pv" style="display: none;">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
+              </span>
+              <span class="post-meta-item-text">阅读次数：</span>
+              <span id="busuanzi_value_page_pv"></span>
+            </span>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <h2 id="Timestamp-Ordering-Concurrency-Control"><a href="#Timestamp-Ordering-Concurrency-Control" class="headerlink" title="Timestamp Ordering Concurrency Control"></a>Timestamp Ordering Concurrency Control</h2><p>时间戳排序（Timestamp ordering T&#x2F;O）是一种<strong>乐观</strong>的并发控制协议</p>
+<p>其中DBMS假设事务冲突很少。DBMS不要求事务在被允许读&#x2F;写数据库对象之前获取锁，而是使用时间戳来确定事务的可串行化顺序。 </p>
+<p>每个事务Ti被分配一个<strong>唯一</strong>的固定时间戳TS（Ti），其单调递增。不同的方案在事务期间的不同时间分配时间戳。一些高级方案甚至为每个事务分配多个时间戳。</p>
+<p>如果TS（Ti）&lt;TS（Tj），则DBMS必须确保执行计划等同于串行计划，其中Ti出现在Tj之前。</p>
+<p>有多种时间戳分配实现策略。DBMS可以使用系统时钟作为时间戳，但在夏时制等边缘情况下会出现问题。另一种选择是使用逻辑计数器。但是，这存在溢出问题，以及在具有多台计算机的分布式系统中维护计数器的问题。也有混合方法使用这两种方法的组合。</p>
+<span id="more"></span>
+
+<h2 id="Basic-Timestamp-Ordering-BASIC-T-x2F-O"><a href="#Basic-Timestamp-Ordering-BASIC-T-x2F-O" class="headerlink" title="Basic Timestamp Ordering (BASIC T&#x2F;O)"></a>Basic Timestamp Ordering (BASIC T&#x2F;O)</h2><p>基本时间戳排序协议（basic T&#x2F;O）<strong>允许在不使用锁的情况下读取和写入数据库对象</strong>。相反，每个数据库对象X都标记有成功执行该对象上的读取（表示为R-TS（X））或写入（表示为W-TS（X））的最后一个事务的时间戳。然后，DBMS检查每个操作的这些时间戳。如果事务试图以违反时间戳顺序的方式访问对象，则事务将中止并重新启动。潜在的假设是，违规行为将非常罕见，因此这些重启也将非常罕见。 </p>
+<h3 id="Read-Operations"><a href="#Read-Operations" class="headerlink" title="Read Operations"></a>Read Operations</h3><p>如果TS(Ti）&lt;W-TS（X），表明读取时候还没有写入，因此该读取操作是无效的，Ti被中止并使用新的时间戳重新启动。</p>
+<p>如果TS(Ti）&gt;W-TS（X），读取是有效的，允许Ti读取X。然后DBMS将R-TS（X）更新为R-TS（X）和TS（Ti）的最大值。它还必须制作X的本地副本，以确保Ti的可重复读取。 </p>
+<h3 id="Write-Operations"><a href="#Write-Operations" class="headerlink" title="Write Operations"></a>Write Operations</h3><p>对于写操作，如果TS（Ti）&lt;R-TS（X）或TS（Ti）&lt;W-TS（X），则必须重新启动Ti。否则，DBMS允许Ti写入X并更新W-TS（X）。同样，它需要制作X的本地副本，以确保Ti的可重复读取。 </p>
+<h3 id="优化-Thomas-Write-Rule"><a href="#优化-Thomas-Write-Rule" class="headerlink" title="优化:Thomas Write Rule"></a>优化:Thomas Write Rule</h3><p>如果TS（Ti）&lt;W-TS（X），DBMS可以忽略这个写操作并且允许事务继续而不是abort或者restart。请注意，这违反了Ti的时间戳顺序，但这没关系，因为<strong>没有其他事务会读取Ti对对象X的写入。</strong></p>
+<p>如果基本T&#x2F;O协议不使用Thomas写入规则，它将生成一个可冲突序列化的调度。它不能有死锁，因为没有事务等待。但是，如果短事务持续引发冲突，则可能会导致长事务的匮乏。 </p>
+<p>——缺陷：</p>
+<ol>
+<li>将数据复制到事务工作区和更新时间戳的<strong>高开销</strong>。</li>
+<li>长时间运行的事务可能会饥饿。事务从较新的事务中读取内容的可能性增加。 </li>
+<li>在高度并发的系统上存在时间戳分配瓶颈。</li>
+</ol>
+<h2 id="Optimistic-Concurrency-Control-OCC"><a href="#Optimistic-Concurrency-Control-OCC" class="headerlink" title="Optimistic Concurrency Control (OCC)"></a>Optimistic Concurrency Control (OCC)</h2><p>乐观并发控制（OCC）是另一种乐观并发控制协议，它还使用时间戳验证事务。当冲突数量较低时，OCC工作得最好。这是当所有事务都是只读的或者当事务访问不相交的数据子集时。如果数据库很大，并且工作负载没有扭曲，那么冲突的概率很低，这使OCC成为一个不错的选择。</p>
+<p>在OCC中，<strong>DBMS为每个事务创建一个专用工作区。事务的所有修改都应用于此工作区</strong>。读取的任何对象都将复制到工作区，写入的任何对象将复制到该工作区并在其中进行修改。没有其他事务可以读取其私有工作区中另一个事务所做的更改。 </p>
+<p>当事务提交时，DBMS将比较事务的工作区写入集，以查看它是否与其他事务冲突。如果没有冲突，写入集将安装到“全局”数据库中。</p>
+<p>OCC由三个阶段组成：</p>
+<ol>
+<li><p>Read Phase：在这里，DBMS跟踪事务的读写集，并将其写入存储在私有工作区中</p>
+</li>
+<li><p>Validation Phase：当事务提交时，DBMS检查它是否与其他事务冲突。 </p>
+</li>
+<li><ol>
+<li>DBMS在事务进入验证阶段时分配事务时间戳。为了确保只允许串行化调度，DBMS根据其他事务检查Ti是否存在RW和WW冲突，并确保所有冲突都是单向的（从较老的事务到较新的事务）。</li>
+<li>DBMS检查提交事务与所有其他正在运行的事务的时间戳顺序。尚未进入验证阶段的事务将被分配一个时间戳∞. </li>
+<li>如果TS（Ti）&lt;TS（Tj），则必须满足以下三个条件<strong>之一</strong>：</li>
+</ol>
+</li>
+<li><ol>
+<li><ol>
+<li>Ti在Tj开始之前完成所有三个阶段 </li>
+<li>Ti在Tj开始其写入阶段之前完成，并且Ti不会写入Tj读取的任何对象。</li>
+<li>Ti在Tj完成读取阶段之前完成读取阶段，并且Ti不会写入Tj读取或写入的任何对象。</li>
+</ol>
+</li>
+</ol>
+</li>
+<li><p>Write Phase：如果验证成功，DBMS将对数据库<strong>应用私有工作区更改</strong>。否则，它将中止并重新启动事务。</p>
+</li>
+</ol>
+<p>——缺陷：</p>
+<ol>
+<li>将数据本地复制到事务的私有工作区的开销很高。</li>
+<li>验证&#x2F;写入阶段是瓶颈</li>
+<li>中止可能比其他协议更浪费，因为它们仅在事务已经执行之后发生</li>
+<li>存在时间戳分配瓶颈。</li>
+</ol>
+<h2 id="Isolation-Levels"><a href="#Isolation-Levels" class="headerlink" title="Isolation Levels"></a>Isolation Levels</h2><p>异常现象：</p>
+<ol>
+<li>Dirty Read脏读：正在读取未提交的数据</li>
+<li>Unrepeatable Reads不可重复读取：再次读取的结果与先前不同</li>
+<li>Phantom Reads幻读：插入或删除会导致相同范围扫描查询的不同结果。</li>
+</ol>
+<p>隔离级别：</p>
+<ol>
+<li>SERIALIZABLE：没有幻读，所有读取都是可重复的，没有脏读</li>
+<li>REPEATABLE READS：幻读可能会发生</li>
+<li>READ-COMMITTED：幻读和不可重复读取可能会发生。</li>
+<li>READ-UNCOMMITTED：所有异常都可能发生。</li>
+</ol>
+<p>SQL-92有额外的两个隔离级别：</p>
+<ol>
+<li>CURSOR STABILITY</li>
+<li>SNAPSHOT ISOLATION</li>
+</ol>
+
+    </div>
+
+    
+    
+    
+        
+
+<div>
+<ul class="post-copyright">
+  <li class="post-copyright-author">
+    <strong>本文作者： </strong>Wanjia Huang
+  </li>
+  <li class="post-copyright-link">
+    <strong>本文链接：</strong>
+    <a href="http://example.com/2022/08/17/CMU15445-017-TimestampOrderingConcurrencyControl/" title="CMU15445-017-TimestampOrderingConcurrencyControl">http://example.com/2022/08/17/CMU15445-017-TimestampOrderingConcurrencyControl/</a>
+  </li>
+  <li class="post-copyright-license">
+    <strong>版权声明： </strong>本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" rel="noopener" target="_blank"><i class="fab fa-fw fa-creative-commons"></i>BY-NC-SA</a> 许可协议。转载请注明出处！
+  </li>
+</ul>
+</div>
+
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/CMU15445/" rel="tag"># CMU15445</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2022/08/17/CMU15445-016-Two-PhaseLocking/" rel="prev" title="CMU15445-016-Two-PhaseLocking">
+      <i class="fa fa-chevron-left"></i> CMU15445-016-Two-PhaseLocking
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2022/08/17/CMU15445-018-Multi-Version%20Concurrency%20Control/" rel="next" title="CMU15445-018-Multi-VersionConcurrencyControl">
+      CMU15445-018-Multi-VersionConcurrencyControl <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#Timestamp-Ordering-Concurrency-Control"><span class="nav-number">1.</span> <span class="nav-text">Timestamp Ordering Concurrency Control</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Basic-Timestamp-Ordering-BASIC-T-x2F-O"><span class="nav-number">2.</span> <span class="nav-text">Basic Timestamp Ordering (BASIC T&#x2F;O)</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Read-Operations"><span class="nav-number">2.1.</span> <span class="nav-text">Read Operations</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Write-Operations"><span class="nav-number">2.2.</span> <span class="nav-text">Write Operations</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%BC%98%E5%8C%96-Thomas-Write-Rule"><span class="nav-number">2.3.</span> <span class="nav-text">优化:Thomas Write Rule</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Optimistic-Concurrency-Control-OCC"><span class="nav-number">3.</span> <span class="nav-text">Optimistic Concurrency Control (OCC)</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Isolation-Levels"><span class="nav-number">4.</span> <span class="nav-text">Isolation Levels</span></a></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="Wanjia Huang"
+      src="https://i.loli.net/2020/07/12/D6CZiKA4O2jmwus.jpg">
+  <p class="site-author-name" itemprop="name">Wanjia Huang</p>
+  <div class="site-description" itemprop="description">向分布式存储探索</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">19</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">5</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">6</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://https//github.com/Hackerismydream" title="GitHub → https:&#x2F;&#x2F;https:&#x2F;&#x2F;github.com&#x2F;Hackerismydream" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="/1014774261@qq.com" title="E-Mail → 1014774261@qq.com"><i class="fa fa-envelope fa-fw"></i>E-Mail</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://www.zhihu.com/people/huang-wan-jia-12" title="知乎 → https:&#x2F;&#x2F;www.zhihu.com&#x2F;people&#x2F;huang-wan-jia-12" rel="noopener" target="_blank"><i class="gratipay fa-fw"></i>知乎</a>
+      </span>
+  </div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2022</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Wanjia Huang</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://mist.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Mist</a> 强力驱动
+  </div>
+
+
+    <script async src="//dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+    <span id="busuanzi_container_site_pv">总访问量<span id="busuanzi_value_site_pv"></span>次</span>
+    <span class="post-meta-divider">|</span>
+    <span id="busuanzi_container_site_uv">总访客数<span id="busuanzi_value_site_uv"></span>人</span>
+    <span class="post-meta-divider">|</span>
+<!-- 不蒜子计数初始值纠正 -->
+<script>
+$(document).ready(function() {
+
+    var int = setInterval(fixCount, 50);  // 50ms周期检测函数
+    var countOffset = 20000;  // 初始化首次数据
+
+    function fixCount() {            
+       if (document.getElementById("busuanzi_container_site_pv").style.display != "none")
+        {
+            $("#busuanzi_value_site_pv").html(parseInt($("#busuanzi_value_site_pv").html()) + countOffset); 
+            clearInterval(int);
+        }                  
+        if ($("#busuanzi_container_site_pv").css("display") != "none")
+        {
+            $("#busuanzi_value_site_uv").html(parseInt($("#busuanzi_value_site_uv").html()) + countOffset); // 加上初始数据 
+            clearInterval(int); // 停止检测
+        }  
+    }
+       	
+});
+</script> 
+
+        
+<div class="busuanzi-count">
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+    <span class="post-meta-item" id="busuanzi_container_site_uv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-user"></i>
+      </span>
+      <span class="site-uv" title="总访客量">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item" id="busuanzi_container_site_pv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-eye"></i>
+      </span>
+      <span class="site-pv" title="总访问量">
+        <span id="busuanzi_value_site_pv"></span>
+      </span>
+    </span>
+</div>
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/muse.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+</body>
+</html>

@@ -1,0 +1,572 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 6.2.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+  <link rel="stylesheet" href="/lib/pace/pace-theme-minimal.min.css">
+  <script src="/lib/pace/pace.min.js"></script>
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"example.com","root":"/","scheme":"Mist","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+  </script>
+
+  <meta name="description" content="事务锁（Transaction Locks）分为两类  Shared Lock 共享锁（S锁）：允许多个事务同时读取同一对象的共享锁。如果一个事务持有共享锁，那么另一个事务也可以获取相同的共享锁。  Exclusive Lock 专用锁（X锁）：独占锁允许事务修改对象。此锁防止其他事务获取对象上的任何其他锁（S锁或X锁）。一次只有一个事务可以持有独占锁  事务必须从lock manager中请求或">
+<meta property="og:type" content="article">
+<meta property="og:title" content="CMU15445-016-Two-PhaseLocking">
+<meta property="og:url" content="http://example.com/2022/08/17/CMU15445-016-Two-PhaseLocking/index.html">
+<meta property="og:site_name" content="Wanjia Huang">
+<meta property="og:description" content="事务锁（Transaction Locks）分为两类  Shared Lock 共享锁（S锁）：允许多个事务同时读取同一对象的共享锁。如果一个事务持有共享锁，那么另一个事务也可以获取相同的共享锁。  Exclusive Lock 专用锁（X锁）：独占锁允许事务修改对象。此锁防止其他事务获取对象上的任何其他锁（S锁或X锁）。一次只有一个事务可以持有独占锁  事务必须从lock manager中请求或">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://cdn.nlark.com/yuque/0/2022/png/26559442/1660704440490-597768b5-14e1-4dbe-bb8c-a1efd3948eae.png">
+<meta property="article:published_time" content="2022-08-17T03:19:23.000Z">
+<meta property="article:modified_time" content="2022-08-22T15:23:07.303Z">
+<meta property="article:author" content="Wanjia Huang">
+<meta property="article:tag" content="CMU15445">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://cdn.nlark.com/yuque/0/2022/png/26559442/1660704440490-597768b5-14e1-4dbe-bb8c-a1efd3948eae.png">
+
+<link rel="canonical" href="http://example.com/2022/08/17/CMU15445-016-Two-PhaseLocking/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>CMU15445-016-Two-PhaseLocking | Wanjia Huang</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">Wanjia Huang</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+      <p class="site-subtitle" itemprop="description">西南交通大学 软件工程</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2022/08/17/CMU15445-016-Two-PhaseLocking/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="https://i.loli.net/2020/07/12/D6CZiKA4O2jmwus.jpg">
+      <meta itemprop="name" content="Wanjia Huang">
+      <meta itemprop="description" content="向分布式存储探索">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Wanjia Huang">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          CMU15445-016-Two-PhaseLocking
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2022-08-17 11:19:23" itemprop="dateCreated datePublished" datetime="2022-08-17T11:19:23+08:00">2022-08-17</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2022-08-22 23:23:07" itemprop="dateModified" datetime="2022-08-22T23:23:07+08:00">2022-08-22</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Database-System/" itemprop="url" rel="index"><span itemprop="name">Database System</span></a>
+                </span>
+            </span>
+
+          
+            <span class="post-meta-item" title="阅读次数" id="busuanzi_container_page_pv" style="display: none;">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
+              </span>
+              <span class="post-meta-item-text">阅读次数：</span>
+              <span id="busuanzi_value_page_pv"></span>
+            </span>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <h2 id="事务锁（Transaction-Locks）"><a href="#事务锁（Transaction-Locks）" class="headerlink" title="事务锁（Transaction Locks）"></a>事务锁（Transaction Locks）</h2><p>分为两类</p>
+<ol>
+<li>Shared Lock 共享锁（S锁）：允许多个事务同时读取同一对象的共享锁。如果一个事务持有共享锁，那么另一个事务也可以获取相同的共享锁。 </li>
+<li>Exclusive Lock 专用锁（X锁）：独占锁允许事务修改对象。此锁防止其他事务获取对象上的任何其他锁（S锁或X锁）。一次只有一个事务可以持有独占锁</li>
+</ol>
+<p>事务必须从lock manager中请求或更新锁，lock manager根据其他事务当前持有的锁授予或阻止请求。</p>
+<p>事务在释放对象的时候要释放锁</p>
+<p>lock manager维护一张内部的lock-table，维护的的依据是哪些事务持有哪些锁以及正在等待获取锁的事务</p>
+<p>DBMS的lock-table不需要是持久的，因为DBMS崩溃时处于活动状态的任何事务都会自动中止。 </p>
+<span id="more"></span>
+
+<h2 id="Two-Phase-Locking"><a href="#Two-Phase-Locking" class="headerlink" title="Two-Phase Locking"></a>Two-Phase Locking</h2><p>两阶段锁（2PL）是一种悲观锁协议，它使用锁来确定是否允许事务动态访问数据库中的对象。协议不需要知道事务将提前执行的所有查询。 它分为两个阶段</p>
+<ol>
+<li>Growing：在成长阶段，每个事务都从DBMS的锁管理器请求它需要的锁。锁管理器授予&#x2F;拒绝这些锁请求。</li>
+<li>Shrinking：事务在释放第一个锁后立即进入收缩阶段。在收缩阶段，只允许事务释放锁。不允许他们请求新的。</li>
+</ol>
+<p>就其本身而言，2PL足以保证冲突序列化。 它生成优先级图为非循环的调度。但它很容易受到级联中止的影响，即一个事务中止，而现在必须回滚另一个事务，这会导致工作浪费。 </p>
+<h3 id="Strong-Strict-Two-Phase-Locking"><a href="#Strong-Strict-Two-Phase-Locking" class="headerlink" title="Strong Strict Two-Phase Locking"></a>Strong Strict Two-Phase Locking</h3><p>如果在第一个事务提交之前，事务写入的任何值从未被另一个事务读取或覆盖，则调度是严格的（strict）。 Strong Strict 2PL是2PL的</p>
+<h2 id="DeadLock-Handling"><a href="#DeadLock-Handling" class="headerlink" title="DeadLock Handling"></a>DeadLock Handling</h2><p>死锁是等待彼此释放锁的事务循环。处理2PL中的死锁有两种方法：检测和预防。</p>
+<h3 id="Deadlock-Detection-死锁检测"><a href="#Deadlock-Detection-死锁检测" class="headerlink" title="Deadlock Detection 死锁检测"></a>Deadlock Detection 死锁检测</h3><p>为了检测死锁，DBMS创建了一个等待图（存在循环则死锁，如下图）</p>
+<p><img src="https://cdn.nlark.com/yuque/0/2022/png/26559442/1660704440490-597768b5-14e1-4dbe-bb8c-a1efd3948eae.png" alt="img"></p>
+<p>其中事务是节点，如果事务Ti正在等待事务Tj释放锁，则存在从Ti到Tj的有向边。系统将周期性地检查等待图（通常使用后台线程），然后决定如何释放它。构造图时不需要Latches，因为如果DBMS在一个过程中错过了死锁，它将在后续过程中找到它。 </p>
+<p>当DBMS检测到死锁时，它将选择一个“victim”事务中止以打破循环。受害者事务将根据应用程序调用它的方式重新启动或中止。</p>
+<p>在选择Victim事务以打破死锁的时候，可以考虑以下属性:</p>
+<ol>
+<li>按年龄（最新或最旧的时间戳）。 </li>
+<li>按进度（执行的查询最少&#x2F;最多）。</li>
+<li>根据已经上锁的项目</li>
+<li>根据回滚所需要的事务数</li>
+<li>根据过去重启事务的次数（避免饥饿）</li>
+</ol>
+<p>没有比其他选择更好的选择。许多系统使用这些因素的组合。 </p>
+<p>选择要中止的受害事务后，DBMS还可以决定回滚事务更改的程度。它可以回滚整个事务，也可以只回滚足够的查询来打破死锁。</p>
+<h3 id="Deadlock-Prevention-死锁预防"><a href="#Deadlock-Prevention-死锁预防" class="headerlink" title="Deadlock Prevention 死锁预防"></a>Deadlock Prevention 死锁预防</h3><p>死锁预防不会在事后处理死锁，而是在事务发生之前阻止事务造成死锁。</p>
+<p>当一个事务试图获取另一个事务持有的锁（这可能会导致死锁）时，DBMS会杀死其中一个事务。为了实现这一点，根据时间戳为事务分配优先级（较旧的事务具有较高的优先级）。这些方案保证没有死锁，因为在等待锁时只允许一种方向。当事务重新启动时，DBMS重用相同的时间戳。 </p>
+<p>有两种方法可以在死锁预防下终止事务：</p>
+<ol>
+<li>Wait-Die（“Old Waitis for Y Young”）：如果请求事务的优先级高于当前事务，则它会等待。否则，它将中止。</li>
+<li>Wound-Die（“Young Waitis for Old”）：如果请求事务的优先级高于当前事务，则当前事务中止并释放锁。否则，请求事务将等待。</li>
+</ol>
+<h2 id="Lock-Granularities-锁粒度"><a href="#Lock-Granularities-锁粒度" class="headerlink" title="Lock Granularities 锁粒度"></a>Lock Granularities 锁粒度</h2><p>如果每次更新一个元组就请求一个锁，那么对于大数据的更新来说，锁请求和释放的开销对于DBMS来说是不可以接受的，因此我们可以改变锁的粒度，比如在表上获取一个具有10亿元组的锁，而不是10亿个单独的锁。</p>
+<p>————粒度上可以分为表级锁和行级锁</p>
+<p>————为什么会用到意向锁： 当我们向一张表加入表级锁的时候，这时候我们必须去表中每一行去遍历，看看对应的行是否已经用到对应的锁，这时候如果数据库中的数据海量的话，想要完成这个任务的难度就非常的大，因此可以在原有的X锁和S锁上引入意向锁IX锁、IS锁</p>
+<p>获得锁（获得对象锁）：</p>
+<p>IX  –表示 如果有事务想获得数据对象X锁之前，先获得表IX锁</p>
+<p>IS – 表示如果事务想要获得数据对象S锁之前，先获得表IS锁</p>
+<p>加锁（加入表级锁）：</p>
+<p> 如果事务对表加X锁，看看有没有其他的事务对表加锁（S&#x2F;X&#x2F;IS&#x2F;IX）如果有的话，加锁失败</p>
+<ul>
+<li>任意 IS&#x2F;IX 锁之间都是兼容的，因为它们只是表示想要对表加锁，而不是真正加锁；</li>
+<li>S 锁只与 S 锁和 IS 锁兼容，也就是说事务 T 想要对数据行加 S 锁，其它事务可以已经获得对表或者表中的行的 S 锁。</li>
+</ul>
+<p>Intention lock允许在共享模式或独占模式下锁定更高级别的节点，而无需检查所有子节点【每一行】。如果节点处于意图模式，则在树的较低级别执行显式锁定。</p>
+<ol>
+<li>Intention-Shared（IS）：表示在较低级别使用共享锁进行显式锁定。 </li>
+<li>Intention-Exclusive (IX)：指示使用排他锁或共享锁在较低级别进行显式锁定。</li>
+<li>Shared+Intention-Exclusive (SIX)：以该节点为根的子树在共享模式下被显式锁定，并且显式锁定在较低级别上使用独占模式锁进行。</li>
+</ol>
+<p>————如果另一个任务试图在该表级别上应用共享或排它锁，则受到由第一个任务控制的表级别意向锁的阻塞。第二个任务在锁定该表前不必检查各个页或行锁，而<strong>只需检查表上的意向锁（不用遍历每一行，而是检查该表的表级Intention lock</strong>。</p>
+
+    </div>
+
+    
+    
+    
+        
+
+<div>
+<ul class="post-copyright">
+  <li class="post-copyright-author">
+    <strong>本文作者： </strong>Wanjia Huang
+  </li>
+  <li class="post-copyright-link">
+    <strong>本文链接：</strong>
+    <a href="http://example.com/2022/08/17/CMU15445-016-Two-PhaseLocking/" title="CMU15445-016-Two-PhaseLocking">http://example.com/2022/08/17/CMU15445-016-Two-PhaseLocking/</a>
+  </li>
+  <li class="post-copyright-license">
+    <strong>版权声明： </strong>本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" rel="noopener" target="_blank"><i class="fab fa-fw fa-creative-commons"></i>BY-NC-SA</a> 许可协议。转载请注明出处！
+  </li>
+</ul>
+</div>
+
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/CMU15445/" rel="tag"># CMU15445</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2022/08/17/CMU15445-015-ConcurrencyControlTheory/" rel="prev" title="CMU15445-015-ConcurrencyControlTheory">
+      <i class="fa fa-chevron-left"></i> CMU15445-015-ConcurrencyControlTheory
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2022/08/17/CMU15445-017-TimestampOrderingConcurrencyControl/" rel="next" title="CMU15445-017-TimestampOrderingConcurrencyControl">
+      CMU15445-017-TimestampOrderingConcurrencyControl <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BA%8B%E5%8A%A1%E9%94%81%EF%BC%88Transaction-Locks%EF%BC%89"><span class="nav-number">1.</span> <span class="nav-text">事务锁（Transaction Locks）</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Two-Phase-Locking"><span class="nav-number">2.</span> <span class="nav-text">Two-Phase Locking</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Strong-Strict-Two-Phase-Locking"><span class="nav-number">2.1.</span> <span class="nav-text">Strong Strict Two-Phase Locking</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#DeadLock-Handling"><span class="nav-number">3.</span> <span class="nav-text">DeadLock Handling</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Deadlock-Detection-%E6%AD%BB%E9%94%81%E6%A3%80%E6%B5%8B"><span class="nav-number">3.1.</span> <span class="nav-text">Deadlock Detection 死锁检测</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Deadlock-Prevention-%E6%AD%BB%E9%94%81%E9%A2%84%E9%98%B2"><span class="nav-number">3.2.</span> <span class="nav-text">Deadlock Prevention 死锁预防</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Lock-Granularities-%E9%94%81%E7%B2%92%E5%BA%A6"><span class="nav-number">4.</span> <span class="nav-text">Lock Granularities 锁粒度</span></a></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="Wanjia Huang"
+      src="https://i.loli.net/2020/07/12/D6CZiKA4O2jmwus.jpg">
+  <p class="site-author-name" itemprop="name">Wanjia Huang</p>
+  <div class="site-description" itemprop="description">向分布式存储探索</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">19</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">5</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">6</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://https//github.com/Hackerismydream" title="GitHub → https:&#x2F;&#x2F;https:&#x2F;&#x2F;github.com&#x2F;Hackerismydream" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="/1014774261@qq.com" title="E-Mail → 1014774261@qq.com"><i class="fa fa-envelope fa-fw"></i>E-Mail</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://www.zhihu.com/people/huang-wan-jia-12" title="知乎 → https:&#x2F;&#x2F;www.zhihu.com&#x2F;people&#x2F;huang-wan-jia-12" rel="noopener" target="_blank"><i class="gratipay fa-fw"></i>知乎</a>
+      </span>
+  </div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2022</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Wanjia Huang</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://mist.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Mist</a> 强力驱动
+  </div>
+
+
+    <script async src="//dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+    <span id="busuanzi_container_site_pv">总访问量<span id="busuanzi_value_site_pv"></span>次</span>
+    <span class="post-meta-divider">|</span>
+    <span id="busuanzi_container_site_uv">总访客数<span id="busuanzi_value_site_uv"></span>人</span>
+    <span class="post-meta-divider">|</span>
+<!-- 不蒜子计数初始值纠正 -->
+<script>
+$(document).ready(function() {
+
+    var int = setInterval(fixCount, 50);  // 50ms周期检测函数
+    var countOffset = 20000;  // 初始化首次数据
+
+    function fixCount() {            
+       if (document.getElementById("busuanzi_container_site_pv").style.display != "none")
+        {
+            $("#busuanzi_value_site_pv").html(parseInt($("#busuanzi_value_site_pv").html()) + countOffset); 
+            clearInterval(int);
+        }                  
+        if ($("#busuanzi_container_site_pv").css("display") != "none")
+        {
+            $("#busuanzi_value_site_uv").html(parseInt($("#busuanzi_value_site_uv").html()) + countOffset); // 加上初始数据 
+            clearInterval(int); // 停止检测
+        }  
+    }
+       	
+});
+</script> 
+
+        
+<div class="busuanzi-count">
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+    <span class="post-meta-item" id="busuanzi_container_site_uv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-user"></i>
+      </span>
+      <span class="site-uv" title="总访客量">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item" id="busuanzi_container_site_pv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-eye"></i>
+      </span>
+      <span class="site-pv" title="总访问量">
+        <span id="busuanzi_value_site_pv"></span>
+      </span>
+    </span>
+</div>
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/muse.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+</body>
+</html>

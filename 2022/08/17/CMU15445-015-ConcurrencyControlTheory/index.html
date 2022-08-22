@@ -1,0 +1,571 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 6.2.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+  <link rel="stylesheet" href="/lib/pace/pace-theme-minimal.min.css">
+  <script src="/lib/pace/pace.min.js"></script>
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"example.com","root":"/","scheme":"Mist","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+  </script>
+
+  <meta name="description" content="事务（Transactions）事务（Transaction） 是一种机制、一个操作序列，包含了一组数据库操作命令。 A transaction is the execution of a sequence of one or more operations (e.g., SQL queries) on a shared database to perform some higher level">
+<meta property="og:type" content="article">
+<meta property="og:title" content="CMU15445-015-ConcurrencyControlTheory">
+<meta property="og:url" content="http://example.com/2022/08/17/CMU15445-015-ConcurrencyControlTheory/index.html">
+<meta property="og:site_name" content="Wanjia Huang">
+<meta property="og:description" content="事务（Transactions）事务（Transaction） 是一种机制、一个操作序列，包含了一组数据库操作命令。 A transaction is the execution of a sequence of one or more operations (e.g., SQL queries) on a shared database to perform some higher level">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2022-08-17T03:19:23.000Z">
+<meta property="article:modified_time" content="2022-08-22T15:22:14.751Z">
+<meta property="article:author" content="Wanjia Huang">
+<meta property="article:tag" content="CMU15445">
+<meta name="twitter:card" content="summary">
+
+<link rel="canonical" href="http://example.com/2022/08/17/CMU15445-015-ConcurrencyControlTheory/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>CMU15445-015-ConcurrencyControlTheory | Wanjia Huang</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">Wanjia Huang</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+      <p class="site-subtitle" itemprop="description">西南交通大学 软件工程</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2022/08/17/CMU15445-015-ConcurrencyControlTheory/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="https://i.loli.net/2020/07/12/D6CZiKA4O2jmwus.jpg">
+      <meta itemprop="name" content="Wanjia Huang">
+      <meta itemprop="description" content="向分布式存储探索">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Wanjia Huang">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          CMU15445-015-ConcurrencyControlTheory
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2022-08-17 11:19:23" itemprop="dateCreated datePublished" datetime="2022-08-17T11:19:23+08:00">2022-08-17</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2022-08-22 23:22:14" itemprop="dateModified" datetime="2022-08-22T23:22:14+08:00">2022-08-22</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Database-System/" itemprop="url" rel="index"><span itemprop="name">Database System</span></a>
+                </span>
+            </span>
+
+          
+            <span class="post-meta-item" title="阅读次数" id="busuanzi_container_page_pv" style="display: none;">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
+              </span>
+              <span class="post-meta-item-text">阅读次数：</span>
+              <span id="busuanzi_value_page_pv"></span>
+            </span>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <h2 id="事务（Transactions）"><a href="#事务（Transactions）" class="headerlink" title="事务（Transactions）"></a>事务（Transactions）</h2><p>事务（Transaction） 是一种机制、一个操作序列，包含了一组数据库操作命令。</p>
+<p>A transaction is the execution of a sequence of one or more operations (e.g., SQL queries) on a shared database to perform some higher level function. They are the basic unit of change in a DBMS. Partial transactions are not allowed (i.e. transactions must be atomic).</p>
+<span id="more"></span>
+
+<h3 id="The-Strawman-System"><a href="#The-Strawman-System" class="headerlink" title="The Strawman System"></a>The Strawman System</h3><p>处理事务的简单系统是使用单个工作线程（例如，一个线程）一次执行一个事务。</p>
+<p>一次只能运行一个事务。为了执行事务，DBMS复制整个数据库文件，并将事务更改到此新文件。如果事务成功，则新文件将成为当前数据库文件。如果事务失败，DBMS将丢弃新文件，并且没有保存任何事务的更改。这种方法很慢，因为它不允许并发事务，并且需要为每个事务复制整个数据库文件。 </p>
+<p>更好的方法是允许并发执行独立事务，同时保持执行的正确性和公平性（因为所有事务都以同等优先级处理，不会因从未执行而处于饥饿状态）</p>
+<p>但并发执行可能带来操作的任意交错，会带来以下后果:</p>
+<ol>
+<li>暂时的不一致性：不可避免，但不是问题。 </li>
+<li>永久不一致：不可接受，会导致数据的正确性和完整性问题。</li>
+</ol>
+<h2 id="定义"><a href="#定义" class="headerlink" title="定义"></a>定义</h2><p>在形式上，<strong>数据库</strong>可以表示为一组命名的数据对象（A,B,C,…）。这些对象可以是属性、元组、页面、表，甚至是数据库。我们将讨论的算法适用于任何类型的对象，但所有对象必须是同一类型。</p>
+<p><strong>事务</strong>是对这些对象的读写操作序列（R(A),W(B)）。</p>
+<p><strong>事务</strong>的边界由客户端定义。在SQL中，事务以”BEGIN“开始。事务的结果是COMMIT或者ABORT。</p>
+<p>对于COMMIT命令，要么将事务的所有修改保存到数据库中，要么DBMS将覆盖该修改并中止。</p>
+<p>对于ABORT命令，所有事务的更改都将被撤销，这样就好像事务从没发生过。ABORT可以是自身造成的，也可以是DBMS造成的。</p>
+<p><strong>ACID</strong></p>
+<ol>
+<li><strong>A****tomicity【原子性】：</strong>事务是一个不可分割的工作单位，事务中的操作要么都发生，要么都不发生。</li>
+<li><strong>C****onsistency【一致性】：</strong>事务前后数据的完整性必须保持一致。</li>
+<li><strong>I****solation【隔离性】：</strong>事务的隔离性是多个用户并发访问数据库时，数据库为每一个用户开启的事务，不能被其他事务的操作数据所干扰，多个并发事务之间要相互隔离。</li>
+<li><strong>D****urability【持久性】：</strong>持久性是指一个事务一旦被提交，它对数据库中数据的改变就是永久性的，接下来即使数据库发生故障也不应该对其有任何影响</li>
+</ol>
+<h2 id="Atomicity"><a href="#Atomicity" class="headerlink" title="Atomicity"></a>Atomicity</h2><p>有两种方法保证原子性：</p>
+<ol>
+<li>日志【Logging】：DBMS记录所有操作，以便可以撤消中止事务的操作。它在内存和磁盘上维护撤消记录。出于审计和效率原因，几乎所有现代系统都使用日志记录。 </li>
+<li>影子分页【Shadow Paging】：DBMS复制由事务修改的页面，事务对这些副本进行更改。<strong>只有当事务提交时，页面才可见</strong>。这种方法在运行时通常比基于日志的DBMS慢。但这种方法恢复起来比较简单，只需要从未提交的事务中删除所有页面。但是一般来说，更好的运行时性能优于更好的恢复性能，所以这种方法在实践中很少用。</li>
+</ol>
+<h2 id="Consistency"><a href="#Consistency" class="headerlink" title="Consistency"></a>Consistency</h2><p>在高层次上，一致性意味着数据库所代表的“世界”在逻辑上是正确的。</p>
+<p>应用程序询问有关数据的所有问题（即查询）将返回逻辑正确的结果。一致性有两个概念： </p>
+<ol>
+<li>数据库一致性（Database Consistency）：数据库准确地表示它正在建模的真实世界实体，并遵循完整性约束。（例如，一个人的年龄不能为负值）。此外，将来的事务应该在数据库中看到过去提交的事务的影响。 </li>
+<li>事务一致性（Transaction Consistency）：如果数据库在事务开始之前是一致的，那么在事务开始之后也是一致的。确保事务一致性是应用程序的责任。</li>
+</ol>
+<h2 id="Isolation"><a href="#Isolation" class="headerlink" title="Isolation"></a>Isolation</h2><p>DBMS提供了事务在系统中单独运行的假象。他们看不到并发事务的影响。这相当于以串行顺序（即一次一个）执行事务的系统。但为了获得更好的性能，DBMS必须在保持隔离假象的同时交错并发事务的操作。</p>
+<h3 id="并发控制（Concurrency-Control）"><a href="#并发控制（Concurrency-Control）" class="headerlink" title="并发控制（Concurrency Control）"></a>并发控制（Concurrency Control）</h3><p>并发控制协议是DBMS在运行时如何决定多个事务操作的正确交错（proper interleaving）</p>
+<p>有两类并发控制协议：</p>
+<ol>
+<li><strong>悲观</strong>：DBMS假设事务将发生冲突，因此它不会让问题首先出现</li>
+<li><strong>乐观</strong>：DBMS假设事务之间的冲突很少，因此它选择在事务提交后处理冲突。</li>
+</ol>
+<p>DBMS执行操作的顺序称为执行调度（execution schedule），并发控制协议的目标是生成某些串行执行等效的执行调度。</p>
+<p>并发控制协议的目标是生成与某些串行调度等效的执行调度：</p>
+<ol>
+<li>串行调度：不同事务之间不会交错</li>
+<li>等效调度：对于任意数据库，如果执行第一个调度的效果与执行第二个调度的结果相同，则这两个调度是等效的。</li>
+<li>可串行化调度：一个可串行化调度等价于任何串行调度。不同的串行调度执行后可以产生不同的结果，但都被为是“正确的”<strong>【如果一个调度是等价于一个串行调度，那么我们就说他是可串行的Serializable】</strong></li>
+</ol>
+<p>如果两个操作针对不同的事务，在同一个对象上执行，并且至少有一个操作是写操作，则会发生冲突，冲突有三种变体:</p>
+<ol>
+<li>读-写冲突：事务在多次读取同一对象时无法获得相同的值（不可重复读取）</li>
+<li>写-读冲突：在事务提交其更改前，可以看到不同事务写的效果（脏读）</li>
+<li>写-写冲突：一个事务覆盖了另一个并发事务的未提交数据（丢失更新）</li>
+</ol>
+<h3 id="冲突可串行化（Conflict-Serializability）"><a href="#冲突可串行化（Conflict-Serializability）" class="headerlink" title="冲突可串行化（Conflict Serializability）"></a>冲突可串行化（Conflict Serializability）</h3><p>串行化有两种类型：（1）冲突和（2）视图。这两个定义都不允许将其视为可序列化的所有计划。在实践中，DBMS支持冲突序列化，因为它可以有效地实施</p>
+<p>如果两个调度涉及相同事务的相同操作，并且每对冲突操作在两个调度中以相同的方式排序，则这两个调度是冲突等价的。如果一个调度与某个串行调度冲突等价，则该调度是冲突可串行化的。 </p>
+<p>通过<strong>交换非冲突操作直到形成串行调度</strong>，可以验证调度是否可冲突串行化。对于具有许多事务的计划，这将变得过于昂贵。验证计划的更好方法是使用<strong>依赖图</strong>dependency graph（优先图dependency graph）。 </p>
+<h3 id="视图可串行化（View-Serializability）"><a href="#视图可串行化（View-Serializability）" class="headerlink" title="视图可串行化（View Serializability）"></a>视图可串行化（View Serializability）</h3><p>视图可串行化是一个较弱的可串行化概念，它允许所有冲突可串行化和“盲写”（即执行写操作而不首先读取值）的调度。因此，它允许比冲突序列化更多的调度，但很难有效实施。这是因为DBMS不知道应用程序将如何“解释”值。</p>
+<h2 id="Durability"><a href="#Durability" class="headerlink" title="Durability"></a>Durability</h2><p>提交事务的所有更改在崩溃或重新启动后都必须是持久的（即持久的）。DBMS可以使用日志记录或影子分页来确保所有更改都是持久的。</p>
+
+    </div>
+
+    
+    
+    
+        
+
+<div>
+<ul class="post-copyright">
+  <li class="post-copyright-author">
+    <strong>本文作者： </strong>Wanjia Huang
+  </li>
+  <li class="post-copyright-link">
+    <strong>本文链接：</strong>
+    <a href="http://example.com/2022/08/17/CMU15445-015-ConcurrencyControlTheory/" title="CMU15445-015-ConcurrencyControlTheory">http://example.com/2022/08/17/CMU15445-015-ConcurrencyControlTheory/</a>
+  </li>
+  <li class="post-copyright-license">
+    <strong>版权声明： </strong>本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" rel="noopener" target="_blank"><i class="fab fa-fw fa-creative-commons"></i>BY-NC-SA</a> 许可协议。转载请注明出处！
+  </li>
+</ul>
+</div>
+
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/CMU15445/" rel="tag"># CMU15445</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2022/08/16/CMU15445-013&014-QueryPlanning&Optimization/" rel="prev" title="CMU15445-013&014-QueryPlanning&Optimization">
+      <i class="fa fa-chevron-left"></i> CMU15445-013&014-QueryPlanning&Optimization
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2022/08/17/CMU15445-016-Two-PhaseLocking/" rel="next" title="CMU15445-016-Two-PhaseLocking">
+      CMU15445-016-Two-PhaseLocking <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BA%8B%E5%8A%A1%EF%BC%88Transactions%EF%BC%89"><span class="nav-number">1.</span> <span class="nav-text">事务（Transactions）</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#The-Strawman-System"><span class="nav-number">1.1.</span> <span class="nav-text">The Strawman System</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%AE%9A%E4%B9%89"><span class="nav-number">2.</span> <span class="nav-text">定义</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Atomicity"><span class="nav-number">3.</span> <span class="nav-text">Atomicity</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Consistency"><span class="nav-number">4.</span> <span class="nav-text">Consistency</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Isolation"><span class="nav-number">5.</span> <span class="nav-text">Isolation</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%B9%B6%E5%8F%91%E6%8E%A7%E5%88%B6%EF%BC%88Concurrency-Control%EF%BC%89"><span class="nav-number">5.1.</span> <span class="nav-text">并发控制（Concurrency Control）</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%86%B2%E7%AA%81%E5%8F%AF%E4%B8%B2%E8%A1%8C%E5%8C%96%EF%BC%88Conflict-Serializability%EF%BC%89"><span class="nav-number">5.2.</span> <span class="nav-text">冲突可串行化（Conflict Serializability）</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%A7%86%E5%9B%BE%E5%8F%AF%E4%B8%B2%E8%A1%8C%E5%8C%96%EF%BC%88View-Serializability%EF%BC%89"><span class="nav-number">5.3.</span> <span class="nav-text">视图可串行化（View Serializability）</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Durability"><span class="nav-number">6.</span> <span class="nav-text">Durability</span></a></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="Wanjia Huang"
+      src="https://i.loli.net/2020/07/12/D6CZiKA4O2jmwus.jpg">
+  <p class="site-author-name" itemprop="name">Wanjia Huang</p>
+  <div class="site-description" itemprop="description">向分布式存储探索</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">19</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">5</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">6</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://https//github.com/Hackerismydream" title="GitHub → https:&#x2F;&#x2F;https:&#x2F;&#x2F;github.com&#x2F;Hackerismydream" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="/1014774261@qq.com" title="E-Mail → 1014774261@qq.com"><i class="fa fa-envelope fa-fw"></i>E-Mail</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://www.zhihu.com/people/huang-wan-jia-12" title="知乎 → https:&#x2F;&#x2F;www.zhihu.com&#x2F;people&#x2F;huang-wan-jia-12" rel="noopener" target="_blank"><i class="gratipay fa-fw"></i>知乎</a>
+      </span>
+  </div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2022</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Wanjia Huang</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://mist.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Mist</a> 强力驱动
+  </div>
+
+
+    <script async src="//dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+    <span id="busuanzi_container_site_pv">总访问量<span id="busuanzi_value_site_pv"></span>次</span>
+    <span class="post-meta-divider">|</span>
+    <span id="busuanzi_container_site_uv">总访客数<span id="busuanzi_value_site_uv"></span>人</span>
+    <span class="post-meta-divider">|</span>
+<!-- 不蒜子计数初始值纠正 -->
+<script>
+$(document).ready(function() {
+
+    var int = setInterval(fixCount, 50);  // 50ms周期检测函数
+    var countOffset = 20000;  // 初始化首次数据
+
+    function fixCount() {            
+       if (document.getElementById("busuanzi_container_site_pv").style.display != "none")
+        {
+            $("#busuanzi_value_site_pv").html(parseInt($("#busuanzi_value_site_pv").html()) + countOffset); 
+            clearInterval(int);
+        }                  
+        if ($("#busuanzi_container_site_pv").css("display") != "none")
+        {
+            $("#busuanzi_value_site_uv").html(parseInt($("#busuanzi_value_site_uv").html()) + countOffset); // 加上初始数据 
+            clearInterval(int); // 停止检测
+        }  
+    }
+       	
+});
+</script> 
+
+        
+<div class="busuanzi-count">
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+    <span class="post-meta-item" id="busuanzi_container_site_uv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-user"></i>
+      </span>
+      <span class="site-uv" title="总访客量">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item" id="busuanzi_container_site_pv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-eye"></i>
+      </span>
+      <span class="site-pv" title="总访问量">
+        <span id="busuanzi_value_site_pv"></span>
+      </span>
+    </span>
+</div>
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/muse.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+</body>
+</html>
